@@ -480,6 +480,207 @@
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        /* ── MUSIC OFFER MODAL ─────────────────────────────────── */
+        .music-offer-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.88);
+            backdrop-filter: blur(10px);
+            z-index: 400;
+            display: flex; align-items: center; justify-content: center; padding: 24px;
+            opacity: 0; pointer-events: none; visibility: hidden;
+            transition: all .3s;
+        }
+        .music-offer-overlay.show { opacity: 1; pointer-events: auto; visibility: visible; }
+
+        .music-offer-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            width: 100%; max-width: 360px;
+            overflow: hidden;
+            transform: translateY(20px) scale(0.97);
+            transition: transform .35s cubic-bezier(.22,1,.36,1);
+        }
+        .music-offer-overlay.show .music-offer-card { transform: translateY(0) scale(1); }
+
+        .music-offer-top {
+            background: linear-gradient(135deg, #1a1400 0%, #0d0d0d 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 32px 28px 28px;
+            text-align: center;
+            position: relative;
+        }
+        .music-offer-vinyl {
+            font-size: 64px;
+            display: block;
+            animation: spin-slow 6s linear infinite paused;
+            margin-bottom: 16px;
+        }
+        .music-offer-overlay.show .music-offer-vinyl { animation-play-state: running; }
+        @keyframes spin-slow { to { transform: rotate(360deg); } }
+
+        .music-offer-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 26px; letter-spacing: 3px; color: var(--gold);
+        }
+        .music-offer-sub { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+
+        .music-offer-actions { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .btn-music-yes {
+            width: 100%; background: var(--gold); color: #0d0d0d;
+            border: none; border-radius: 14px; padding: 16px;
+            font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px;
+            cursor: pointer; transition: all .2s;
+        }
+        .btn-music-yes:hover { background: #e6b800; }
+        .btn-music-no {
+            width: 100%; background: none; color: var(--muted);
+            border: 1px solid var(--border); border-radius: 14px; padding: 13px;
+            font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+            cursor: pointer; transition: all .2s;
+        }
+        .btn-music-no:hover { color: var(--text); border-color: var(--muted); }
+
+        /* ── MUSIC PLAYER ──────────────────────────────────────── */
+        .player-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(12px);
+            z-index: 500;
+            display: flex; align-items: flex-end;
+            opacity: 0; pointer-events: none; visibility: hidden;
+            transition: all .3s;
+        }
+        .player-overlay.show { opacity: 1; pointer-events: auto; visibility: visible; }
+
+        .player-sheet {
+            width: 100%; max-width: 430px; margin: 0 auto;
+            background: var(--surface);
+            border-radius: 28px 28px 0 0;
+            border: 1px solid var(--border); border-bottom: none;
+            transform: translateY(100%);
+            transition: transform .4s cubic-bezier(.22,1,.36,1);
+            padding-bottom: 36px;
+        }
+        .player-overlay.show .player-sheet { transform: translateY(0); }
+
+        .player-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 14px auto 0; }
+
+        .player-album {
+            margin: 24px auto 0;
+            width: 140px; height: 140px;
+            background: radial-gradient(circle at 35% 35%, #2a2000, #0d0d0d);
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 56px;
+            position: relative;
+            box-shadow: 0 0 40px rgba(245,197,24,0.15);
+        }
+        .player-album::after {
+            content: '';
+            position: absolute;
+            width: 28px; height: 28px;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+        }
+        .player-album.spinning { animation: spin-slow 3s linear infinite; }
+
+        .player-meta { text-align: center; padding: 20px 28px 0; }
+        .player-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 26px; letter-spacing: 2px; color: var(--text);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .player-artist { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 3px; }
+
+        /* Progress */
+        .player-progress-wrap { padding: 20px 28px 0; }
+        .player-progress-bar {
+            width: 100%; height: 4px;
+            background: var(--surface2);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .player-progress-fill {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 2px;
+            width: 0%;
+            transition: width .3s linear;
+            pointer-events: none;
+        }
+        .player-time {
+            display: flex; justify-content: space-between;
+            font-size: 10px; color: var(--muted); font-weight: 600;
+            margin-top: 7px;
+        }
+
+        /* Controls */
+        .player-controls {
+            display: flex; align-items: center; justify-content: center; gap: 24px;
+            padding: 24px 28px 0;
+        }
+        .ctrl-btn {
+            background: none; border: none; cursor: pointer;
+            color: var(--muted); font-size: 24px;
+            transition: all .2s; display: flex; align-items: center; justify-content: center;
+        }
+        .ctrl-btn:hover { color: var(--text); }
+        .ctrl-play {
+            width: 60px; height: 60px;
+            background: var(--gold); color: #0d0d0d;
+            border: none; border-radius: 50%;
+            font-size: 22px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all .2s;
+            box-shadow: 0 0 24px rgba(245,197,24,0.3);
+        }
+        .ctrl-play:hover { background: #e6b800; transform: scale(1.05); }
+
+        /* Track list */
+        .player-tracklist { padding: 20px 20px 0; }
+        .tracklist-label { font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; padding: 0 8px; margin-bottom: 10px; }
+        .track-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 12px; border-radius: 12px;
+            cursor: pointer; transition: background .2s;
+        }
+        .track-item:hover { background: var(--surface2); }
+        .track-item.active { background: rgba(245,197,24,0.08); }
+        .track-num { font-family: 'Bebas Neue', sans-serif; font-size: 14px; color: var(--muted); width: 18px; text-align: center; }
+        .track-item.active .track-num { color: var(--gold); }
+        .track-info { flex: 1; }
+        .track-name { font-size: 13px; font-weight: 700; color: var(--text); }
+        .track-item.active .track-name { color: var(--gold); }
+        .track-dur { font-size: 11px; color: var(--muted); }
+        .track-eq {
+            display: none; gap: 2px; align-items: flex-end; height: 16px;
+        }
+        .track-item.active .track-eq { display: flex; }
+        .eq-bar {
+            width: 3px; background: var(--gold); border-radius: 1px;
+            animation: eq-bounce .8s ease-in-out infinite alternate;
+        }
+        .eq-bar:nth-child(2) { animation-delay: .2s; }
+        .eq-bar:nth-child(3) { animation-delay: .4s; }
+        @keyframes eq-bounce {
+            from { height: 4px; }
+            to { height: 14px; }
+        }
+
+        .btn-close-player {
+            display: block; width: calc(100% - 40px); margin: 20px auto 0;
+            background: none; border: 1px solid var(--border); color: var(--muted);
+            border-radius: 14px; padding: 13px;
+            font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+            cursor: pointer; transition: all .2s;
+        }
+        .btn-close-player:hover { color: var(--text); border-color: var(--muted); }
     </style>
 </head>
 <body>
@@ -587,6 +788,52 @@
             <div id="qrcode"></div>
             <button class="btn-copy" onclick="copyLink()">📋 Salin Link</button>
             <button class="btn-close-qr" onclick="toggleQR(false)">Tutup</button>
+        </div>
+    </div>
+
+    <!-- MUSIC OFFER MODAL -->
+    <div id="musicOfferOverlay" class="music-offer-overlay">
+        <div class="music-offer-card">
+            <div class="music-offer-top">
+                <span class="music-offer-vinyl">🎵</span>
+                <div class="music-offer-title">SAMBIL NUNGGU, DENGERIN LAGU?</div>
+                <div class="music-offer-sub">Warung CT punya playlist buat nemenin kamu<br>nunggu pesanan dateng 🛵</div>
+            </div>
+            <div class="music-offer-actions">
+                <button class="btn-music-yes" onclick="openPlayer()">🎧 YUK DENGERIN</button>
+                <button class="btn-music-no" onclick="closeMusicOffer()">Nggak, makasih</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MUSIC PLAYER -->
+    <div id="playerOverlay" class="player-overlay">
+        <div class="player-sheet">
+            <div class="player-handle"></div>
+            <div class="player-album" id="playerAlbum">🎵</div>
+            <div class="player-meta">
+                <div class="player-title" id="playerTitle">—</div>
+                <div class="player-artist" id="playerArtist">Warung CT Radio</div>
+            </div>
+            <div class="player-progress-wrap">
+                <div class="player-progress-bar" id="progressBar" onclick="seekAudio(event)">
+                    <div class="player-progress-fill" id="progressFill"></div>
+                </div>
+                <div class="player-time">
+                    <span id="timeNow">0:00</span>
+                    <span id="timeDur">0:00</span>
+                </div>
+            </div>
+            <div class="player-controls">
+                <button class="ctrl-btn" onclick="prevTrack()" title="Sebelumnya">⏮</button>
+                <button class="ctrl-play" id="playBtn" onclick="togglePlay()">▶</button>
+                <button class="ctrl-btn" onclick="nextTrack()" title="Berikutnya">⏭</button>
+            </div>
+            <div class="player-tracklist">
+                <div class="tracklist-label">Playlist</div>
+                <div id="tracklistEl"></div>
+            </div>
+            <button class="btn-close-player" onclick="closePlayer()">Tutup Player</button>
         </div>
     </div>
 
@@ -917,6 +1164,7 @@ function doOrder() {
 
     hideConfirm();
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`);
+    setTimeout(() => document.getElementById('musicOfferOverlay').classList.add('show'), 800);
 }
 
 /* ═══════════════════════════════════════════════
@@ -948,8 +1196,140 @@ window.copyLink = () => {
 
 
 /* ═══════════════════════════════════════════════
-   UTILS
+   MUSIC PLAYER
 ═══════════════════════════════════════════════ */
+
+// 🎵 GANTI URL DI BAWAH INI dengan link raw GitHub kamu
+// Format: https://raw.githubusercontent.com/USERNAME/REPO/main/songs/nama-file.mp3
+const playlist = [
+    {
+        title: 'Lagu 1',
+        artist: 'Warung CT',
+        icon: '🎸',
+        url: 'https://raw.githubusercontent.com/USERNAME/REPO/main/songs/lagu1.mp3'
+    },
+    {
+        title: 'Lagu 2',
+        artist: 'Warung CT',
+        icon: '🎷',
+        url: 'https://raw.githubusercontent.com/USERNAME/REPO/main/songs/lagu2.mp3'
+    },
+    {
+        title: 'Lagu 3',
+        artist: 'Warung CT',
+        icon: '🎹',
+        url: 'https://raw.githubusercontent.com/USERNAME/REPO/main/songs/lagu3.mp3'
+    },
+];
+
+let audio = new Audio();
+let curTrack = 0;
+let isPlaying = false;
+
+function renderTracklist() {
+    const el = document.getElementById('tracklistEl');
+    el.innerHTML = playlist.map((t, i) => `
+        <div class="track-item ${i === curTrack ? 'active' : ''}" onclick="loadTrack(${i}, true)">
+            <div class="track-num">${i === curTrack ? '' : i + 1}
+                <div class="track-eq" style="display:${i===curTrack?'flex':'none'}">
+                    <div class="eq-bar" style="height:${isPlaying?'auto':'4px'}"></div>
+                    <div class="eq-bar" style="height:${isPlaying?'auto':'4px'}"></div>
+                    <div class="eq-bar" style="height:${isPlaying?'auto':'4px'}"></div>
+                </div>
+            </div>
+            <div class="track-info">
+                <div class="track-name">${t.icon} ${t.title}</div>
+                <div class="track-dur">${t.artist}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function loadTrack(idx, autoplay = false) {
+    curTrack = idx;
+    const t = playlist[idx];
+    audio.src = t.url;
+    document.getElementById('playerTitle').textContent = t.title;
+    document.getElementById('playerArtist').textContent = t.artist;
+    document.getElementById('playerAlbum').textContent = t.icon;
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('timeNow').textContent = '0:00';
+    document.getElementById('timeDur').textContent = '0:00';
+    renderTracklist();
+    if (autoplay) { audio.play(); setPlaying(true); }
+}
+
+function setPlaying(val) {
+    isPlaying = val;
+    document.getElementById('playBtn').textContent = val ? '⏸' : '▶';
+    const album = document.getElementById('playerAlbum');
+    val ? album.classList.add('spinning') : album.classList.remove('spinning');
+}
+
+function togglePlay() {
+    if (!audio.src || audio.src.includes('USERNAME')) {
+        alert('Upload dulu lagunya ke GitHub bro, terus ganti URL di kode! 🎵');
+        return;
+    }
+    if (isPlaying) { audio.pause(); setPlaying(false); }
+    else { audio.play(); setPlaying(true); }
+}
+
+function prevTrack() { loadTrack((curTrack - 1 + playlist.length) % playlist.length, isPlaying); }
+function nextTrack() { loadTrack((curTrack + 1) % playlist.length, isPlaying); }
+
+function seekAudio(e) {
+    if (!audio.duration) return;
+    const bar = document.getElementById('progressBar');
+    const rect = bar.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    audio.currentTime = ratio * audio.duration;
+}
+
+function fmtTime(s) {
+    if (isNaN(s)) return '0:00';
+    const m = Math.floor(s / 60);
+    const ss = Math.floor(s % 60).toString().padStart(2, '0');
+    return `${m}:${ss}`;
+}
+
+audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    const pct = (audio.currentTime / audio.duration) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('timeNow').textContent = fmtTime(audio.currentTime);
+    document.getElementById('timeDur').textContent = fmtTime(audio.duration);
+});
+
+audio.addEventListener('ended', () => nextTrack());
+audio.addEventListener('error', () => {
+    setPlaying(false);
+    document.getElementById('playerTitle').textContent = 'Gagal load lagu';
+    document.getElementById('playerArtist').textContent = 'Cek URL di kode ya bro';
+});
+
+window.openPlayer = () => {
+    document.getElementById('musicOfferOverlay').classList.remove('show');
+    document.getElementById('playerOverlay').classList.add('show');
+    if (!audio.src || audio.src.includes('USERNAME')) loadTrack(0, false);
+};
+
+window.closePlayer = () => {
+    document.getElementById('playerOverlay').classList.remove('show');
+    audio.pause();
+    setPlaying(false);
+};
+
+window.closeMusicOffer = () => {
+    document.getElementById('musicOfferOverlay').classList.remove('show');
+};
+
+// Init tracklist on load
+window.addEventListener('DOMContentLoaded', () => {
+    loadTrack(0, false);
+});
+
+
 function fmt(n) { return n.toLocaleString('id-ID'); }
 
 /* ═══════════════════════════════════════════════
