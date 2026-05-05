@@ -512,7 +512,7 @@
             </div>
             <input id="userName" type="text" class="input-name" placeholder="Atas nama siapa...">
             <button id="btnLocation" class="btn-loc" onclick="getLocation()">
-                <span>📍</span><span>Lokasi</span>
+                <span>📍</span><span>Klik - Lokasi</span>
             </button>
             <div id="locStatus" class="loc-status">
                 <div>
@@ -749,7 +749,7 @@ function getLocation() {
 
     if (!navigator.geolocation) {
         alert('Browser kamu tidak mendukung GPS!');
-        btn.innerHTML = '<span>📍</span><span>Lokasi</span>';
+        btn.innerHTML = '<span>📍</span><span>Klik - Lokasi</span>';
         btn.style.pointerEvents = '';
         return;
     }
