@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warung CT - Pesan Online</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- QRCode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ct: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            900: '#134e4a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+        
+        body {
+            background-color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 140px;
+        }
+        
+        .loader {
+            border: 2px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 2px solid #0d9488;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Modal QR diperbaiki agar lebih jelas */
+        #qrModal {
+            transition: all 0.2s ease-out;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+        #qrModal.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+        
+        /* QR Code styling untuk kemudahan scan */
+        #qrcode {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        #qrcode img {
+            display: block !important;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased pb-40">
+
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-xl relative">
+        
+        <!-- Header Branding -->
+        <header class="bg-ct-600 text-white p-8 rounded-b-[3rem] shadow-lg relative overflow-hidden text-center">
+            <div class="relative z-10">
+                <h1 class="text-3xl font-black italic tracking-tighter uppercase">WARUNG CT</h1>
+                <p class="text-ct-100 text-xs font-medium tracking-[0.2em] mt-1 uppercase">The Real Temenan</p>
+            </div>
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-ct-500 rounded-full opacity-50"></div>
+        </header>
+
+        <main class="px-6 py-8 space-y-8">
+            
+            <!-- User Info & Location -->
+            <section class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-ct-100 text-ct-700 flex items-center justify-center font-black">1</div>
+                    <h2 class="font-bold text-xl">Data Pengiriman</h2>
+                </div>
+                <div class="space-y-3">
+                    <input type="text" id="userName" placeholder="Nama Panggilan..." class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-ct-500 outline-none transition-all shadow-inner">
+                    
+                    <button id="btnLocation" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-lg active:scale-95 transition-all flex justify-center items-center gap-3">
+                        <span>📍 Cek Jarak & Ongkir</span>
+                    </button>
+                    <div id="locationStatus" class="hidden text-center py-3 text-xs font-bold rounded-xl bg-ct-50 text-ct-700 border border-ct-100"></div>
+                </div>
+            </section>
+
+            <!-- Menu Utama -->
+            <section class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-ct-100 text-ct-700 flex items-center justify-center font-black">2</div>
+                    <h2 class="font-bold text-xl">Menu Utama</h2>
+                </div>
+                <div id="menuUtama" class="grid grid-cols-1 gap-3"></div>
+            </section>
+
+            <!-- Menu Tambahan -->
+            <section class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-orange-100 text-orange-700 flex items-center justify-center font-black">3</div>
+                    <h2 class="font-bold text-xl text-slate-800">Tambahan</h2>
+                </div>
+                <div id="menuTambahan" class="grid grid-cols-1 gap-3"></div>
+            </section>
+
+            <!-- Ongkir Info -->
+            <section class="bg-slate-50 p-6 rounded-[2rem] border border-slate-100">
+                <h3 class="font-bold text-slate-400 mb-4 text-[10px] uppercase tracking-[0.2em] flex items-center gap-2">
+                    Skema Biaya Kirim
+                </h3>
+                <div class="chart-container">
+                    <canvas id="ongkirChart"></canvas>
+                </div>
+                <p class="text-[9px] text-slate-400 mt-4 text-center italic">1km Pertama Rp2.000, Selanjutnya Rp1.000/km</p>
+            </section>
+
+        </main>
+
+        <!-- Floating QR Button -->
+        <button onclick="toggleQRModal(true)" class="fixed bottom-32 right-6 w-14 h-14 bg-white text-ct-600 rounded-full shadow-2xl flex items-center justify-center text-2xl border border-ct-50 z-40 transition-transform active:scale-90 border-2 border-ct-600">
+            <span>📱</span>
+        </button>
+
+        <!-- QR Modal diperbaiki untuk visibilitas maksimal -->
+        <div id="qrModal" class="fixed inset-0 z-[60] flex items-center justify-center p-6 bg-slate-900/80 backdrop-blur-md">
+            <div class="bg-white w-full max-w-sm rounded-[2rem] overflow-hidden shadow-2xl">
+                <div class="bg-slate-900 p-6 text-center text-white">
+                    <h3 class="font-black text-xl italic uppercase tracking-wider">Warung CT</h3>
+                    <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">Pesan Dari Rumah Lebih Mudah</p>
+                </div>
+                <div class="p-8 text-center space-y-6">
+                    <div class="flex justify-center bg-white p-2 border-2 border-slate-100 rounded-xl">
+                        <div id="qrcode"></div>
+                    </div>
+                    <div class="space-y-3">
+                        <button onclick="copyLink()" class="w-full py-4 bg-ct-600 text-white rounded-2xl font-bold text-sm shadow-lg shadow-ct-100 active:scale-95 transition-all">
+                            Salin Link Manual
+                        </button>
+                        <button onclick="toggleQRModal(false)" class="w-full py-3 text-slate-400 font-bold text-sm">
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sticky Bottom Checkout -->
+        <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-slate-100 p-6 z-50 rounded-t-[2.5rem] shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.1)]">
+            <div class="flex justify-between items-end mb-4">
+                <div>
+                    <p id="distText" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Jarak: 0 km</p>
+                    <p class="text-2xl font-black text-slate-900">Rp <span id="grandTotal">0</span></p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] font-bold text-ct-600 uppercase">Ongkir: Rp <span id="ongkirVal">0</span></p>
+                    <p id="countVal" class="text-xs font-medium text-slate-500">0 Item</p>
+                </div>
+            </div>
+            <button id="btnPesan" class="w-full bg-ct-600 hover:bg-ct-500 disabled:bg-slate-200 disabled:text-slate-400 text-white py-5 rounded-2xl font-black text-lg shadow-xl shadow-ct-100 transition-all active:scale-[0.98]" disabled>
+                PESAN VIA WHATSAPP
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const state = {
+            user: { name: '', lat: null, lon: null },
+            order: { distanceKm: 0, shippingCost: 0, itemsTotal: 0, grandTotal: 0 },
+            cart: {},
+            warungLoc: { lat: -7.166875112195776, lon: 112.32687506678782 }
+        };
+
+        const menuUtama = [
+            { id: 'u1', name: 'Ayam Goreng', price: 10000, icon: '🍗' },
+            { id: 'u2', name: 'Pecel Lele', price: 10000, icon: '🐟' },
+            { id: 'u3', name: 'Dadar', price: 7000, icon: '🍳' },
+            { id: 'u4', name: 'Ati Ampela', price: 8000, icon: '🍢' },
+            { id: 'u5', name: 'Tempe Penyet', price: 6000, icon: '🍱' },
+            { id: 'u6', name: 'Nasgor Ori', price: 10000, icon: '🍚' },
+            { id: 'u7', name: 'Nasgor + Sosis', price: 13000, icon: '🌭' },
+            { id: 'u8', name: 'Nasgor + Dadar', price: 13000, icon: '🥘' }
+        ];
+
+        const menuTambahan = [
+            { id: 't1', name: 'Telur', price: 3000 },
+            { id: 't2', name: 'Kepala', price: 3000 },
+            { id: 't3', name: 'Ati Ampela', price: 5000 },
+            { id: 't4', name: 'Sambal', price: 3000 },
+            { id: 't5', name: 'Nasi Hidup', price: 3000 }
+        ];
+
+        function init() {
+            renderList('menuUtama', menuUtama, 'bg-ct-50 text-ct-600');
+            renderList('menuTambahan', menuTambahan, 'bg-orange-50 text-orange-600');
+            initChart();
+            generateQR();
+            bindEvents();
+        }
+
+        function renderList(targetId, data, colorClass) {
+            document.getElementById(targetId).innerHTML = data.map(m => `
+                <div class="bg-slate-50 p-4 rounded-2xl flex justify-between items-center border border-transparent active:bg-white transition-all">
+                    <div class="flex items-center gap-3">
+                        ${m.icon ? `<div class="text-xl">${m.icon}</div>` : ''}
+                        <div>
+                            <h4 class="font-bold text-sm text-slate-800">${m.name}</h4>
+                            <p class="${colorClass.split(' ')[1]} font-black text-xs">Rp ${new Intl.NumberFormat('id-ID').format(m.price)}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 bg-white p-1 rounded-xl shadow-sm border border-slate-100">
+                        <button onclick="upd('${m.id}', -1)" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400">-</button>
+                        <span id="qty-${m.id}" class="w-4 text-center font-bold text-xs">0</span>
+                        <button onclick="upd('${m.id}', 1)" class="w-8 h-8 flex items-center justify-center rounded-lg ${colorClass} font-black">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.upd = (id, c) => {
+            state.cart[id] = Math.max(0, (state.cart[id] || 0) + c);
+            document.getElementById(`qty-${id}`).innerText = state.cart[id];
+            calc();
+        };
+
+        function calc() {
+            let total = 0, count = 0;
+            [...menuUtama, ...menuTambahan].forEach(m => {
+                const q = state.cart[m.id] || 0;
+                total += q * m.price;
+                count += q;
+            });
+            state.order.itemsTotal = total;
+            state.order.grandTotal = total + (count > 0 ? state.order.shippingCost : 0);
+            document.getElementById('countVal').innerText = `${count} Item`;
+            document.getElementById('grandTotal').innerText = new Intl.NumberFormat('id-ID').format(state.order.grandTotal);
+            document.getElementById('btnPesan').disabled = !(state.user.name.length > 1 && state.order.distanceKm > 0 && count > 0);
+        }
+
+        function loc() {
+            const b = document.getElementById('btnLocation');
+            b.innerHTML = '<span class="loader"></span> Menghitung Jarak...';
+            navigator.geolocation.getCurrentPosition(p => {
+                const d = getD(state.warungLoc.lat, state.warungLoc.lon, p.coords.latitude, p.coords.longitude);
+                state.order.distanceKm = parseFloat(d.toFixed(1));
+                
+                if (state.order.distanceKm <= 1) {
+                    state.order.shippingCost = 2000;
+                } else {
+                    state.order.shippingCost = 2000 + (Math.ceil(state.order.distanceKm - 1) * 1000);
+                }
+                
+                document.getElementById('distText').innerText = `Jarak: ${state.order.distanceKm} km`;
+                document.getElementById('ongkirVal').innerText = new Intl.NumberFormat('id-ID').format(state.order.shippingCost);
+                b.innerHTML = '✅ Jarak Terhitung';
+                b.className = b.className.replace('bg-slate-900', 'bg-ct-600');
+                
+                const s = document.getElementById('locationStatus');
+                s.classList.remove('hidden');
+                s.innerHTML = `Jarak Anda: ${state.order.distanceKm} km`;
+                calc();
+            }, () => alert('Gagal! Izinkan GPS untuk hitung ongkir otomatis.'));
+        }
+
+        function getD(la1, lo1, la2, lo2) {
+            const R = 6371;
+            const dLa = (la2-la1)*Math.PI/180, dLo = (lo2-lo1)*Math.PI/180;
+            const a = Math.sin(dLa/2)**2 + Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dLo/2)**2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+
+        function generateQR() {
+            document.getElementById("qrcode").innerHTML = ""; // Bersihkan
+            new QRCode(document.getElementById("qrcode"), {
+                text: window.location.href,
+                width: 256, // Ukuran diperbesar untuk kemudahan scan
+                height: 256,
+                colorDark : "#000000", // Hitam pekat agar kontras tinggi
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+
+        window.toggleQRModal = s => document.getElementById('qrModal').classList.toggle('active', s);
+        
+        window.copyLink = () => {
+            const url = window.location.href;
+            const tempInput = document.createElement("input");
+            tempInput.value = url;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            alert("Link sudah disalin! Bisa kamu share ke WhatsApp teman.");
+        };
+
+        function bindEvents() {
+            document.getElementById('userName').addEventListener('input', e => { state.user.name = e.target.value; calc(); });
+            document.getElementById('btnLocation').addEventListener('click', loc);
+            document.getElementById('btnPesan').addEventListener('click', () => {
+                let m = `*PESANAN WARUNG CT*\nNama: ${state.user.name}\nJarak: ${state.order.distanceKm}km\nOngkir: Rp ${new Intl.NumberFormat('id-ID').format(state.order.shippingCost)}\n\n*Daftar Belanja:*\n`;
+                [...menuUtama, ...menuTambahan].forEach(i => {
+                    if(state.cart[i.id]) m += `• ${i.name} (${state.cart[i.id]}x)\n`;
+                });
+                m += `\n*Total Bayar: Rp ${new Intl.NumberFormat('id-ID').format(state.order.grandTotal)}*`;
+                window.open(`https://wa.me/6285730030112?text=${encodeURIComponent(m)}`);
+            });
+        }
+
+        function initChart() {
+            new Chart(document.getElementById('ongkirChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['1km', '2km', '4km', '6km', '10km'],
+                    datasets: [{
+                        data: [2000, 3000, 5000, 7000, 11000],
+                        borderColor: '#0d9488',
+                        backgroundColor: 'rgba(20, 184, 166, 0.05)',
+                        fill: true, tension: 0.1, pointRadius: 2, borderWidth: 2
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } }, 
+                    scales: { 
+                        y: { display: false }, 
+                        x: { grid: { display: false }, ticks: { font: { size: 8 }, color: '#94a3b8' } } 
+                    } 
+                }
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
