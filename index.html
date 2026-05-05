@@ -6,7 +6,6 @@
     <title>Warung CT – The Real Temenan</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
@@ -500,7 +499,7 @@
     <!-- CLOSED BANNER -->
     <div id="closedBanner" class="closed-banner">
         <div class="title">⚠️ WARUNG TUTUP</div>
-        <div class="sub">Pesan antar hanya sampai jam 22:00. Besok lagi ya!</div>
+        <div class="sub">Warung hanya buka sampai jam 22:00. Besok buka lagi ya!</div>
     </div>
 
     <main>
@@ -512,7 +511,7 @@
             </div>
             <input id="userName" type="text" class="input-name" placeholder="Atas nama siapa...">
             <button id="btnLocation" class="btn-loc" onclick="getLocation()">
-                <span>📍</span><span>Klik - Lokasi</span>
+                <span>📍</span><span>Klik — Hitung Ongkir Otomatis</span>
             </button>
             <div id="locStatus" class="loc-status">
                 <div>
@@ -537,7 +536,6 @@
             <div class="menu-grid menu-tambahan" id="menuTambahan"></div>
         </section>
     </main>
-
 
     <!-- BOTTOM BAR -->
     <div class="bottom-bar">
@@ -610,6 +608,8 @@ const state = {
     isClosed: false,
     locOk: false,
     locOver: false,   // distance > 6km
+    userLat: null,
+    userLon: null,
 };
 
 const WARUNG_LAT = -7.166875;
@@ -633,7 +633,7 @@ const menuTambahan = [
     { id: 't2', name: 'Kepala',      price: 3000 },
     { id: 't3', name: 'Ati Ampela',  price: 5000 },
     { id: 't4', name: 'Sambal',      price: 3000 },
-    { id: 't5', name: 'Nasi Hitup',  price: 3000 },
+    { id: 't5', name: 'Nasi Hidup',  price: 3000 },
 ];
 
 const allMenu = [...menuUtama, ...menuTambahan];
@@ -644,7 +644,6 @@ const allMenu = [...menuUtama, ...menuTambahan];
 function init() {
     renderMenu('menuUtama', menuUtama, false);
     renderMenu('menuTambahan', menuTambahan, true);
-    initChart();
     initQR();
     checkTime();
     setInterval(checkTime, 60000);
@@ -749,7 +748,7 @@ function getLocation() {
 
     if (!navigator.geolocation) {
         alert('Browser kamu tidak mendukung GPS!');
-        btn.innerHTML = '<span>📍</span><span>Klik - Lokasi</span>';
+        btn.innerHTML = '<span>📍</span><span>Klik — Hitung Ongkir Otomatis</span>';
         btn.style.pointerEvents = '';
         return;
     }
@@ -758,6 +757,8 @@ function getLocation() {
         pos => {
             const d = haversine(WARUNG_LAT, WARUNG_LON, pos.coords.latitude, pos.coords.longitude);
             state.distKm = parseFloat(d.toFixed(1));
+            state.userLat = pos.coords.latitude;
+            state.userLon = pos.coords.longitude;
 
             const locStatus = document.getElementById('locStatus');
             const locDist = document.getElementById('locDist');
@@ -816,7 +817,7 @@ function haversine(la1, lo1, la2, lo2) {
 function checkTime() {
     const now = new Date();
     const h = now.getHours();
-    const closed = (h >= 22 || h < 5); // tutup jam 22-05
+    const closed = (h >= 22 || h < 15); // tutup di luar jam 15:00–22:00
     state.isClosed = closed;
 
     const badge = document.getElementById('statusBadge');
@@ -899,7 +900,8 @@ function doOrder() {
     let msg = `🍽️ *ORDER WARUNG CT*\n`;
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
     msg += `👤 *Nama:* ${state.name}\n`;
-    msg += `📍 *Jarak:* ${state.distKm} km\n`;
+    msg += `📍 *Lokasi:* https://maps.google.com/?q=${state.userLat},${state.userLon}\n`;
+    msg += `📏 *Jarak:* ${state.distKm} km\n`;
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
     msg += `*PESANAN:*\n`;
 
@@ -950,52 +952,6 @@ window.copyLink = () => {
     setTimeout(() => btn.textContent = '📋 Salin Link', 2000);
 };
 
-/* ═══════════════════════════════════════════════
-   CHART
-═══════════════════════════════════════════════ */
-function initChart() {
-    const labels = ['1km','2km','3km','4km','5km','6km'];
-    const data   = [2000, 3000, 4000, 5000, 6000, 7000];
-    new Chart(document.getElementById('ongkirChart'), {
-        type: 'line',
-        data: {
-            labels,
-            datasets: [{
-                data,
-                borderColor: '#f5c518',
-                backgroundColor: ctx => {
-                    const g = ctx.chart.ctx.createLinearGradient(0,0,0,100);
-                    g.addColorStop(0, 'rgba(245,197,24,0.25)');
-                    g.addColorStop(1, 'rgba(245,197,24,0)');
-                    return g;
-                },
-                fill: true, tension: 0.4,
-                pointBackgroundColor: '#f5c518',
-                pointRadius: 4, pointHoverRadius: 6,
-            }]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: false }, tooltip: {
-                backgroundColor: '#1e1e1e',
-                borderColor: '#2a2a2a',
-                borderWidth: 1,
-                titleColor: '#f5c518',
-                bodyColor: '#f0ede6',
-                callbacks: {
-                    label: ctx => ' Rp ' + fmt(ctx.raw)
-                }
-            }},
-            scales: {
-                y: { display: false, grid: { display: false } },
-                x: {
-                    grid: { color: 'rgba(255,255,255,0.04)' },
-                    ticks: { color: '#555', font: { size: 10, family: 'Syne' } }
-                }
-            }
-        }
-    });
-}
 
 /* ═══════════════════════════════════════════════
    UTILS
