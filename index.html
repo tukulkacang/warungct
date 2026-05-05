@@ -496,11 +496,7 @@
         </div>
     </header>
 
-    <!-- CLOSED BANNER -->
-    <div id="closedBanner" class="closed-banner">
-        <div class="title">⚠️ WARUNG TUTUP</div>
-        <div class="sub">Warung hanya buka sampai jam 22:00. Besok buka lagi ya!</div>
-    </div>
+
 
     <main>
         <!-- STEP 1 -->
@@ -817,21 +813,19 @@ function haversine(la1, lo1, la2, lo2) {
 function checkTime() {
     const now = new Date();
     const h = now.getHours();
-    const closed = (h >= 22 || h < 15); // tutup di luar jam 15:00–22:00
+    const closed = false; // TESTING MODE — selalu buka
+    // const closed = (h >= 22 || h < 15); // aktifkan ini saat live
     state.isClosed = closed;
 
     const badge = document.getElementById('statusBadge');
     const badgeText = document.getElementById('statusText');
-    const banner = document.getElementById('closedBanner');
 
     if (closed) {
         badge.classList.add('closed');
         badgeText.textContent = 'WARUNG TUTUP';
-        banner.classList.add('show');
     } else {
         badge.classList.remove('closed');
         badgeText.textContent = 'BUKA SEKARANG';
-        banner.classList.remove('show');
     }
 
     updateUI();
