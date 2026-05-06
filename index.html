@@ -282,6 +282,13 @@
             margin-top: 14px;
             text-align: center;
         }
+        .closed-info.belum-buka {
+            background: rgba(251,146,60,0.08);
+            border-color: rgba(251,146,60,0.25);
+        }
+        .closed-info.belum-buka .closed-info-title {
+            color: var(--orange);
+        }
         .closed-info.show { display: block; }
         .closed-info-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--red); letter-spacing: 2px; }
         .closed-info-sub { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.6; }
@@ -810,7 +817,7 @@
             <span class="dot"></span>
             <span id="statusText">BUKA SEKARANG</span>
         </div>
-        <div class="owner-hint">tap 2x logo untuk owner</div>
+        <div class="owner-hint" style="opacity:0;pointer-events:none;">tap 2x logo untuk owner</div>
     </header>
 
     <!-- CLOSED INFO -->
@@ -1090,7 +1097,7 @@ const WarungCT = (function() {
         WARUNG_LON: 112.326875,
         MAX_KM: 6,
         WA_NUMBER: '6285730030112',
-        DEFAULT_PIN: '4281',
+        DEFAULT_PIN: '0000',
         KEYS: {
             CUSTOMER: 'warungCT_v4_customer',
             OWNER: 'warungCT_v4_owner',
@@ -1413,17 +1420,28 @@ const WarungCT = (function() {
             closedTitle.textContent = 'WARUNG LIBUR HARI INI';
             closedSub.textContent = 'Owner sedang istirahat. Silakan kembali besok ya 🙏';
             closedInfo.classList.add('show');
+            closedInfo.classList.remove('belum-buka');
         } else if (reason === 'tutup_cepat') {
             badge.classList.add('override');
             txt.textContent = `TUTUP (Buka sampai ${owner.overrideHour || 20}:00)`;
             closedTitle.textContent = 'WARUNG SUDAH TUTUP';
             closedSub.textContent = `Hari ini tutup lebih cepat. Biasanya buka sampai jam ${owner.overrideHour || 20}:00.`;
             closedInfo.classList.add('show');
+            closedInfo.classList.remove('belum-buka');
         } else if (closed) {
             badge.classList.add('closed');
-            txt.textContent = state.orderType === 'delivery' ? 'ANTAR TUTUP (15:00–22:00)' : 'WARUNG TUTUP (13:00–23:00)';
-            closedTitle.textContent = 'SEDANG TUTUP';
-            closedSub.textContent = state.orderType === 'delivery' ? 'Pesan antar buka jam 15:00 – 22:00' : 'Warung buka jam 13:00 – 23:00';
+            const now = new Date();
+            const h = now.getHours();
+            const isBeforeOpen = state.orderType === 'delivery' ? h < 15 : h < 13;
+            if (isBeforeOpen) {
+                txt.textContent = state.orderType === 'delivery' ? 'BELUM BUKA (15:00–22:00)' : 'BELUM BUKA (13:00–23:00)';
+                closedTitle.textContent = 'BELUM BUKA';
+                closedSub.textContent = state.orderType === 'delivery' ? 'Pesan antar mulai jam 15:00. Silakan kembali nanti ya!' : 'Warung buka jam 13:00. Silakan kembali nanti ya!';
+            } else {
+                txt.textContent = state.orderType === 'delivery' ? 'ANTAR TUTUP (15:00–22:00)' : 'WARUNG TUTUP (13:00–23:00)';
+                closedTitle.textContent = 'SUDAH TUTUP';
+                closedSub.textContent = state.orderType === 'delivery' ? 'Pesan antar sudah selesai hari ini. Kembali besok ya!' : 'Warung sudah tutup hari ini. Kembali besok ya!';
+            }
             closedInfo.classList.add('show');
         } else {
             txt.textContent = state.orderType === 'delivery' ? 'BUKA — ANTAR 15:00–22:00' : 'BUKA — DI SINI 13:00–23:00';
