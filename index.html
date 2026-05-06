@@ -6,7 +6,7 @@
     <title>Warung CT – The Real Temenan</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <style>
         :root {
             --gold: #f5c518;
@@ -1416,16 +1416,15 @@ function resetOrder() {
 
 
 function initQR() {
-    try {
-        new QRCode(document.getElementById('qrcode'), {
-            text: window.location.href,
-            width: 256,
-            height: 256,
-            colorDark: '#000000',
-            colorLight: '#ffffff',
-            correctLevel: QRCode.CorrectLevel.H, // error correction tinggi = lebih mudah discan
-        });
-    } catch(e) {}
+    const url = encodeURIComponent(window.location.href);
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&ecc=H&margin=10&data=${url}`;
+    const img = document.createElement('img');
+    img.src = qrUrl;
+    img.width = 256;
+    img.height = 256;
+    img.alt = 'QR Code Warung CT';
+    img.style.borderRadius = '8px';
+    document.getElementById('qrcode').appendChild(img);
 }
 
 window.toggleQR = show => document.getElementById('qrOverlay').classList.toggle('show', show);
