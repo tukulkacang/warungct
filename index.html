@@ -515,8 +515,9 @@
             position: fixed; inset: 0;
             background: var(--bg);
             z-index: 600;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 32px;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            padding: 48px 24px 40px;
+            overflow-y: auto;
             opacity: 0; pointer-events: none; visibility: hidden;
             transition: all .35s;
         }
@@ -573,6 +574,51 @@
             cursor: pointer; transition: all .2s;
         }
         .btn-new-order:hover { color: var(--text); border-color: var(--muted); }
+
+        /* ── OWNER TEMPLATE SECTION ─────────────────────────────── */
+        .owner-tpl-section {
+            width: 100%; max-width: 360px;
+            margin-bottom: 20px;
+        }
+        .owner-tpl-label {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 16px; letter-spacing: 2px;
+            color: var(--gold); margin-bottom: 4px;
+            text-align: center;
+        }
+        .owner-tpl-hint {
+            font-size: 11px; color: var(--muted);
+            text-align: center; margin-bottom: 14px; line-height: 1.5;
+        }
+        .owner-tpl-list { display: flex; flex-direction: column; gap: 10px; }
+        .owner-tpl-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 16px;
+        }
+        .owner-tpl-step {
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 1px; color: var(--gold);
+            text-transform: uppercase; margin-bottom: 6px;
+        }
+        .owner-tpl-text {
+            font-size: 12px; color: var(--text);
+            line-height: 1.6; margin-bottom: 10px;
+            word-break: break-word;
+        }
+        .btn-copy-tpl {
+            width: 100%;
+            background: rgba(245,197,24,0.08);
+            border: 1px solid rgba(245,197,24,0.2);
+            color: var(--gold);
+            border-radius: 10px; padding: 9px;
+            font-family: 'Syne', sans-serif;
+            font-size: 12px; font-weight: 700;
+            cursor: pointer; transition: all .2s;
+        }
+        .btn-copy-tpl:hover { background: rgba(245,197,24,0.15); }
+        .btn-copy-tpl.copied { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); color: var(--green); }
 
         /* ── SCROLLBAR ─────────────────────────────────────────── */
         ::-webkit-scrollbar { width: 4px; }
@@ -974,6 +1020,30 @@
             <div class="sent-waiting-dot"></div>
             <div class="sent-waiting-text">Pemilik warung akan konfirmasi pesananmu sebentar lagi lewat WA 🛵</div>
         </div>
+
+        <!-- TEMPLATE BALASAN OWNER -->
+        <div id="ownerTemplateSection" class="owner-tpl-section" style="display:none">
+            <div class="owner-tpl-label">📋 TEMPLATE BALASAN — Untuk Owner</div>
+            <div class="owner-tpl-hint">Tap tombol untuk copy, lalu paste sebagai reply di WA customer</div>
+            <div class="owner-tpl-list">
+                <div class="owner-tpl-item">
+                    <div class="owner-tpl-step">1️⃣ Pesanan Diproses</div>
+                    <div class="owner-tpl-text" id="tplProses"></div>
+                    <button class="btn-copy-tpl" onclick="copyTemplate('tplProses', this)">📋 Copy</button>
+                </div>
+                <div class="owner-tpl-item">
+                    <div class="owner-tpl-step">2️⃣ Dalam Pengiriman</div>
+                    <div class="owner-tpl-text" id="tplKirim"></div>
+                    <button class="btn-copy-tpl" onclick="copyTemplate('tplKirim', this)">📋 Copy</button>
+                </div>
+                <div class="owner-tpl-item">
+                    <div class="owner-tpl-step">3️⃣ Pesanan Tiba</div>
+                    <div class="owner-tpl-text" id="tplTiba"></div>
+                    <button class="btn-copy-tpl" onclick="copyTemplate('tplTiba', this)">📋 Copy</button>
+                </div>
+            </div>
+        </div>
+
         <button class="btn-new-order" onclick="resetOrder()">+ Pesan Lagi</button>
     </div>
 
@@ -1346,11 +1416,7 @@ function doOrder() {
 
     const orderTypeLabel = { delivery: '🛵 Diantar', pickup: '🥡 Ambil Sendiri', dinein: '🍽️ Makan di Tempat' };
 
-    // Template balasan status — owner tinggal copy-paste reply ke customer
-    const tplProses  = `✅ Halo *${state.name}*! Pesananmu *(${orderId})* sudah kami terima dan sedang diproses ya 🍽️`;
-    const tplKirim   = `🛵 Pesananmu *(${orderId})* sudah dalam perjalanan! Tunggu sebentar ya, kurir kami sedang menuju lokasimu 🙏`;
-    const tplTiba    = `📦 Pesananmu *(${orderId})* sudah tiba! Selamat makan, semoga suka 😊🍗`;
-
+    // ── PESAN CUSTOMER → ke WA owner (bersih, tanpa template balasan) ──
     let msg = `🍽️ *ORDER WARUNG CT*\n`;
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
     msg += `🔖 *ID:* ${orderId}\n`;
@@ -1364,7 +1430,7 @@ function doOrder() {
     msg += `*PESANAN:*\n`;
     allMenu.forEach(m => {
         const q = state.cart[m.id] || 0;
-        if (q > 0) msg += `• ${m.name} × ${q} = Rp ${fmt(m.price * q)}\n`;
+        if (q > 0) msg += `• ${m.icon ? m.icon + ' ' : ''}${m.name} × ${q} = Rp ${fmt(m.price * q)}\n`;
     });
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
     if (state.orderType === 'delivery') msg += `🛵 *Ongkir:* Rp ${fmt(state.shipping)}\n`;
@@ -1373,17 +1439,33 @@ function doOrder() {
         msg += `━━━━━━━━━━━━━━━━━━━━\n`;
         msg += `📝 *Catatan:* ${notes}\n`;
     }
-    msg += `━━━━━━━━━━━━━━━━━━━━\n`;
-    msg += `💬 *TEMPLATE BALASAN — reply di chat ini:*\n\n`;
-    msg += `1️⃣ Pesanan diproses:\n${tplProses}\n\n`;
-    msg += `2️⃣ Dalam pengiriman:\n${tplKirim}\n\n`;
-    msg += `3️⃣ Pesanan tiba:\n${tplTiba}`;
+
+    // ── Simpan template balasan ke state (untuk ditampilkan di layar sent) ──
+    state.replyTemplates = {
+        proses: `✅ Halo *${state.name}*! Pesananmu *(${orderId})* sudah kami terima dan sedang diproses ya 🍽️`,
+        kirim:  `🛵 Pesananmu *(${orderId})* sudah dalam perjalanan! Tunggu sebentar ya, kurir kami sedang menuju lokasimu 🙏`,
+        tiba:   `📦 Pesananmu *(${orderId})* sudah tiba! Selamat makan, semoga suka 😊🍗`,
+    };
 
     hideConfirm();
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`);
 
     // Tampilkan layar order terkirim
     document.getElementById('sentOrderId').textContent = orderId;
+
+    // Isi template balasan owner di layar sent
+    const tplSection = document.getElementById('ownerTemplateSection');
+    document.getElementById('tplProses').textContent = state.replyTemplates.proses;
+    document.getElementById('tplKirim').textContent  = state.replyTemplates.kirim;
+    document.getElementById('tplTiba').textContent   = state.replyTemplates.tiba;
+    tplSection.style.display = '';
+
+    // Reset semua tombol copy ke state awal
+    document.querySelectorAll('.btn-copy-tpl').forEach(b => {
+        b.textContent = '📋 Copy';
+        b.classList.remove('copied');
+    });
+
     setTimeout(() => {
         document.getElementById('orderSentOverlay').classList.add('show');
         if (state.orderType === 'delivery') {
@@ -1393,6 +1475,21 @@ function doOrder() {
             }, 4000);
         }
     }, 600);
+}
+
+function copyTemplate(elId, btn) {
+    const text = document.getElementById(elId).textContent;
+    navigator.clipboard.writeText(text).catch(() => {
+        const el = document.createElement('textarea');
+        el.value = text;
+        document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+    });
+    btn.textContent = '✅ Tersalin!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+        btn.textContent = '📋 Copy';
+        btn.classList.remove('copied');
+    }, 2500);
 }
 
 /* ═══════════════════════════════════════════════
