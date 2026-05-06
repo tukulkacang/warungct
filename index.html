@@ -451,8 +451,14 @@
         }
         .qr-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 3px; color: var(--gold); margin-bottom: 6px; }
         .qr-sub { font-size: 11px; color: var(--muted); margin-bottom: 24px; }
-        #qrcode { display: flex; justify-content: center; }
-        #qrcode img, #qrcode canvas { border-radius: 12px; }
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 16px;
+        }
+        #qrcode img, #qrcode canvas { display: block; }
         .btn-copy {
             width: 100%;
             margin-top: 20px;
@@ -819,7 +825,7 @@
             <!-- GPS (hanya muncul kalau diantar) -->
             <div id="gpsSection">
                 <button id="btnLocation" class="btn-loc" onclick="getLocation()">
-                    <span>📍</span><span>Klik — Lokasi</span>
+                    <span>📍</span><span>Klik — Hitung Ongkir Otomatis</span>
                 </button>
                 <div id="locStatus" class="loc-status">
                     <div>
@@ -1012,7 +1018,7 @@ const menuTambahan = [
     { id: 't2', name: 'Kepala',      price: 3000 },
     { id: 't3', name: 'Ati Ampela',  price: 5000 },
     { id: 't4', name: 'Sambal',      price: 3000 },
-    { id: 't5', name: 'Nasi Hitup',  price: 3000 },
+    { id: 't5', name: 'Nasi Hidup',  price: 3000 },
 ];
 
 const menuMinuman = [
@@ -1171,7 +1177,7 @@ function getLocation() {
 
     if (!navigator.geolocation) {
         alert('Browser kamu tidak mendukung GPS!');
-        btn.innerHTML = '<span>📍</span><span>Klik — Lokasi</span>';
+        btn.innerHTML = '<span>📍</span><span>Klik — Hitung Ongkir Otomatis</span>';
         btn.style.pointerEvents = '';
         return;
     }
@@ -1413,9 +1419,11 @@ function initQR() {
     try {
         new QRCode(document.getElementById('qrcode'), {
             text: window.location.href,
-            width: 180, height: 180,
-            colorDark: '#0d0d0d',
+            width: 256,
+            height: 256,
+            colorDark: '#000000',
             colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H, // error correction tinggi = lebih mudah discan
         });
     } catch(e) {}
 }
