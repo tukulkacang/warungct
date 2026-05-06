@@ -476,6 +476,34 @@
             cursor: pointer; padding: 10px;
         }
 
+        /* ── ORDER TYPE SELECTOR ───────────────────────────────── */
+        .order-type-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+            margin-bottom: 14px;
+        }
+        .order-type-btn {
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all .2s;
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+        }
+        .order-type-btn:hover { border-color: var(--gold); }
+        .order-type-btn.active {
+            border-color: var(--gold);
+            background: rgba(245,197,24,0.08);
+        }
+        .order-type-icon { font-size: 26px; line-height: 1; }
+        .order-type-label {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 13px; letter-spacing: 1px;
+            color: var(--muted);
+        }
+        .order-type-btn.active .order-type-label { color: var(--gold); }
+
         /* ── SCROLLBAR ─────────────────────────────────────────── */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
@@ -707,15 +735,35 @@
                 <div class="step-title">INFO PENGIRIMAN</div>
             </div>
             <input id="userName" type="text" class="input-name" placeholder="Atas nama siapa...">
-            <button id="btnLocation" class="btn-loc" onclick="getLocation()">
-                <span>📍</span><span>Klik — Hitung Ongkir Otomatis</span>
-            </button>
-            <div id="locStatus" class="loc-status">
-                <div>
-                    <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase">JARAK KAMU</div>
-                    <div class="loc-dist" id="locDist">0 km</div>
+
+            <!-- Pilihan tipe order -->
+            <div class="order-type-grid">
+                <button class="order-type-btn active" onclick="setOrderType('delivery')" id="ot-delivery">
+                    <span class="order-type-icon">🛵</span>
+                    <span class="order-type-label">DIANTAR</span>
+                </button>
+                <button class="order-type-btn" onclick="setOrderType('pickup')" id="ot-pickup">
+                    <span class="order-type-icon">🥡</span>
+                    <span class="order-type-label">AMBIL</span>
+                </button>
+                <button class="order-type-btn" onclick="setOrderType('dinein')" id="ot-dinein">
+                    <span class="order-type-icon">🍽️</span>
+                    <span class="order-type-label">DI SINI</span>
+                </button>
+            </div>
+
+            <!-- GPS (hanya muncul kalau diantar) -->
+            <div id="gpsSection">
+                <button id="btnLocation" class="btn-loc" onclick="getLocation()">
+                    <span>📍</span><span>Klik — Hitung Ongkir Otomatis</span>
+                </button>
+                <div id="locStatus" class="loc-status">
+                    <div>
+                        <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase">JARAK KAMU</div>
+                        <div class="loc-dist" id="locDist">0 km</div>
+                    </div>
+                    <div id="locExtra" style="text-align:right;font-size:12px;color:var(--muted)"></div>
                 </div>
-                <div id="locExtra" style="text-align:right;font-size:12px;color:var(--muted)"></div>
             </div>
         </section>
 
@@ -731,6 +779,11 @@
                 <span>MENU TAMBAHAN</span>
             </div>
             <div class="menu-grid menu-tambahan" id="menuTambahan"></div>
+
+            <div class="menu-divider">
+                <span>MINUMAN</span>
+            </div>
+            <div class="menu-grid" id="menuMinuman"></div>
         </section>
     </main>
 
@@ -771,7 +824,7 @@
                     <div class="confirm-total-val" id="confirmTotal"></div>
                 </div>
                 <div class="notes-label">Catatan Tambahan (opsional)</div>
-                <textarea id="orderNotes" class="notes-input" placeholder=".............."></textarea>
+                <textarea id="orderNotes" class="notes-input" placeholder="Contoh: sambalnya dipisah, jangan terlalu pedas, minta extra plastik..."></textarea>
             </div>
             <div class="modal-actions">
                 <button class="btn-confirm" onclick="doOrder()">🛵 KIRIM ORDER KE WA</button>
@@ -853,6 +906,7 @@ const state = {
     locOver: false,   // distance > 6km
     userLat: null,
     userLon: null,
+    orderType: 'delivery', // 'delivery' | 'pickup' | 'dinein'
 };
 
 const WARUNG_LAT = -7.166875;
@@ -879,7 +933,21 @@ const menuTambahan = [
     { id: 't5', name: 'Nasi Hidup',  price: 3000 },
 ];
 
-const allMenu = [...menuUtama, ...menuTambahan];
+const menuMinuman = [
+    { id: 'm1',  name: 'Es Teh',      price: 3000, icon: '🧊' },
+    { id: 'm2',  name: 'Teh Hangat',  price: 3000, icon: '🍵' },
+    { id: 'm3',  name: 'Nutrisari',   price: 3000, icon: '🍊' },
+    { id: 'm4',  name: 'Kopi Hitam',  price: 3000, icon: '☕' },
+    { id: 'm5',  name: 'Kopi White',  price: 3000, icon: '🤍' },
+    { id: 'm6',  name: 'Susu',        price: 3000, icon: '🥛' },
+    { id: 'm7',  name: 'Pop Ice',     price: 3000, icon: '🧁' },
+    { id: 'm8',  name: 'Es Jeruk',    price: 4000, icon: '🍋' },
+    { id: 'm9',  name: 'Milo',        price: 4000, icon: '🟤' },
+    { id: 'm10', name: 'Good Day',    price: 4000, icon: '☀️' },
+    { id: 'm11', name: 'Chocolatos',  price: 4000, icon: '🍫' },
+];
+
+const allMenu = [...menuUtama, ...menuTambahan, ...menuMinuman];
 
 /* ═══════════════════════════════════════════════
    INIT
@@ -887,6 +955,7 @@ const allMenu = [...menuUtama, ...menuTambahan];
 function init() {
     renderMenu('menuUtama', menuUtama, false);
     renderMenu('menuTambahan', menuTambahan, true);
+    renderMenu('menuMinuman', menuMinuman, false);
     initQR();
     checkTime();
     setInterval(checkTime, 60000);
@@ -966,7 +1035,7 @@ function updateUI() {
     } else if (!state.name) {
         hintMsg = '👤 Isi nama dulu bro';
         hint.classList.remove('warn');
-    } else if (!state.locOk) {
+    } else if (state.orderType === 'delivery' && !state.locOk) {
         hintMsg = '📍 Tap tombol lokasi untuk hitung ongkir';
         hint.classList.remove('warn');
     } else if (count === 0) {
@@ -982,8 +1051,35 @@ function updateUI() {
 }
 
 /* ═══════════════════════════════════════════════
-   GEOLOCATION
+   ORDER TYPE
 ═══════════════════════════════════════════════ */
+function setOrderType(type) {
+    state.orderType = type;
+
+    // Update active button
+    ['delivery','pickup','dinein'].forEach(t => {
+        document.getElementById(`ot-${t}`).classList.toggle('active', t === type);
+    });
+
+    // Tampilkan/sembunyikan GPS section
+    const gps = document.getElementById('gpsSection');
+    if (type === 'delivery') {
+        gps.style.display = '';
+    } else {
+        gps.style.display = 'none';
+        // Reset GPS state kalau non-delivery
+        state.locOk = false;
+        state.locOver = false;
+        state.distKm = 0;
+        state.shipping = 0;
+        state.userLat = null;
+        state.userLon = null;
+    }
+
+    updateUI();
+}
+
+
 function getLocation() {
     const btn = document.getElementById('btnLocation');
     btn.innerHTML = '<span class="loader"></span>&nbsp; Mencari lokasi...';
@@ -1083,7 +1179,7 @@ function checkTime() {
 ═══════════════════════════════════════════════ */
 function showConfirm() {
     const { count, grand } = calcTotals();
-    if (count === 0 || !state.locOk || !state.name || state.isClosed || state.locOver) return;
+    if (count === 0 || (state.orderType === 'delivery' && !state.locOk) || !state.name || state.isClosed || state.locOver) return;
 
     // Build item list
     let itemsHtml = '';
@@ -1115,10 +1211,13 @@ function showConfirm() {
         `;
     }
 
+    const typeLabel = { delivery: '🛵 Diantar', pickup: '🥡 Ambil Sendiri', dinein: '🍽️ Makan di Tempat' };
     document.getElementById('confirmItems').innerHTML = itemsHtml;
-    document.getElementById('confirmMeta').textContent = `a/n ${state.name} · ${count} item`;
+    document.getElementById('confirmMeta').textContent = `a/n ${state.name} · ${typeLabel[state.orderType]} · ${count} item`;
     document.getElementById('confirmTotal').textContent = 'Rp ' + fmt(grand);
-    document.getElementById('confirmOngkirText').textContent = `Sudah termasuk ongkir Rp ${fmt(state.shipping)}`;
+    document.getElementById('confirmOngkirText').textContent = state.orderType === 'delivery'
+        ? `Sudah termasuk ongkir Rp ${fmt(state.shipping)}`
+        : 'Tanpa biaya ongkir';
     document.getElementById('orderNotes').value = '';
     document.getElementById('confirmModal').classList.add('show');
 }
@@ -1138,11 +1237,16 @@ function doOrder() {
     const { grand } = calcTotals();
     const notes = document.getElementById('orderNotes').value.trim();
 
+    const orderTypeLabel = { delivery: '🛵 Diantar', pickup: '🥡 Ambil Sendiri', dinein: '🍽️ Makan di Tempat' };
+
     let msg = `🍽️ *ORDER WARUNG CT*\n`;
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
     msg += `👤 *Nama:* ${state.name}\n`;
-    msg += `📍 *Lokasi:* https://maps.google.com/?q=${state.userLat},${state.userLon}\n`;
-    msg += `📏 *Jarak:* ${state.distKm} km\n`;
+    msg += `📦 *Tipe:* ${orderTypeLabel[state.orderType]}\n`;
+    if (state.orderType === 'delivery') {
+        msg += `📍 *Lokasi:* https://maps.google.com/?q=${state.userLat},${state.userLon}\n`;
+        msg += `📏 *Jarak:* ${state.distKm} km\n`;
+    }
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
     msg += `*PESANAN:*\n`;
 
@@ -1154,7 +1258,7 @@ function doOrder() {
     });
 
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
-    msg += `🛵 *Ongkir:* Rp ${fmt(state.shipping)}\n`;
+    if (state.orderType === 'delivery') msg += `🛵 *Ongkir:* Rp ${fmt(state.shipping)}\n`;
     msg += `💰 *TOTAL: Rp ${fmt(grand)}*\n`;
 
     if (notes) {
@@ -1203,22 +1307,22 @@ window.copyLink = () => {
 // Format: https://raw.githubusercontent.com/USERNAME/REPO/main/songs/nama-file.mp3
 const playlist = [
     {
-        title: 'Kumis Tipis Narsis',
+        title: 'Lagu 1',
         artist: 'Warung CT',
         icon: '🎸',
-        url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/Kumis%20Tipis-Narsis.mp3'
+        url: 'https://raw.githubusercontent.com/USERNAME/REPO/main/songs/lagu1.mp3'
     },
     {
-        title: 'Lagu DJ',
+        title: 'Lagu 2',
         artist: 'Warung CT',
         icon: '🎷',
-        url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/W%20CT%20J1.mp3'
+        url: 'https://raw.githubusercontent.com/USERNAME/REPO/main/songs/lagu2.mp3'
     },
     {
-        title: 'Lagu Embuh',
+        title: 'Lagu 3',
         artist: 'Warung CT',
         icon: '🎹',
-        url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/Warung%20Cete%20Joss.mp3'
+        url: 'https://raw.githubusercontent.com/USERNAME/REPO/main/songs/lagu3.mp3'
     },
 ];
 
