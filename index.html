@@ -819,7 +819,7 @@
             <!-- GPS (hanya muncul kalau diantar) -->
             <div id="gpsSection">
                 <button id="btnLocation" class="btn-loc" onclick="getLocation()">
-                    <span>📍</span><span>Klik — Hitung Ongkir Otomatis</span>
+                    <span>📍</span><span>Klik — Lokasi</span>
                 </button>
                 <div id="locStatus" class="loc-status">
                     <div>
@@ -1110,7 +1110,9 @@ function updateUI() {
     let canOrder = false;
 
     if (state.isClosed) {
-        hintMsg = '⛔ Warung tutup. Buka lagi besok ya!';
+        hintMsg = state.orderType === 'delivery'
+            ? '⛔ Antar tutup. Buka jam 15:00–22:00'
+            : '⛔ Warung tutup. Buka jam 13:00–23:00';
     } else if (state.locOver) {
         hintMsg = '⛔ Lokasi kamu terlalu jauh (maks 6 km)';
         hint.classList.add('warn');
@@ -1158,7 +1160,7 @@ function setOrderType(type) {
         state.userLon = null;
     }
 
-    updateUI();
+    checkTime(); // jam buka beda per tipe, refresh status
 }
 
 
@@ -1169,7 +1171,7 @@ function getLocation() {
 
     if (!navigator.geolocation) {
         alert('Browser kamu tidak mendukung GPS!');
-        btn.innerHTML = '<span>📍</span><span>Klik — Hitung Ongkir Otomatis</span>';
+        btn.innerHTML = '<span>📍</span><span>Klik — Lokasi</span>';
         btn.style.pointerEvents = '';
         return;
     }
@@ -1238,19 +1240,32 @@ function haversine(la1, lo1, la2, lo2) {
 function checkTime() {
     const now = new Date();
     const h = now.getHours();
-    const closed = false; // TESTING MODE — selalu buka
-    // const closed = (h >= 22 || h < 15); // aktifkan ini saat live
+
+    // Jam buka berbeda per tipe order
+    const closedDelivery = (h < 15 || h >= 22);   // Antar: 15:00 – 22:00
+    const closedWalkIn   = (h < 13 || h >= 23);   // Ambil/Di sini: 13:00 – 23:00
+
+    // Tutup atau tidak tergantung tipe yang dipilih
+    const closed = state.orderType === 'delivery' ? closedDelivery : closedWalkIn;
     state.isClosed = closed;
 
-    const badge = document.getElementById('statusBadge');
+    const badge    = document.getElementById('statusBadge');
     const badgeText = document.getElementById('statusText');
 
     if (closed) {
         badge.classList.add('closed');
-        badgeText.textContent = 'WARUNG TUTUP';
+        if (state.orderType === 'delivery') {
+            badgeText.textContent = 'ANTAR TUTUP (15:00–22:00)';
+        } else {
+            badgeText.textContent = 'WARUNG TUTUP (13:00–23:00)';
+        }
     } else {
         badge.classList.remove('closed');
-        badgeText.textContent = 'BUKA SEKARANG';
+        if (state.orderType === 'delivery') {
+            badgeText.textContent = 'BUKA — ANTAR 15:00–22:00';
+        } else {
+            badgeText.textContent = 'BUKA — DI SINI 13:00–23:00';
+        }
     }
 
     updateUI();
