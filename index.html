@@ -1345,30 +1345,30 @@ function doOrder() {
     const orderId = 'CT' + Date.now().toString().slice(-6);
     state.orderId = orderId;
 
-    const orderTypeLabel = { delivery: '🛵 Diantar', pickup: '🥡 Ambil Sendiri', dinein: '🍽️ Makan di Tempat' };
+    const orderTypeLabel = { delivery: 'Diantar', pickup: 'Ambil Sendiri', dinein: 'Makan di Tempat' };
 
-    // ── PESAN CUSTOMER → ke WA owner (bersih, tanpa template balasan) ──
-    let msg = `🍽️ *ORDER WARUNG CT*\n`;
+    // ── PESAN CUSTOMER → ke WA owner (bersih, tanpa ikon) ──
+    let msg = `*ORDER WARUNG CT*\n`;
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
-    msg += `🔖 *ID:* ${orderId}\n`;
-    msg += `👤 *Nama:* ${state.name}\n`;
-    msg += `📦 *Tipe:* ${orderTypeLabel[state.orderType]}\n`;
+    msg += `ID: ${orderId}\n`;
+    msg += `Nama: ${state.name}\n`;
+    msg += `Tipe: ${orderTypeLabel[state.orderType]}\n`;
     if (state.orderType === 'delivery') {
-        msg += `📍 *Lokasi:* https://maps.google.com/?q=${state.userLat},${state.userLon}\n`;
-        msg += `📏 *Jarak:* ${state.distKm} km\n`;
+        msg += `Lokasi: https://maps.google.com/?q=${state.userLat},${state.userLon}\n`;
+        msg += `Jarak: ${state.distKm} km\n`;
     }
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
     msg += `*PESANAN:*\n`;
     allMenu.forEach(m => {
         const q = state.cart[m.id] || 0;
-        if (q > 0) msg += `• ${m.icon ? m.icon + ' ' : ''}${m.name} × ${q} = Rp ${fmt(m.price * q)}\n`;
+        if (q > 0) msg += `- ${m.name} x${q} = Rp ${fmt(m.price * q)}\n`;
     });
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
-    if (state.orderType === 'delivery') msg += `🛵 *Ongkir:* Rp ${fmt(state.shipping)}\n`;
-    msg += `💰 *TOTAL: Rp ${fmt(grand)}*\n`;
+    if (state.orderType === 'delivery') msg += `Ongkir: Rp ${fmt(state.shipping)}\n`;
+    msg += `*TOTAL: Rp ${fmt(grand)}*\n`;
     if (notes) {
         msg += `━━━━━━━━━━━━━━━━━━━━\n`;
-        msg += `📝 *Catatan:* ${notes}\n`;
+        msg += `Catatan: ${notes}\n`;
     }
 
     hideConfirm();
