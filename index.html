@@ -504,6 +504,70 @@
         }
         .order-type-btn.active .order-type-label { color: var(--gold); }
 
+        /* ── ORDER SENT SCREEN ─────────────────────────────────── */
+        .order-sent-overlay {
+            position: fixed; inset: 0;
+            background: var(--bg);
+            z-index: 600;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 32px;
+            opacity: 0; pointer-events: none; visibility: hidden;
+            transition: all .35s;
+        }
+        .order-sent-overlay.show { opacity: 1; pointer-events: auto; visibility: visible; }
+
+        .sent-icon { font-size: 72px; margin-bottom: 8px; animation: bounce-in .5s cubic-bezier(.22,1,.36,1); }
+        @keyframes bounce-in { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .sent-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px; letter-spacing: 4px; color: var(--gold);
+            text-align: center; margin-bottom: 6px;
+        }
+        .sent-sub { font-size: 13px; color: var(--muted); text-align: center; line-height: 1.7; margin-bottom: 28px; }
+
+        .sent-id-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px 24px;
+            text-align: center;
+            width: 100%; max-width: 320px;
+            margin-bottom: 28px;
+        }
+        .sent-id-label { font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
+        .sent-id-val {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px; letter-spacing: 4px; color: var(--gold);
+            margin-top: 4px;
+        }
+        .sent-id-hint { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+        .sent-waiting {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(245,197,24,0.06);
+            border: 1px solid rgba(245,197,24,0.15);
+            border-radius: 14px;
+            padding: 14px 20px;
+            width: 100%; max-width: 320px;
+            margin-bottom: 24px;
+        }
+        .sent-waiting-dot {
+            width: 10px; height: 10px; background: var(--gold);
+            border-radius: 50%; flex-shrink: 0;
+            animation: pulse 1.5s infinite;
+        }
+        .sent-waiting-text { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.5; }
+
+        .btn-new-order {
+            width: 100%; max-width: 320px;
+            background: var(--surface); border: 1px solid var(--border);
+            color: var(--muted); border-radius: 14px; padding: 15px;
+            font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+            cursor: pointer; transition: all .2s;
+        }
+        .btn-new-order:hover { color: var(--text); border-color: var(--muted); }
+
         /* ── SCROLLBAR ─────────────────────────────────────────── */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
@@ -890,6 +954,23 @@
         </div>
     </div>
 
+    <!-- ORDER SENT SCREEN -->
+    <div id="orderSentOverlay" class="order-sent-overlay">
+        <div class="sent-icon">✅</div>
+        <div class="sent-title">ORDER TERKIRIM!</div>
+        <div class="sent-sub">Pesananmu sudah masuk ke Warung CT.<br>Tunggu konfirmasi dari kami via WhatsApp ya!</div>
+        <div class="sent-id-box">
+            <div class="sent-id-label">ID Pesanan</div>
+            <div class="sent-id-val" id="sentOrderId">—</div>
+            <div class="sent-id-hint">Simpan ID ini sebagai referensi</div>
+        </div>
+        <div class="sent-waiting">
+            <div class="sent-waiting-dot"></div>
+            <div class="sent-waiting-text">Pemilik warung akan konfirmasi pesananmu sebentar lagi lewat WA 🛵</div>
+        </div>
+        <button class="btn-new-order" onclick="resetOrder()">+ Pesan Lagi</button>
+    </div>
+
 </div><!-- /.app -->
 
 <script>
@@ -907,6 +988,7 @@ const state = {
     userLat: null,
     userLon: null,
     orderType: 'delivery', // 'delivery' | 'pickup' | 'dinein'
+    orderId: '',
 };
 
 const WARUNG_LAT = -7.166875;
@@ -1237,10 +1319,20 @@ function doOrder() {
     const { grand } = calcTotals();
     const notes = document.getElementById('orderNotes').value.trim();
 
+    // Generate order ID
+    const orderId = 'CT' + Date.now().toString().slice(-6);
+    state.orderId = orderId;
+
     const orderTypeLabel = { delivery: '🛵 Diantar', pickup: '🥡 Ambil Sendiri', dinein: '🍽️ Makan di Tempat' };
+
+    // Template balasan status — owner tinggal copy-paste reply ke customer
+    const tplProses  = `✅ Halo *${state.name}*! Pesananmu *(${orderId})* sudah kami terima dan sedang diproses ya 🍽️`;
+    const tplKirim   = `🛵 Pesananmu *(${orderId})* sudah dalam perjalanan! Tunggu sebentar ya, kurir kami sedang menuju lokasimu 🙏`;
+    const tplTiba    = `📦 Pesananmu *(${orderId})* sudah tiba! Selamat makan, semoga suka 😊🍗`;
 
     let msg = `🍽️ *ORDER WARUNG CT*\n`;
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+    msg += `🔖 *ID:* ${orderId}\n`;
     msg += `👤 *Nama:* ${state.name}\n`;
     msg += `📦 *Tipe:* ${orderTypeLabel[state.orderType]}\n`;
     if (state.orderType === 'delivery') {
@@ -1249,33 +1341,59 @@ function doOrder() {
     }
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
     msg += `*PESANAN:*\n`;
-
     allMenu.forEach(m => {
         const q = state.cart[m.id] || 0;
-        if (q > 0) {
-            msg += `• ${m.name} × ${q} = Rp ${fmt(m.price * q)}\n`;
-        }
+        if (q > 0) msg += `• ${m.name} × ${q} = Rp ${fmt(m.price * q)}\n`;
     });
-
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
     if (state.orderType === 'delivery') msg += `🛵 *Ongkir:* Rp ${fmt(state.shipping)}\n`;
     msg += `💰 *TOTAL: Rp ${fmt(grand)}*\n`;
-
     if (notes) {
         msg += `━━━━━━━━━━━━━━━━━━━━\n`;
         msg += `📝 *Catatan:* ${notes}\n`;
     }
+    msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+    msg += `💬 *TEMPLATE BALASAN — reply di chat ini:*\n\n`;
+    msg += `1️⃣ Pesanan diproses:\n${tplProses}\n\n`;
+    msg += `2️⃣ Dalam pengiriman:\n${tplKirim}\n\n`;
+    msg += `3️⃣ Pesanan tiba:\n${tplTiba}`;
 
     hideConfirm();
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`);
-    if (state.orderType === 'delivery') {
-        setTimeout(() => document.getElementById('musicOfferOverlay').classList.add('show'), 800);
-    }
+
+    // Tampilkan layar order terkirim
+    document.getElementById('sentOrderId').textContent = orderId;
+    setTimeout(() => {
+        document.getElementById('orderSentOverlay').classList.add('show');
+        if (state.orderType === 'delivery') {
+            setTimeout(() => {
+                document.getElementById('orderSentOverlay').classList.remove('show');
+                document.getElementById('musicOfferOverlay').classList.add('show');
+            }, 4000);
+        }
+    }, 600);
 }
 
 /* ═══════════════════════════════════════════════
-   QR
+   RESET ORDER
 ═══════════════════════════════════════════════ */
+function resetOrder() {
+    // Reset cart
+    allMenu.forEach(m => {
+        state.cart[m.id] = 0;
+        const el = document.getElementById(`qty-${m.id}`);
+        if (el) el.textContent = '0';
+        const mi = document.getElementById(`mi-${m.id}`);
+        if (mi) mi.style.borderColor = '';
+    });
+    // Reset notes
+    document.getElementById('orderNotes').value = '';
+    // Hide sent screen
+    document.getElementById('orderSentOverlay').classList.remove('show');
+    updateUI();
+}
+
+
 function initQR() {
     try {
         new QRCode(document.getElementById('qrcode'), {
