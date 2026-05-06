@@ -1020,30 +1020,12 @@
             <div class="sent-waiting-dot"></div>
             <div class="sent-waiting-text">Pemilik warung akan konfirmasi pesananmu sebentar lagi lewat WA 🛵</div>
         </div>
-
         <!-- TEMPLATE BALASAN OWNER -->
-        <div id="ownerTemplateSection" class="owner-tpl-section" style="display:none">
-            <div class="owner-tpl-label">📋 TEMPLATE BALASAN — Untuk Owner</div>
-            <div class="owner-tpl-hint">Tap tombol untuk copy, lalu paste sebagai reply di WA customer</div>
-            <div class="owner-tpl-list">
-                <div class="owner-tpl-item">
-                    <div class="owner-tpl-step">1️⃣ Pesanan Diproses</div>
-                    <div class="owner-tpl-text" id="tplProses"></div>
-                    <button class="btn-copy-tpl" onclick="copyTemplate('tplProses', this)">📋 Copy</button>
-                </div>
-                <div class="owner-tpl-item">
-                    <div class="owner-tpl-step">2️⃣ Dalam Pengiriman</div>
-                    <div class="owner-tpl-text" id="tplKirim"></div>
-                    <button class="btn-copy-tpl" onclick="copyTemplate('tplKirim', this)">📋 Copy</button>
-                </div>
-                <div class="owner-tpl-item">
-                    <div class="owner-tpl-step">3️⃣ Pesanan Tiba</div>
-                    <div class="owner-tpl-text" id="tplTiba"></div>
-                    <button class="btn-copy-tpl" onclick="copyTemplate('tplTiba', this)">📋 Copy</button>
-                </div>
-            </div>
+        <div class="owner-tpl-section">
+            <div class="owner-tpl-label">📋 TEMPLATE BALASAN OWNER</div>
+            <div class="owner-tpl-hint">Khusus owner — tap Copy lalu paste sebagai reply di WA customer</div>
+            <div class="owner-tpl-list" id="ownerTplList"></div>
         </div>
-
         <button class="btn-new-order" onclick="resetOrder()">+ Pesan Lagi</button>
     </div>
 
@@ -1440,32 +1422,49 @@ function doOrder() {
         msg += `📝 *Catatan:* ${notes}\n`;
     }
 
-    // ── Simpan template balasan ke state (untuk ditampilkan di layar sent) ──
-    state.replyTemplates = {
-        proses: `✅ Halo *${state.name}*! Pesananmu *(${orderId})* sudah kami terima dan sedang diproses ya 🍽️`,
-        kirim:  `🛵 Pesananmu *(${orderId})* sudah dalam perjalanan! Tunggu sebentar ya, kurir kami sedang menuju lokasimu 🙏`,
-        tiba:   `📦 Pesananmu *(${orderId})* sudah tiba! Selamat makan, semoga suka 😊🍗`,
-    };
+    // ── Template balasan owner (ditampilkan di layar sent, bukan dikirim ke WA) ──
+    const replyTemplates = [
+        {
+            id: 'tpl-konfirmasi',
+            step: '✅ Pesanan Dikonfirmasi',
+            color: '#22c55e',
+            text: `✅ Halo *${state.name}*! Pesanan kamu *(${orderId})* sudah kami konfirmasi dan sedang kami siapkan ya 🍽️`
+        },
+        {
+            id: 'tpl-diantar',
+            step: '🛵 Sedang Diantar',
+            color: '#f5c518',
+            text: `🛵 Pesanan kamu *(${orderId})* sudah dalam perjalanan! Tunggu sebentar ya, kurir kami sedang menuju lokasimu 🙏`
+        },
+        {
+            id: 'tpl-habis',
+            step: '😔 Menu Habis / Tutup Sementara',
+            color: '#fb923c',
+            text: `😔 Maaf *${state.name}*, pesanan kamu *(${orderId})* belum bisa kami proses karena menu ada yang habis atau warung tutup sementara. Mau ganti menu atau coba lagi nanti? 🙏`
+        },
+        {
+            id: 'tpl-tutup',
+            step: '🔒 Warung Tutup',
+            color: '#ff4545',
+            text: `🔒 Maaf *${state.name}*, Warung CT sedang tutup saat ini. Pesanan kamu *(${orderId})* bisa kami proses saat warung buka lagi ya. Terima kasih sudah memesan! 🙏`
+        },
+    ];
+
+    // Render template ke layar sent
+    const tplList = document.getElementById('ownerTplList');
+    tplList.innerHTML = replyTemplates.map(t => `
+        <div class="owner-tpl-item">
+            <div class="owner-tpl-step" style="color:${t.color}">${t.step}</div>
+            <div class="owner-tpl-text" id="${t.id}">${t.text}</div>
+            <button class="btn-copy-tpl" onclick="copyTemplate('${t.id}', this)">📋 Copy</button>
+        </div>
+    `).join('');
 
     hideConfirm();
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`);
 
     // Tampilkan layar order terkirim
     document.getElementById('sentOrderId').textContent = orderId;
-
-    // Isi template balasan owner di layar sent
-    const tplSection = document.getElementById('ownerTemplateSection');
-    document.getElementById('tplProses').textContent = state.replyTemplates.proses;
-    document.getElementById('tplKirim').textContent  = state.replyTemplates.kirim;
-    document.getElementById('tplTiba').textContent   = state.replyTemplates.tiba;
-    tplSection.style.display = '';
-
-    // Reset semua tombol copy ke state awal
-    document.querySelectorAll('.btn-copy-tpl').forEach(b => {
-        b.textContent = '📋 Copy';
-        b.classList.remove('copied');
-    });
-
     setTimeout(() => {
         document.getElementById('orderSentOverlay').classList.add('show');
         if (state.orderType === 'delivery') {
