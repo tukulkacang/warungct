@@ -825,7 +825,7 @@
             <!-- GPS (hanya muncul kalau diantar) -->
             <div id="gpsSection">
                 <button id="btnLocation" class="btn-loc" onclick="getLocation()">
-                    <span>📍</span><span>Klik — Hitung Ongkir Otomatis</span>
+                    <span>📍</span><span>Klik — Lokasi</span>
                 </button>
                 <div id="locStatus" class="loc-status">
                     <div>
@@ -1018,7 +1018,7 @@ const menuTambahan = [
     { id: 't2', name: 'Kepala',      price: 3000 },
     { id: 't3', name: 'Ati Ampela',  price: 5000 },
     { id: 't4', name: 'Sambal',      price: 3000 },
-    { id: 't5', name: 'Nasi Hidup',  price: 3000 },
+    { id: 't5', name: 'Nasi Hitup',  price: 3000 },
 ];
 
 const menuMinuman = [
@@ -1177,7 +1177,7 @@ function getLocation() {
 
     if (!navigator.geolocation) {
         alert('Browser kamu tidak mendukung GPS!');
-        btn.innerHTML = '<span>📍</span><span>Klik — Hitung Ongkir Otomatis</span>';
+        btn.innerHTML = '<span>📍</span><span>Klik — Lokasi</span>';
         btn.style.pointerEvents = '';
         return;
     }
