@@ -1268,7 +1268,9 @@ function doOrder() {
 
     hideConfirm();
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`);
-    setTimeout(() => document.getElementById('musicOfferOverlay').classList.add('show'), 800);
+    if (state.orderType === 'delivery') {
+        setTimeout(() => document.getElementById('musicOfferOverlay').classList.add('show'), 800);
+    }
 }
 
 /* ═══════════════════════════════════════════════
