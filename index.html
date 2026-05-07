@@ -953,7 +953,7 @@
                 <div class="music-offer-sub">Warung CT punya playlist buat nemenin kamu<br>nunggu pesanan dateng 🛵</div>
             </div>
             <div class="music-offer-actions">
-                <button class="btn-music-yes" onclick="WarungCT.openPlayer()">🎧 YUK DENGERIN</button>
+                <button class="btn-music-yes" onclick="WarungCT.openPlayer()"> YUK DENGERIN</button>
                 <button class="btn-music-no" onclick="WarungCT.closeMusicOffer()">Nggak, makasih</button>
             </div>
         </div>
@@ -978,7 +978,7 @@
                 </div>
             </div>
             <div class="player-controls">
-                <button class="ctrl-btn" onclick="WarungCT.prevTrack()" title="Sebelumnya" aria-label="Sebelumnya">⏮</button>
+                <button class="ctrl-btn" onclick="WarungCT.prevTrack()" title="Sebelumnya" aria-label="Sebelumnya"></button>
                 <button class="ctrl-play" id="playBtn" onclick="WarungCT.togglePlay()" aria-label="Play/Pause">▶</button>
                 <button class="ctrl-btn" onclick="WarungCT.nextTrack()" title="Berikutnya" aria-label="Berikutnya">⏭</button>
             </div>
@@ -1006,7 +1006,7 @@
         </div>
         <div class="sent-waiting">
             <div class="sent-waiting-dot"></div>
-            <div class="sent-waiting-text">Pemilik warung akan konfirmasi pesananmu sebentar lagi lewat WA 🛵</div>
+            <div class="sent-waiting-text">Pemilik warung akan konfirmasi pesananmu sebentar lagi lewat WA </div>
         </div>
         <button class="btn-new-order" onclick="WarungCT.resetOrder()">+ Pesan Lagi</button>
     </div>
@@ -1051,7 +1051,7 @@
                 <div class="owner-status-grid">
                     <button class="owner-status-btn" id="st-normal" onclick="WarungCT.setOverride('normal')">✅<br>Normal</button>
                     <button class="owner-status-btn" id="st-tutup" onclick="WarungCT.setOverride('tutup_cepat')">⏰<br>Tutup Cepat</button>
-                    <button class="owner-status-btn libur" id="st-libur" onclick="WarungCT.setOverride('libur')">📌<br>Libur</button>
+                    <button class="owner-status-btn libur" id="st-libur" onclick="WarungCT.setOverride('libur')"><br>Libur</button>
                 </div>
                 <div style="margin-top:10px;">
                     <input type="number" class="owner-input" id="tutupJam" placeholder="Jam tutup (contoh: 20)" min="13" max="23" style="display:none;">
@@ -1065,7 +1065,7 @@
             </div>
 
             <div class="owner-section">
-                <div class="owner-section-title">📦 Order Masuk (<span id="orderCount">0</span>)</div>
+                <div class="owner-section-title"> Order Masuk (<span id="orderCount">0</span>)</div>
                 <div class="owner-order-list" id="ownerOrderList">
                     <div class="owner-empty">Belum ada order</div>
                 </div>
@@ -1085,7 +1085,7 @@
             <div class="pin-title" style="font-size:24px;">⚠️ YAKIN?</div>
             <div class="pin-sub" id="confirmDeleteMsg">Hapus semua order history?</div>
             <div style="display:flex;gap:10px;margin-top:20px;">
-                <button class="owner-btn danger" style="flex:1;" onclick="WarungCT.execConfirmDelete()">🗑️ Hapus</button>
+                <button class="owner-btn danger" style="flex:1;" onclick="WarungCT.execConfirmDelete()">️ Hapus</button>
                 <button class="owner-btn secondary" style="flex:1;" onclick="WarungCT.cancelConfirmDelete()">Batal</button>
             </div>
         </div>
@@ -1149,7 +1149,7 @@ const WarungCT = (function() {
         { id: 'm5',  name: 'Kopi White',  price: 3000, icon: '🤍' },
         { id: 'm6',  name: 'Susu',        price: 3000, icon: '🥛' },
         { id: 'm7',  name: 'Pop Ice',     price: 3000, icon: '🧁' },
-        { id: 'm8',  name: 'Es Jeruk',    price: 4000, icon: '🍋' },
+        { id: 'm8',  name: 'Es Jeruk',    price: 4000, icon: '' },
         { id: 'm9',  name: 'Milo',        price: 4000, icon: '🟤' },
         { id: 'm10', name: 'Good Day',    price: 4000, icon: '☀️' },
         { id: 'm11', name: 'Chocolatos',  price: 4000, icon: '🍫' },
@@ -1221,6 +1221,7 @@ const WarungCT = (function() {
         }
     }
 
+    /* ─ INIT (FIX: Reset cart every load) ───────────────────────────────── */
     function init() {
         renderMenu('menuUtama', menuUtama);
         renderMenu('menuTambahan', menuTambahan);
@@ -1230,7 +1231,11 @@ const WarungCT = (function() {
         initKeyboard();
 
         const c = getCustomerData();
-        if (c.cart) state.cart = c.cart;
+        
+        // FIX: Hapus baris ini agar cart tidak di-restore
+        // if (c.cart) state.cart = c.cart; 
+        
+        // Hanya restore Nama & Tipe Order saja
         if (c.name) { state.name = c.name; document.getElementById('userName').value = c.name; }
         if (c.orderType) setOrderType(c.orderType);
 
@@ -1241,17 +1246,21 @@ const WarungCT = (function() {
             updateUI();
         });
 
+        // Reset semua qty ke 0 saat load
         allMenu.forEach(m => {
-            const q = state.cart[m.id] || 0;
+            state.cart[m.id] = 0;
             const el = document.getElementById(`qty-${m.id}`);
-            if (el) el.textContent = q;
+            if (el) el.textContent = '0';
             const mi = document.getElementById(`mi-${m.id}`);
-            if (mi) mi.classList.toggle('active-qty', q > 0);
+            if (mi) mi.classList.remove('active-qty');
         });
 
         checkTime();
         scheduleNextCheck();
         updateUI();
+        
+        // Pastikan storage terisi data kosong saat load pertama
+        saveCustomerData();
     }
 
     function renderMenu(containerId, items) {
@@ -1320,13 +1329,13 @@ const WarungCT = (function() {
             else if (state.closeReason === 'tutup_cepat') hintMsg = '⏰ Warung sudah tutup hari ini';
             else hintMsg = state.orderType === 'delivery' ? '⛔ Antar tutup. Buka 15:00–22:00' : '⛔ Warung tutup. Buka 13:00–23:00';
         } else if (!nameValidation.ok && state.name) {
-            hintMsg = '✏️ ' + nameValidation.msg;
+            hintMsg = '️ ' + nameValidation.msg;
             hint.classList.add('warn');
         } else if (state.locOver) {
             hintMsg = '⛔ Lokasi kamu terlalu jauh (maks 6 km)';
             hint.classList.add('warn');
         } else if (!state.name) {
-            hintMsg = '👤 Isi nama dulu bro';
+            hintMsg = ' Isi nama dulu bro';
             hint.classList.remove('warn');
         } else if (state.orderType === 'delivery' && !state.locOk) {
             hintMsg = '📍 Tap tombol lokasi untuk hitung ongkir';
@@ -1411,7 +1420,7 @@ const WarungCT = (function() {
             },
             err => {
                 console.warn(err);
-                showToast('Gagal ambil lokasi. Pastikan GPS aktif 🙏', 'error');
+                showToast('Gagal ambil lokasi. Pastikan GPS aktif ', 'error');
                 resetLocBtn(btn);
             },
             geoOptions
@@ -1551,7 +1560,7 @@ const WarungCT = (function() {
         if (state.shipping > 0) {
             html += `<div class="confirm-row"><div><div class="confirm-name">🛵 Ongkir</div><div style="font-size:11px;color:var(--muted)">${state.distKm} km</div></div><div class="confirm-price">Rp ${fmt(state.shipping)}</div></div>`;
         }
-        const typeLabel = { delivery: '🛵 Diantar', pickup: '🥡 Ambil Sendiri', dinein: '🍽️ Makan di Tempat' };
+        const typeLabel = { delivery: '🛵 Diantar', pickup: ' Ambil Sendiri', dinein: '🍽️ Makan di Tempat' };
         document.getElementById('confirmItems').innerHTML = html;
         document.getElementById('confirmMeta').textContent = `a/n ${state.name} · ${typeLabel[state.orderType]} · ${count} item`;
         document.getElementById('confirmTotal').textContent = 'Rp ' + fmt(grand);
@@ -1562,6 +1571,7 @@ const WarungCT = (function() {
     function hideConfirm() { closeModal('confirmModal'); }
     function closeConfirmIfOutside(e) { if (e.target === document.getElementById('confirmModal')) hideConfirm(); }
 
+    /* ── SEND ORDER (FIX: Clear cart after success) ─────────────────────── */
     function doOrder() {
         const now = Date.now();
         if (now - lastOrderTime < ORDER_COOLDOWN) {
@@ -1617,6 +1627,17 @@ const WarungCT = (function() {
             total: grand, notes: notes, status: 'pending', timestamp: Date.now()
         });
         saveOrders(orders);
+
+        // ✅ FIX: Clear cart state & UI immediately after saving order
+        state.cart = {};
+        allMenu.forEach(m => {
+            const el = document.getElementById(`qty-${m.id}`);
+            if (el) el.textContent = '0';
+            const mi = document.getElementById(`mi-${m.id}`);
+            if (mi) mi.classList.remove('active-qty');
+        });
+        document.getElementById('orderNotes').value = ''; // Clear notes too
+        saveCustomerData(); // Update storage with empty cart
 
         const btn = document.getElementById('btnPesan');
         const originalText = btn.textContent;
@@ -1705,7 +1726,7 @@ const WarungCT = (function() {
         { title: 'KOPLO',    artist: 'WARUNG CT', icon: '🎸', url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20K1.mp3' },
         { title: 'INDIA',    artist: 'WARUNG CT', icon: '🎸', url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20%20I1.mp3' },
         { title: 'CAMPURSARI', artist: 'WARUNG CT', icon: '🎸', url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20C1.mp3' },
-        { title: 'POP',      artist: 'WARUNG CT', icon: '🎸', url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20M1.mp3' },
+        { title: 'POP',      artist: 'WARUNG CT', icon: '', url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20M1.mp3' },
         { title: 'DJ REMIX', artist: 'WARUNG CT', icon: '🎸', url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20D1.mp3' },
     ];
     let audio = new Audio();
@@ -1749,7 +1770,7 @@ const WarungCT = (function() {
     }
     function setPlaying(val) {
         isPlaying = val;
-        document.getElementById('playBtn').textContent = val ? '⏸' : '▶';
+        document.getElementById('playBtn').textContent = val ? '' : '▶';
         document.getElementById('playerAlbum').classList.toggle('spinning', val);
         renderTracklist();
     }
