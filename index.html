@@ -804,7 +804,6 @@
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
     </style>
-<base target="_blank">
 </head>
 <body>
 <div class="app">
@@ -1100,6 +1099,7 @@
 <script>
 /* ═══════════════════════════════════════════════
    WARUNG CT APP — v4.0 (Customer + Owner Panel)
+   ✅ FIXED VERSION - Missing functions added
 ═══════════════════════════════════════════════ */
 const WarungCT = (function() {
     'use strict';
@@ -1163,7 +1163,29 @@ const WarungCT = (function() {
 
     /* ── UTILS ─────────────────────────────────────────────── */
     function fmt(n) { return n.toLocaleString('id-ID'); }
-    function escapeWA(text) { return text.replace(/[*_`]/g, '\$&'); }
+    function escapeWA(text) { return text.replace(/[*_`]/g, '\\$&'); }
+    
+    // ✅ FIX #1: escapeHTML function (was missing!)
+    function escapeHTML(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+    
+    // ✅ FIX #2: validateName function (was missing!)
+    function validateName(name) {
+        const trimmed = (name || '').trim();
+        if (!trimmed) return { ok: false, msg: 'Nama tidak boleh kosong', value: '' };
+        if (trimmed.length < 2) return { ok: false, msg: 'Nama minimal 2 karakter', value: trimmed };
+        if (trimmed.length > 50) return { ok: false, msg: 'Nama maksimal 50 karakter', value: trimmed.slice(0, 50) };
+        // Allow letters, numbers, spaces, and common punctuation
+        if (!/^[\p{L}\p{N}\s.\-',]+$/u.test(trimmed)) {
+            return { ok: false, msg: 'Nama hanya boleh berisi huruf, angka, dan tanda baca umum', value: trimmed };
+        }
+        return { ok: true, msg: '', value: trimmed };
+    }
+    
     function generateId() {
         const ts = Date.now().toString(36).toUpperCase();
         const rnd = Math.random().toString(36).slice(2,5).toUpperCase();
@@ -1202,7 +1224,6 @@ const WarungCT = (function() {
         } catch(e) {
             if (e.name === 'QuotaExceededError') {
                 showToast('Storage penuh! Hapus order lama di panel owner.', 'error');
-                // Try to keep only last 10 orders
                 const trimmed = list.slice(0, 10);
                 try {
                     localStorage.setItem(CONFIG.KEYS.ORDERS, JSON.stringify(trimmed));
@@ -1358,6 +1379,12 @@ const WarungCT = (function() {
 
     /* ── GEOLOCATION ───────────────────────────────────────── */
     function getLocation() {
+        // ✅ FIX #3: HTTPS check for geolocation
+        if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+            showToast('⚠️ Fitur lokasi butuh HTTPS. Gunakan localhost untuk testing.', 'warn');
+            return;
+        }
+        
         const btn = document.getElementById('btnLocation');
         btn.innerHTML = '<span class="loader"></span>&nbsp; Mencari lokasi...';
         btn.style.pointerEvents = 'none';
@@ -1635,18 +1662,27 @@ const WarungCT = (function() {
     }
 
     /* ── QR ────────────────────────────────────────────────── */
+    // ✅ FIX #4: Improved QR initialization with retry
     function initQR() {
+        const qrContainer = document.getElementById('qrcode');
+        qrContainer.innerHTML = ''; // Clear container first
+        
         if (typeof QRCode === 'undefined') {
-            document.getElementById('qrcode').innerHTML = '<div style="color:var(--muted);font-size:12px;">QR tidak tersedia</div>';
+            qrContainer.innerHTML = '<div style="color:var(--muted);font-size:12px;">Loading QR...</div>';
+            // Retry after 500ms if library not loaded yet
+            setTimeout(initQR, 500);
             return;
         }
         try {
-            new QRCode(document.getElementById('qrcode'), {
-                text: window.location.href, width: 256, height: 256,
-                colorDark: '#000', colorLight: '#fff', correctLevel: QRCode.CorrectLevel.H
+            new QRCode(qrContainer, {
+                text: window.location.href.split('#')[0], // Remove hash for consistency
+                width: 256, height: 256,
+                colorDark: '#0d0d0d', colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
             });
         } catch(e) {
-            document.getElementById('qrcode').innerHTML = '<div style="color:var(--muted);font-size:12px;">Gagal memuat QR</div>';
+            console.warn('QR init error:', e);
+            qrContainer.innerHTML = '<div style="color:var(--muted);font-size:12px;">QR tidak tersedia</div>';
         }
     }
     function toggleQR(show) {
@@ -1809,6 +1845,20 @@ const WarungCT = (function() {
             document.getElementById('pinError').textContent = 'PIN salah, coba lagi';
             pinBuffer = '';
             setTimeout(updatePinDots, 200);
+        }
+    }
+
+    // Hash function for PIN storage (simple SHA-256 via Web Crypto API)
+    async function hashPin(pin) {
+        try {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(pin);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        } catch(e) {
+            // Fallback for older browsers
+            return btoa(pin).split('').reverse().join('');
         }
     }
 
