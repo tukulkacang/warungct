@@ -109,6 +109,7 @@
         .header-status.override .dot { background: var(--orange); animation: pulse 2s infinite; }
         .header-status .dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+        .header-status .dot, .sent-waiting-dot { will-change: transform, opacity; }
         .owner-hint {
             font-size: 9px;
             color: #444;
@@ -927,7 +928,7 @@
                 <textarea id="orderNotes" class="notes-input" placeholder="Contoh: pecel lelenya tolong ditandai..."></textarea>
             </div>
             <div class="modal-actions">
-                <button class="btn-confirm" onclick="WarungCT.doOrder()">🛵 KIRIM ORDER KE WA</button>
+                <button class="btn-confirm" id="btnConfirmOrder" onclick="WarungCT.doOrder()">🛵 KIRIM ORDER KE WA</button>
                 <button class="btn-cancel" onclick="WarungCT.hideConfirm()">Batalkan</button>
             </div>
         </div>
@@ -1079,6 +1080,18 @@
         </div>
     </div>
 
+    <!-- CONFIRM DELETE MODAL -->
+    <div id="confirmDeleteOverlay" class="pin-overlay" style="z-index:750;">
+        <div class="pin-card" style="max-width:320px;">
+            <div class="pin-title" style="font-size:24px;">⚠️ YAKIN?</div>
+            <div class="pin-sub" id="confirmDeleteMsg">Hapus semua order history?</div>
+            <div style="display:flex;gap:10px;margin-top:20px;">
+                <button class="owner-btn danger" style="flex:1;" onclick="WarungCT.execConfirmDelete()">🗑️ Hapus</button>
+                <button class="owner-btn secondary" style="flex:1;" onclick="WarungCT.cancelConfirmDelete()">Batal</button>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST -->
     <div id="toast" class="toast"></div>
 
@@ -1113,6 +1126,8 @@ const WarungCT = (function() {
         orderType: 'delivery',
         orderId: '',
     };
+    const ORDER_COOLDOWN = 10000; // 10 seconds
+    let lastOrderTime = 0;
 
     const menuUtama = [
         { id: 'u1', name: 'Ayam Goreng',    price: 10000, icon: '🍗' },
@@ -1182,7 +1197,20 @@ const WarungCT = (function() {
         try { return JSON.parse(localStorage.getItem(CONFIG.KEYS.ORDERS)) || []; } catch(e) { return []; }
     }
     function saveOrders(list) {
-        localStorage.setItem(CONFIG.KEYS.ORDERS, JSON.stringify(list));
+        try {
+            localStorage.setItem(CONFIG.KEYS.ORDERS, JSON.stringify(list));
+        } catch(e) {
+            if (e.name === 'QuotaExceededError') {
+                showToast('Storage penuh! Hapus order lama di panel owner.', 'error');
+                // Try to keep only last 10 orders
+                const trimmed = list.slice(0, 10);
+                try {
+                    localStorage.setItem(CONFIG.KEYS.ORDERS, JSON.stringify(trimmed));
+                } catch(e2) {
+                    console.error('Storage full, cannot save orders');
+                }
+            }
+        }
     }
 
     /* ── INIT ──────────────────────────────────────────────── */
@@ -1200,7 +1228,8 @@ const WarungCT = (function() {
         if (c.orderType) setOrderType(c.orderType);
 
         document.getElementById('userName').addEventListener('input', e => {
-            state.name = e.target.value.trim();
+            const result = validateName(e.target.value);
+            state.name = result.ok ? result.value : e.target.value.trim();
             saveCustomerData();
             updateUI();
         });
@@ -1226,18 +1255,20 @@ const WarungCT = (function() {
             const div = document.createElement('div');
             div.className = 'menu-item';
             div.id = `mi-${m.id}`;
+            const safeName = escapeHTML(m.name);
+            const safeIcon = m.icon ? escapeHTML(m.icon) : '●';
             div.innerHTML = `
                 <div class="menu-item-left">
-                    ${m.icon ? `<span class="menu-icon">${m.icon}</span>` : '<span class="menu-icon" style="opacity:0.3">●</span>'}
+                    ${m.icon ? `<span class="menu-icon">${safeIcon}</span>` : '<span class="menu-icon" style="opacity:0.3">●</span>'}
                     <div>
-                        <div class="menu-name">${m.name}</div>
+                        <div class="menu-name">${safeName}</div>
                         <div class="menu-price">Rp ${fmt(m.price)}</div>
                     </div>
                 </div>
                 <div class="qty-ctrl">
-                    <button class="qty-btn minus" onclick="WarungCT.upd('${m.id}',-1)" aria-label="Kurangi ${m.name}">−</button>
+                    <button class="qty-btn minus" onclick="WarungCT.upd('${m.id}',-1)" aria-label="Kurangi ${safeName}">−</button>
                     <div class="qty-val" id="qty-${m.id}">0</div>
-                    <button class="qty-btn plus" onclick="WarungCT.upd('${m.id}',1)" aria-label="Tambah ${m.name}">+</button>
+                    <button class="qty-btn plus" onclick="WarungCT.upd('${m.id}',1)" aria-label="Tambah ${safeName}">+</button>
                 </div>
             `;
             frag.appendChild(div);
@@ -1278,10 +1309,14 @@ const WarungCT = (function() {
         const hint = document.getElementById('btnHint');
         let hintMsg = '', canOrder = false;
 
+        const nameValidation = validateName(state.name);
         if (state.isClosed) {
             if (state.closeReason === 'libur') hintMsg = '⛔ Warung libur hari ini';
             else if (state.closeReason === 'tutup_cepat') hintMsg = '⏰ Warung sudah tutup hari ini';
             else hintMsg = state.orderType === 'delivery' ? '⛔ Antar tutup. Buka 15:00–22:00' : '⛔ Warung tutup. Buka 13:00–23:00';
+        } else if (!nameValidation.ok && state.name) {
+            hintMsg = '✏️ ' + nameValidation.msg;
+            hint.classList.add('warn');
         } else if (state.locOver) {
             hintMsg = '⛔ Lokasi kamu terlalu jauh (maks 6 km)';
             hint.classList.add('warn');
@@ -1330,6 +1365,11 @@ const WarungCT = (function() {
             showToast('Browser tidak mendukung GPS', 'error');
             resetLocBtn(btn); return;
         }
+        const geoOptions = {
+            enableHighAccuracy: true,
+            timeout: 8000,
+            maximumAge: 0
+        };
         navigator.geolocation.getCurrentPosition(
             pos => {
                 const d = haversine(CONFIG.WARUNG_LAT, CONFIG.WARUNG_LON, pos.coords.latitude, pos.coords.longitude);
@@ -1366,7 +1406,7 @@ const WarungCT = (function() {
                 showToast('Gagal ambil lokasi. Pastikan GPS aktif 🙏', 'error');
                 resetLocBtn(btn);
             },
-            { enableHighAccuracy: true, timeout: 10000 }
+            geoOptions
         );
     }
     function resetLocBtn(btn) {
@@ -1430,8 +1470,6 @@ const WarungCT = (function() {
             closedInfo.classList.remove('belum-buka');
         } else if (closed) {
             badge.classList.add('closed');
-            const now = new Date();
-            const h = now.getHours();
             const isBeforeOpen = state.orderType === 'delivery' ? h < 15 : h < 13;
             if (isBeforeOpen) {
                 txt.textContent = state.orderType === 'delivery' ? 'BELUM BUKA (15:00–22:00)' : 'BELUM BUKA (13:00–23:00)';
@@ -1468,7 +1506,8 @@ const WarungCT = (function() {
     }
     function closeModal(id) {
         document.getElementById(id).classList.remove('show');
-        setScrollLock(false);
+        const anyOpen = document.querySelector('.modal-overlay.show, .player-overlay.show, .qr-overlay.show, .music-offer-overlay.show, .owner-overlay.show, .pin-overlay.show');
+        if (!anyOpen) setScrollLock(false);
         if (returnFocus) { returnFocus.focus(); returnFocus = null; }
     }
 
@@ -1499,7 +1538,9 @@ const WarungCT = (function() {
         allMenu.forEach(m => {
             const q = state.cart[m.id] || 0;
             if (q > 0) {
-                html += `<div class="confirm-row"><div><div class="confirm-name">${m.icon ? m.icon + ' ' : ''}${m.name}</div><div style="font-size:11px;color:var(--muted)">${fmt(m.price)} × ${q}</div></div><div class="confirm-price">Rp ${fmt(m.price * q)}</div></div>`;
+                const safeName = escapeHTML(m.name);
+                const safeIcon = m.icon ? escapeHTML(m.icon) + ' ' : '';
+                html += `<div class="confirm-row"><div><div class="confirm-name">${safeIcon}${safeName}</div><div style="font-size:11px;color:var(--muted)">${fmt(m.price)} × ${q}</div></div><div class="confirm-price">Rp ${fmt(m.price * q)}</div></div>`;
             }
         });
         if (state.shipping > 0) {
@@ -1518,6 +1559,13 @@ const WarungCT = (function() {
 
     /* ── SEND ORDER ────────────────────────────────────────── */
     function doOrder() {
+        const now = Date.now();
+        if (now - lastOrderTime < ORDER_COOLDOWN) {
+            const wait = Math.ceil((ORDER_COOLDOWN - (now - lastOrderTime)) / 1000);
+            showToast(`Tunggu ${wait} detik ya bro...`, 'warn');
+            return;
+        }
+        lastOrderTime = now;
         const { grand } = calcTotals();
         const notes = document.getElementById('orderNotes').value.trim();
         const orderId = generateId();
@@ -1553,10 +1601,16 @@ const WarungCT = (function() {
         });
         saveOrders(orders);
 
+        const btn = document.getElementById('btnPesan');
+        const originalText = btn.textContent;
+        btn.textContent = '⏳ MENGIRIM...';
+        btn.disabled = true;
         hideConfirm();
         const waWin = window.open(`https://wa.me/${CONFIG.WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
         if (!waWin) { showToast('Izinkan popup untuk kirim ke WhatsApp!', 'error'); return; }
 
+        btn.textContent = originalText;
+        btn.disabled = false;
         document.getElementById('sentOrderId').textContent = orderId;
         setTimeout(() => {
             openModal('orderSentOverlay');
@@ -1582,12 +1636,18 @@ const WarungCT = (function() {
 
     /* ── QR ────────────────────────────────────────────────── */
     function initQR() {
+        if (typeof QRCode === 'undefined') {
+            document.getElementById('qrcode').innerHTML = '<div style="color:var(--muted);font-size:12px;">QR tidak tersedia</div>';
+            return;
+        }
         try {
             new QRCode(document.getElementById('qrcode'), {
                 text: window.location.href, width: 256, height: 256,
                 colorDark: '#000', colorLight: '#fff', correctLevel: QRCode.CorrectLevel.H
             });
-        } catch(e) {}
+        } catch(e) {
+            document.getElementById('qrcode').innerHTML = '<div style="color:var(--muted);font-size:12px;">Gagal memuat QR</div>';
+        }
     }
     function toggleQR(show) {
         if (show) openModal('qrOverlay');
@@ -1621,7 +1681,11 @@ const WarungCT = (function() {
 
     function renderTracklist() {
         const el = document.getElementById('tracklistEl');
-        el.innerHTML = playlist.map((t, i) => `
+        el.innerHTML = playlist.map((t, i) => {
+            const safeTitle = escapeHTML(t.title);
+            const safeArtist = escapeHTML(t.artist);
+            const safeIcon = escapeHTML(t.icon);
+            return `
             <div class="track-item ${i === curTrack ? 'active' : ''}" onclick="WarungCT.loadTrack(${i}, true)">
                 <div class="track-num">${i === curTrack ? '' : i + 1}
                     <div class="track-eq" style="display:${i===curTrack?'flex':'none'}">
@@ -1631,11 +1695,11 @@ const WarungCT = (function() {
                     </div>
                 </div>
                 <div class="track-info">
-                    <div class="track-name">${t.icon} ${t.title}</div>
-                    <div class="track-dur">${t.artist}</div>
+                    <div class="track-name">${safeIcon} ${safeTitle}</div>
+                    <div class="track-dur">${safeArtist}</div>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
     }
     function loadTrack(idx, autoplay) {
         curTrack = idx;
@@ -1649,7 +1713,7 @@ const WarungCT = (function() {
         document.getElementById('timeDur').textContent = '0:00';
         audioErrors = 0;
         renderTracklist();
-        if (autoplay) { audio.play().catch(() => setPlaying(false)); setPlaying(true); }
+        if (autoplay) { audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false)); }
     }
     function setPlaying(val) {
         isPlaying = val;
@@ -1660,7 +1724,7 @@ const WarungCT = (function() {
     function togglePlay() {
         if (!audio.src) { loadTrack(0, true); return; }
         if (isPlaying) { audio.pause(); setPlaying(false); }
-        else { audio.play().catch(() => setPlaying(false)); setPlaying(true); }
+        else { audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false)); }
     }
     function prevTrack() { loadTrack((curTrack - 1 + playlist.length) % playlist.length, isPlaying); }
     function nextTrack() { loadTrack((curTrack + 1) % playlist.length, isPlaying); }
@@ -1737,8 +1801,8 @@ const WarungCT = (function() {
     }
     function verifyPin() {
         const owner = getOwnerData();
-        const correct = owner.pin || CONFIG.DEFAULT_PIN;
-        if (pinBuffer === correct) {
+        const correctHash = owner.pinHash || hashPin(CONFIG.DEFAULT_PIN);
+        if (hashPin(pinBuffer) === correctHash) {
             cancelPin();
             openOwnerPanel();
         } else {
@@ -1780,7 +1844,8 @@ const WarungCT = (function() {
         const val = document.getElementById('newPin').value;
         if (!/^\d{4}$/.test(val)) { showToast('PIN harus 4 digit angka', 'error'); return; }
         const owner = getOwnerData();
-        owner.pin = val;
+        owner.pinHash = hashPin(val);
+        delete owner.pin; // remove old plaintext if exists
         saveOwnerData(owner);
         document.getElementById('newPin').value = '';
         showToast('PIN berhasil diganti!', 'success');
@@ -1791,18 +1856,22 @@ const WarungCT = (function() {
         document.getElementById('orderCount').textContent = orders.length;
         const container = document.getElementById('ownerOrderList');
         if (!orders.length) { container.innerHTML = '<div class="owner-empty">Belum ada order masuk</div>'; return; }
-        container.innerHTML = orders.map(o => `
+        container.innerHTML = orders.map(o => {
+            const safeName = escapeHTML(o.name);
+            const safeType = escapeHTML(o.type);
+            const safeItems = o.items.map(i => `${escapeHTML(i.name)} x${i.qty}`).join(', ');
+            return `
             <div class="owner-order-card ${o.status}">
-                <div class="owner-order-id">${o.id}</div>
-                <div class="owner-order-meta">${o.name} · ${o.type} · ${new Date(o.timestamp).toLocaleString('id-ID')}</div>
-                <div class="owner-order-items">${o.items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
+                <div class="owner-order-id">${escapeHTML(o.id)}</div>
+                <div class="owner-order-meta">${safeName} · ${safeType} · ${new Date(o.timestamp).toLocaleString('id-ID')}</div>
+                <div class="owner-order-items">${safeItems}</div>
                 <div class="owner-order-total">Total: Rp ${fmt(o.total)}</div>
                 <div class="owner-order-actions">
-                    ${o.status !== 'confirmed' ? `<button class="btn-confirm-order" onclick="WarungCT.confirmOrder('${o.id}')">✅ Konfirmasi</button>` : '<span style="color:var(--green);font-size:12px;">Sudah dikonfirmasi</span>'}
-                    <button class="btn-delete-order" onclick="WarungCT.deleteOrder('${o.id}')">🗑️ Hapus</button>
+                    ${o.status !== 'confirmed' ? `<button class="btn-confirm-order" onclick="WarungCT.confirmOrder('${escapeHTML(o.id)}')">✅ Konfirmasi</button>` : '<span style="color:var(--green);font-size:12px;">Sudah dikonfirmasi</span>'}
+                    <button class="btn-delete-order" onclick="WarungCT.deleteOrder('${escapeHTML(o.id)}')">🗑️ Hapus</button>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
     }
 
     function confirmOrder(id) {
@@ -1824,11 +1893,27 @@ const WarungCT = (function() {
         showToast('Order dihapus', 'success');
     }
 
+    let confirmDeleteCallback = null;
+    function showConfirmDelete(msg, onConfirm) {
+        document.getElementById('confirmDeleteMsg').textContent = msg;
+        confirmDeleteCallback = onConfirm;
+        openModal('confirmDeleteOverlay');
+    }
+    function execConfirmDelete() {
+        closeModal('confirmDeleteOverlay');
+        if (confirmDeleteCallback) confirmDeleteCallback();
+        confirmDeleteCallback = null;
+    }
+    function cancelConfirmDelete() {
+        closeModal('confirmDeleteOverlay');
+        confirmDeleteCallback = null;
+    }
     function clearAllOrders() {
-        if (!confirm('Yakin hapus SEMUA order history?')) return;
-        saveOrders([]);
-        renderOwnerOrders();
-        showToast('Semua order dihapus', 'success');
+        showConfirmDelete('Hapus semua order history?', () => {
+            saveOrders([]);
+            renderOwnerOrders();
+            showToast('Semua order dihapus', 'success');
+        });
     }
 
     /* ── BOOT ──────────────────────────────────────────────── */
@@ -1846,6 +1931,7 @@ const WarungCT = (function() {
         togglePlay, prevTrack, nextTrack, seekAudio, loadTrack, setVolume,
         enterPin, backspacePin, cancelPin,
         setOverride, changePin, confirmOrder, deleteOrder, clearAllOrders, hideOwnerPanel,
+        execConfirmDelete, cancelConfirmDelete,
     };
 })();
 </script>
