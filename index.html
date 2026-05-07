@@ -983,9 +983,9 @@
                 </div>
             </div>
             <div class="player-controls">
-                <button class="ctrl-btn" onclick="WarungCT.prevTrack()" title="Sebelumnya" aria-label="Sebelumnya">?</button>
-                <button class="ctrl-play" id="playBtn" onclick="WarungCT.togglePlay()" aria-label="Play/Pause">?</button>
-                <button class="ctrl-btn" onclick="WarungCT.nextTrack()" title="Berikutnya" aria-label="Berikutnya">?</button>
+                <button class="ctrl-btn" onclick="WarungCT.prevTrack()" title="Sebelumnya" aria-label="Sebelumnya">⏮️</button>
+                <button class="ctrl-play" id="playBtn" onclick="WarungCT.togglePlay()" aria-label="Play/Pause">▶️</button>
+                <button class="ctrl-btn" onclick="WarungCT.nextTrack()" title="Berikutnya" aria-label="Berikutnya">⏭️</button>
             </div>
             <div class="player-volume-wrap">
                 <span>🔊</span>
@@ -1001,7 +1001,7 @@
 
     <!-- ORDER SENT -->
     <div id="orderSentOverlay" class="order-sent-overlay">
-        <div class="sent-icon">?</div>
+        <div class="sent-icon">✅</div>
         <div class="sent-title">ORDER TERKIRIM!</div>
         <div class="sent-sub">Pesananmu sudah masuk ke Warung CT.<br>Tunggu konfirmasi dari kami via WhatsApp ya!</div>
         <div class="sent-id-box">
@@ -1039,7 +1039,7 @@
                 <div class="pin-key" onclick="WarungCT.enterPin(8)">8</div>
                 <div class="pin-key" onclick="WarungCT.enterPin(9)">9</div>
                 <div class="pin-key wide" onclick="WarungCT.enterPin(0)">0</div>
-                <div class="pin-key" onclick="WarungCT.backspacePin()">?</div>
+                <div class="pin-key" onclick="WarungCT.backspacePin()">⌫</div>
             </div>
             <button class="pin-cancel" onclick="WarungCT.cancelPin()">Batal</button>
         </div>
@@ -1066,8 +1066,8 @@
             <div class="owner-section">
                 <div class="owner-section-title">Status Warung</div>
                 <div class="owner-status-grid">
-                    <button class="owner-status-btn" id="st-normal" onclick="WarungCT.setOverride('normal')">?<br>Normal</button>
-                    <button class="owner-status-btn" id="st-tutup" onclick="WarungCT.setOverride('tutup_cepat')">?<br>Tutup Cepat</button>
+                    <button class="owner-status-btn" id="st-normal" onclick="WarungCT.setOverride('normal')">🟢<br>Normal</button>
+                    <button class="owner-status-btn" id="st-tutup" onclick="WarungCT.setOverride('tutup_cepat')">🏖️<br>Tutup Cepat</button>
                     <button class="owner-status-btn libur" id="st-libur" onclick="WarungCT.setOverride('libur'">🏖️<br>Libur</button>
                 </div>
                 <div style="margin-top:10px;">
@@ -1746,7 +1746,7 @@ const WarungCT = (function() {
     }
     function setPlaying(val) {
         isPlaying = val;
-        document.getElementById('playBtn').textContent = val ? '?' : '?';
+        document.getElementById('playBtn').textContent = val ? '⏸️' : '▶️';
         document.getElementById('playerAlbum').classList.toggle('spinning', val);
         renderTracklist();
     }
