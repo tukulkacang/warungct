@@ -63,13 +63,13 @@ body{
 }
 .header-top-line{height:1px;background:linear-gradient(90deg, transparent, var(--gold-line), transparent);}
 .header-bottom-line{height:1px;background:linear-gradient(90deg, transparent, var(--gold-border), transparent);}
-.header-inner{padding:32px 24px 28px;text-align:center;position:relative;z-index:1;}
+.header-inner{padding:20px 24px 18px;text-align:center;position:relative;z-index:1;}
 .header-eyebrow{font-family:'Outfit',sans-serif;font-size:8.5px;font-weight:500;letter-spacing:5px;text-transform:uppercase;color:var(--cream-faint);margin-bottom:14px;}
 .header-ornament{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;opacity:0.4;}
 .header-ornament::before,.header-ornament::after{content:'';flex:1;max-width:60px;height:1px;background:linear-gradient(90deg, transparent, var(--gold));}
 .header-ornament::after{background:linear-gradient(90deg, var(--gold), transparent);}
 .ornament-diamond{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);flex-shrink:0;}
-.header-logo{font-family:'Cinzel',serif;font-size:52px;font-weight:900;color:var(--cream);letter-spacing:8px;cursor:pointer;line-height:1;text-shadow:0 0 40px rgba(201,150,58,0.12);}
+.header-logo{font-family:'Cinzel',serif;font-size:38px;font-weight:900;color:var(--cream);letter-spacing:5px;cursor:pointer;line-height:1;text-shadow:0 0 40px rgba(201,150,58,0.12);}
 .header-logo span{color:var(--gold);text-shadow:0 0 30px rgba(232,184,74,0.25);}
 .header-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--cream-faint);margin-top:10px;letter-spacing:1px;}
 .btn-qr{position:absolute;top:22px;right:18px;z-index:2;background:var(--cream-ghost);border:1px solid var(--border-mid);border-radius:10px;padding:9px 11px;cursor:pointer;color:var(--cream-faint);font-size:15px;transition:all 0.22s;}
@@ -169,12 +169,20 @@ body{
 
 /* ── MODALS ── */
 .modal-overlay,.qr-overlay,.owner-overlay,.pin-overlay,
-.order-sent-overlay,.player-overlay,.install-modal-overlay,.music-prompt-overlay{
+.player-overlay,.install-modal-overlay,.music-prompt-overlay{
   position:fixed;inset:0;
   background:rgba(4,3,2,0.88);
   backdrop-filter:blur(14px);
   -webkit-backdrop-filter:blur(14px);
   z-index:200;display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;visibility:hidden;transition:opacity 0.24s,visibility 0.24s;
+}
+.order-sent-overlay{
+  position:fixed;inset:0;
+  background:rgba(4,3,2,0.88);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;
   opacity:0;visibility:hidden;transition:opacity 0.24s,visibility 0.24s;
 }
 .modal-overlay.show,.qr-overlay.show,.owner-overlay.show,.pin-overlay.show,
@@ -185,6 +193,8 @@ body{
 .sheet{background:var(--surface);border-radius:24px 24px 0 0;border-top:1px solid var(--border-mid);padding:26px 22px 44px;width:100%;max-width:430px;max-height:90vh;overflow-y:auto;animation:slideUp 0.28s cubic-bezier(0.22,1,0.36,1);}
 .sheet::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg, transparent, var(--gold-dim), transparent);}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes zoomIn{from{transform:scale(0.88);opacity:0}to{transform:scale(1);opacity:1}}
+.sheet-center{animation:zoomIn 0.26s cubic-bezier(0.22,1,0.36,1);}
 .sheet-handle{width:36px;height:3px;background:var(--border-mid);border-radius:2px;margin:0 auto 22px;}
 .sheet-title{font-family:'Cinzel',serif;font-size:18px;font-weight:600;letter-spacing:1px;margin-bottom:16px;color:var(--cream);}
 
@@ -462,12 +472,13 @@ body{
   </div>
 
   <!-- ORDER SENT -->
-  <div id="orderSentOverlay" class="order-sent-overlay">
-    <div class="sheet" style="text-align:center;">
-      <div class="sheet-handle"></div>
+  <div id="orderSentOverlay" class="order-sent-overlay" style="align-items:center;padding:20px;">
+    <div class="sheet sheet-center" style="text-align:center;border-radius:24px;max-width:360px;width:100%;padding:32px 22px 28px;position:relative;">
+      <!-- Tombol tutup X -->
+      <button onclick="WarungCT.resetOrder()" style="position:absolute;top:14px;right:14px;background:var(--surface-3);border:1px solid var(--border-mid);border-radius:50%;width:32px;height:32px;color:var(--cream-faint);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
       <span class="sent-icon">✅</span>
       <div class="sheet-title" style="text-align:center;">Order Terkirim!</div>
-      <div style="font-size:12px;color:var(--cream-faint);">Nomor ordermu:</div>
+      <div style="font-size:12px;color:var(--cream-faint);margin-bottom:4px;">Nomor ordermu:</div>
       <div class="sent-id" id="sentOrderId"></div>
       <button class="btn-primary" onclick="WarungCT.afterOrderMusic()">🎵 Dengerin Musik CT</button>
       <button class="btn-ghost" onclick="WarungCT.resetOrder()">Pesan Lagi</button>
