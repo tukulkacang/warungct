@@ -29,7 +29,7 @@
         .order-type-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:16px; }
         .order-type-btn { background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:12px; text-align:center; cursor:pointer; }
         .order-type-btn.active { border-color:var(--gold); background:rgba(245,197,24,0.08); }
-        .btn-loc { width:100%; background:var(--gold); border:none; border-radius:14px; padding:16px; font-weight:800; cursor:pointer; }
+        .btn-loc { width:100%; background:var(--gold); border:none; border-radius:14px; padding:16px; font-weight:800; cursor:pointer; margin-top:8px; }
         .loc-status { display:none; margin-top:10px; background:var(--surface2); border-radius:12px; padding:12px; }
         .loc-status.show { display:flex; justify-content:space-between; }
         .menu-grid { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
@@ -43,7 +43,7 @@
         .grand-total { font-family:'Bebas Neue'; font-size:38px; color:var(--gold); }
         .btn-order { width:100%; background:var(--gold); border:none; border-radius:14px; padding:16px; font-family:'Bebas Neue'; font-size:20px; cursor:pointer; margin-top:8px; }
         .btn-order:disabled { background:var(--surface2); color:var(--muted); }
-        /* modal dasar */
+        /* modal */
         .modal-overlay, .qr-overlay, .owner-overlay, .pin-overlay, .order-sent-overlay, .player-overlay, .install-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.9); backdrop-filter:blur(8px); z-index:200; display:flex; align-items:center; justify-content:center; opacity:0; visibility:hidden; transition:0.2s; }
         .show { opacity:1; visibility:visible; }
         .modal-sheet, .qr-card, .owner-card, .pin-card, .install-modal-card { background:var(--surface); border-radius:28px; padding:24px; width:90%; max-width:340px; text-align:center; }
@@ -81,9 +81,9 @@
         </div>
         <div class="step-label"><div class="step-num">02</div><div class="step-title">PILIH MENU</div></div>
         <div id="menuUtama" class="menu-grid"></div>
-        <div style="margin:20px 0 10px;"><hr><span>TAMBAHAN</span><hr></div>
+        <div style="margin:20px 0 10px;"><hr><span style="display:block;text-align:center">TAMBAHAN</span><hr></div>
         <div id="menuTambahan" class="menu-grid"></div>
-        <div style="margin:20px 0 10px;"><hr><span>MINUMAN</span><hr></div>
+        <div style="margin:20px 0 10px;"><hr><span style="display:block;text-align:center">MINUMAN</span><hr></div>
         <div id="menuMinuman" class="menu-grid"></div>
     </main>
     <div class="bottom-bar">
@@ -94,7 +94,7 @@
     </div>
 
     <!-- Modal konfirmasi -->
-    <div id="confirmModal" class="modal-overlay"><div class="modal-sheet"><div><div id="confirmMeta"></div><div id="confirmItems"></div><div><span>Total </span><span id="confirmTotal"></span></div><textarea id="orderNotes" placeholder="Catatan..."></textarea><button onclick="WarungCT.doOrder()">Kirim</button><button onclick="WarungCT.hideConfirm()">Batal</button></div></div></div>
+    <div id="confirmModal" class="modal-overlay"><div class="modal-sheet"><div id="confirmMeta"></div><div id="confirmItems"></div><div><span>Total</span> <span id="confirmTotal"></span></div><textarea id="orderNotes" placeholder="Catatan..."></textarea><button onclick="WarungCT.doOrder()">Kirim</button><button onclick="WarungCT.hideConfirm()">Batal</button></div></div>
     <!-- QR -->
     <div id="qrOverlay" class="qr-overlay"><div class="qr-card"><div>SHARE</div><div id="qrUrlDisplay"></div><div id="qrcode"></div><button onclick="WarungCT.copyLink(event)">Salin Link</button><button onclick="WarungCT.toggleQR(false)">Tutup</button></div></div>
     <!-- Player -->
@@ -134,78 +134,11 @@
     function upd(id,delta){ state.cart[id]=Math.max(0,(state.cart[id]||0)+delta); let el=document.getElementById('qty-'+id); if(el) el.innerText=state.cart[id]; let mi=document.getElementById('mi-'+id); if(mi) mi.classList.toggle('active-qty',state.cart[id]>0); saveCustomerData(); updateUI(); }
     function calcTotals(){ let itemTotal=0,count=0; allMenu.forEach(m=>{ let q=state.cart[m.id]||0; itemTotal+=q*m.price; count+=q; }); return { itemTotal, count, grand:itemTotal+(count>0?state.shipping:0) }; }
     function updateUI(){ let {count,grand}=calcTotals(); let gt=document.getElementById('grandTotal'); if(gt) gt.innerText=fmt(grand); let ov=document.getElementById('ongkirVal'); if(ov) ov.innerText='Rp '+fmt(state.shipping); let ic=document.getElementById('itemCount'); if(ic) ic.innerText=count+' item'; let btn=document.getElementById('btnPesan'); let hint=document.getElementById('btnHint'); let msg='',can=false; if(state.isClosed) msg='❌ Warung tutup'; else if(state.locOver) msg='❌ Jarak >'+CONFIG.MAX_KM+'km'; else if(!state.name) msg='👤 Isi nama'; else if(state.orderType==='delivery' && !state.locOk) msg='📍 Klik lokasi'; else if(count===0) msg='🛒 Pilih menu'; else can=true; if(hint) hint.innerText=msg; if(btn) btn.disabled=!can; }
-    function setOrderType(t){ state.orderType=t; saveCustomerData(); ['delivery','pickup','dinein'].forEach(tt=>{ let el=document.getElementById('ot-'+tt); if(el) el.classList.toggle('active',tt===t); }); let gps=document.getElementById('gpsSection'); if(gps){ if(t==='delivery') gps.style.display=''; else{ gps.style.display='none'; state.locOk=false; state.locOver=false; state.distKm=0; state.shipping=0; } } checkTime()function checkTime() {
-    let now = new Date(), h = now.getHours();
-    let owner = getOwnerData();
-    let closed = false, reason = '';
-    if (owner.overrideStatus === 'libur') { closed = true; reason = 'libur'; }
-    else if (owner.overrideStatus === 'tutup_cepat') { let closeH = owner.overrideHour || 20; if (h >= closeH) { closed = true; reason = 'tutup_cepat'; } }
-    if (!closed) {
-        let closedDelivery = (h < 15 || h >= 22);
-        let closedWalkIn = (h < 13 || h >= 23);
-        closed = state.orderType === 'delivery' ? closedDelivery : closedWalkIn;
-        if (closed) reason = 'jam';
-    }
-    state.isClosed = closed;
-    state.closeReason = reason;
-
-    let badge = document.getElementById('statusBadge');
-    let txt = document.getElementById('statusText');
-    let closedInfo = document.getElementById('closedInfo');
-    let closedTitle = document.getElementById('closedTitle');
-    let closedSub = document.getElementById('closedSub');
-    if (badge) badge.classList.remove('closed', 'override');
-    if (closedInfo) closedInfo.classList.remove('show');
-
-    if (reason === 'libur') {
-        if (badge) badge.classList.add('override');
-        if (txt) txt.innerText = 'WARUNG LIBUR';
-        if (closedTitle) closedTitle.innerText = 'WARUNG LIBUR HARI INI';
-        if (closedSub) closedSub.innerText = 'Owner sedang istirahat. Silakan kembali besok ya 😊';
-        if (closedInfo) closedInfo.classList.add('show');
-    } else if (reason === 'tutup_cepat') {
-        let closeH = owner.overrideHour || 20;
-        if (badge) badge.classList.add('override');
-        if (txt) txt.innerText = 'TUTUP CEPAT';
-        if (closedTitle) closedTitle.innerText = 'WARUNG SUDAH TUTUP';
-        if (closedSub) closedSub.innerText = `Hari ini tutup lebih cepat. Buka normal jam ${closeH}:00 besok.`;
-        if (closedInfo) closedInfo.classList.add('show');
-    } else if (closed) {
-        if (badge) badge.classList.add('closed');
-        let openHour = (state.orderType === 'delivery') ? 15 : 13;
-        let isBeforeOpen = (state.orderType === 'delivery' ? h < 15 : h < 13);
-        if (isBeforeOpen) {
-            if (txt) txt.innerText = state.orderType === 'delivery' ? 'BELUM BUKA (15:00)' : 'BELUM BUKA (13:00)';
-            if (closedTitle) closedTitle.innerText = 'BELUM BUKA';
-            // countdown ke jam buka hari ini
-            let target = new Date();
-            target.setHours(openHour, 0, 0, 0);
-            let diff = target - now;
-            if (diff < 0) diff += 24 * 3600000; // safety
-            let hours = Math.floor(diff / 3600000);
-            let mins = Math.floor((diff % 3600000) / 60000);
-            if (closedSub) closedSub.innerText = `kembali besok > buka kurang ${hours} jam ${mins} menit`;
-        } else {
-            if (txt) txt.innerText = state.orderType === 'delivery' ? 'ANTAR TUTUP' : 'WARUNG TUTUP';
-            if (closedTitle) closedTitle.innerText = 'SUDAH TUTUP';
-            // countdown ke jam buka besok
-            let target = new Date();
-            target.setDate(target.getDate() + 1);
-            target.setHours(openHour, 0, 0, 0);
-            let diff = target - now;
-            let hours = Math.floor(diff / 3600000);
-            let mins = Math.floor((diff % 3600000) / 60000);
-            if (closedSub) closedSub.innerText = `kembali besok > buka kurang ${hours} jam ${mins} menit`;
-        }
-        if (closedInfo) closedInfo.classList.add('show');
-    } else {
-        if (txt) txt.innerText = state.orderType === 'delivery' ? 'BUKA 15:00-22:00' : 'BUKA 13:00-23:00';
-    }
-    updateUI();
-}
+    function setOrderType(t){ state.orderType=t; saveCustomerData(); ['delivery','pickup','dinein'].forEach(tt=>{ let el=document.getElementById('ot-'+tt); if(el) el.classList.toggle('active',tt===t); }); let gps=document.getElementById('gpsSection'); if(gps){ if(t==='delivery') gps.style.display=''; else{ gps.style.display='none'; state.locOk=false; state.locOver=false; state.distKm=0; state.shipping=0; } } checkTime(); updateUI(); }
     function haversine(lat1,lon1,lat2,lon2){ let R=6371; let dLat=(lat2-lat1)*Math.PI/180, dLon=(lon2-lon1)*Math.PI/180; let a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2; return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)); }
     function getLocation(){ let btn=document.getElementById('btnLocation'); if(!btn) return; btn.innerHTML='⏳ Mencari...'; btn.style.pointerEvents='none'; if(!navigator.geolocation){ showToast('GPS tidak didukung','error'); btn.innerHTML='📍 Klik Lokasi'; btn.style.pointerEvents=''; return; } navigator.geolocation.getCurrentPosition(pos=>{ let d=haversine(CONFIG.WARUNG_LAT,CONFIG.WARUNG_LON,pos.coords.latitude,pos.coords.longitude); state.distKm=parseFloat(d.toFixed(1)); state.userLat=pos.coords.latitude; state.userLon=pos.coords.longitude; let locStatus=document.getElementById('locStatus'),locDist=document.getElementById('locDist'),locExtra=document.getElementById('locExtra'); if(locDist) locDist.innerText=state.distKm+' km'; if(locStatus) locStatus.classList.add('show'); if(state.distKm>CONFIG.MAX_KM){ state.locOk=false; state.locOver=true; state.shipping=0; btn.innerHTML='❌ Terlalu Jauh'; btn.className='btn-loc error'; if(locStatus) locStatus.classList.add('warn'); if(locDist) locDist.style.color='var(--red)'; if(locExtra) locExtra.innerHTML='<span>Maks '+CONFIG.MAX_KM+' km</span>'; }else{ state.locOk=true; state.locOver=false; state.shipping=state.distKm<=1?2000:2000+Math.ceil(state.distKm-1)*1000; btn.innerHTML='✅ Lokasi OK'; btn.className='btn-loc success'; if(locStatus) locStatus.classList.remove('warn'); if(locDist) locDist.style.color='var(--gold)'; if(locExtra) locExtra.innerHTML='Ongkir: Rp '+fmt(state.shipping); showToast('Ongkir Rp '+fmt(state.shipping),'success'); } btn.style.pointerEvents=''; updateUI(); },err=>{ showToast('Gagal ambil lokasi','error'); btn.innerHTML='📍 Klik Lokasi'; btn.style.pointerEvents=''; },{enableHighAccuracy:true,timeout:10000}); }
-    function checkTime(){ let now=new Date(),h=now.getHours(),owner=getOwnerData(),closed=false,reason=''; if(owner.overrideStatus==='libur'){ closed=true; reason='libur'; }else if(owner.overrideStatus==='tutup_cepat'){ let closeH=owner.overrideHour||20; if(h>=closeH){ closed=true; reason='tutup_cepat'; } } if(!closed){ let closedDelivery=(h<15||h>=22); let closedWalkIn=(h<13||h>=23); closed=state.orderType==='delivery'?closedDelivery:closedWalkIn; if(closed) reason='jam'; } state.isClosed=closed; let badge=document.getElementById('statusBadge'),txt=document.getElementById('statusText'),closedInfo=document.getElementById('closedInfo'),closedTitle=document.getElementById('closedTitle'),closedSub=document.getElementById('closedSub'); if(badge) badge.classList.remove('closed','override'); if(closedInfo) closedInfo.classList.remove('show'); if(reason==='libur'){ if(txt) txt.innerText='WARUNG LIBUR'; if(closedTitle) closedTitle.innerText='LIBUR'; if(closedSub) closedSub.innerText='Kembali besok'; if(closedInfo) closedInfo.classList.add('show'); }else if(reason==='tutup_cepat'){ if(txt) txt.innerText='TUTUP CEPAT'; if(closedTitle) closedTitle.innerText='TUTUP CEPAT'; if(closedSub) closedSub.innerText='Tutup lebih awal'; if(closedInfo) closedInfo.classList.add('show'); }else if(closed){ if(txt) txt.innerText=state.orderType==='delivery'?'ANTAR TUTUP':'WARUNG TUTUP'; if(closedTitle) closedTitle.innerText='TUTUP'; if(closedSub) closedSub.innerText='Kembali besok'; if(closedInfo) closedInfo.classList.add('show'); }else{ if(txt) txt.innerText=state.orderType==='delivery'?'BUKA 15:00-22:00':'BUKA 13:00-23:00'; } updateUI(); }
+    function getCountdownText(openHour){ let now=new Date(); let target=new Date(); target.setHours(openHour,0,0,0); if(now>=target) target.setDate(target.getDate()+1); let diff=target-now; let hours=Math.floor(diff/3600000); let mins=Math.floor((diff%3600000)/60000); return `kembali besok > buka kurang ${hours} jam ${mins} menit`; }
+    function checkTime(){ let now=new Date(),h=now.getHours(); let owner=getOwnerData(); let closed=false,reason=''; if(owner.overrideStatus==='libur'){ closed=true; reason='libur'; }else if(owner.overrideStatus==='tutup_cepat'){ let closeH=owner.overrideHour||20; if(h>=closeH){ closed=true; reason='tutup_cepat'; } } if(!closed){ let closedDelivery=(h<15||h>=22); let closedWalkIn=(h<13||h>=23); closed=state.orderType==='delivery'?closedDelivery:closedWalkIn; if(closed) reason='jam'; } state.isClosed=closed; let badge=document.getElementById('statusBadge'),txt=document.getElementById('statusText'),closedInfo=document.getElementById('closedInfo'),closedTitle=document.getElementById('closedTitle'),closedSub=document.getElementById('closedSub'); if(badge) badge.classList.remove('closed','override'); if(closedInfo) closedInfo.classList.remove('show'); if(reason==='libur'){ if(badge) badge.classList.add('override'); if(txt) txt.innerText='WARUNG LIBUR'; if(closedTitle) closedTitle.innerText='WARUNG LIBUR HARI INI'; if(closedSub) closedSub.innerText='Owner sedang istirahat. Silakan kembali besok ya 😊'; if(closedInfo) closedInfo.classList.add('show'); }else if(reason==='tutup_cepat'){ if(badge) badge.classList.add('override'); if(txt) txt.innerText='TUTUP CEPAT'; if(closedTitle) closedTitle.innerText='WARUNG SUDAH TUTUP'; if(closedSub) closedSub.innerText='Hari ini tutup lebih cepat. Buka normal besok.'; if(closedInfo) closedInfo.classList.add('show'); }else if(closed){ if(badge) badge.classList.add('closed'); let openHour=(state.orderType==='delivery')?15:13; let isBeforeOpen=(state.orderType==='delivery'?h<15:h<13); if(isBeforeOpen){ if(txt) txt.innerText=state.orderType==='delivery'?'BELUM BUKA (15:00)':'BELUM BUKA (13:00)'; if(closedTitle) closedTitle.innerText='BELUM BUKA'; if(closedSub) closedSub.innerText=getCountdownText(openHour); }else{ if(txt) txt.innerText=state.orderType==='delivery'?'ANTAR TUTUP':'WARUNG TUTUP'; if(closedTitle) closedTitle.innerText='SUDAH TUTUP'; if(closedSub) closedSub.innerText=getCountdownText(openHour); } if(closedInfo) closedInfo.classList.add('show'); }else{ if(txt) txt.innerText=state.orderType==='delivery'?'BUKA 15:00-22:00':'BUKA 13:00-23:00'; } updateUI(); }
     function showConfirm(){ let {count,grand}=calcTotals(); if(count===0||(state.orderType==='delivery'&&!state.locOk)||!state.name||state.isClosed||state.locOver) return; let html=''; allMenu.forEach(m=>{ let q=state.cart[m.id]||0; if(q>0) html+=`<div>${m.icon} ${m.name} x${q} = Rp ${fmt(m.price*q)}</div>`; }); if(state.shipping>0) html+=`<div>🛵 Ongkir ${state.distKm}km = Rp ${fmt(state.shipping)}</div>`; let meta=document.getElementById('confirmMeta'); if(meta) meta.innerText=`${state.name} · ${state.orderType==='delivery'?'Diantar':state.orderType==='pickup'?'Ambil':'Dinein'} · ${count} item`; let itemsDiv=document.getElementById('confirmItems'); if(itemsDiv) itemsDiv.innerHTML=html; let totalSpan=document.getElementById('confirmTotal'); if(totalSpan) totalSpan.innerText='Rp '+fmt(grand); openModal('confirmModal'); }
     function hideConfirm(){ closeModal('confirmModal'); }
     let _cooldown=false;
@@ -213,7 +146,6 @@
     function resetOrder(){ for(let m of allMenu){ state.cart[m.id]=0; let el=document.getElementById('qty-'+m.id); if(el) el.innerText='0'; let mi=document.getElementById('mi-'+m.id); if(mi) mi.classList.remove('active-qty'); } saveCustomerData(); updateUI(); closeModal('orderSentOverlay'); }
     function toggleQR(show){ if(show){ openModal('qrOverlay'); let url=window.location.href; let urlDiv=document.getElementById('qrUrlDisplay'); if(urlDiv) urlDiv.innerText=url; setTimeout(()=>{ let qrDiv=document.getElementById('qrcode'); if(qrDiv && typeof QRCode!=='undefined'){ qrDiv.innerHTML=''; new QRCode(qrDiv,{text:url,width:200,height:200}); } },100); }else{ closeModal('qrOverlay'); } }
     function copyLink(e){ let url=window.location.href; navigator.clipboard.writeText(url).then(()=>{ let btn=e.target; btn.innerText='✅ Disalin!'; setTimeout(()=>btn.innerText='🔗 Salin Link',2000); }); }
-    // Player
     const playlist=[ {title:'KOPLO',artist:'CT & BOJO',icon:'🎺',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20K1.mp3'},{title:'INDIA',artist:'CT & BOJO',icon:'🎶',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20%20I1.mp3'},{title:'CAMPURSARI',artist:'CT & BOJO',icon:'🎻',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20C1.mp3'},{title:'REGGAE',artist:'CT & BOJO',icon:'🎸',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20R1.mp3'},{title:'K MODERN',artist:'CT & BOJO',icon:'🎹',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20KR.mp3'},{title:'DJ REMIX',artist:'CT & BOJO',icon:'🎧',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20D1.mp3'},{title:'POP',artist:'CT & BOJO',icon:'🎤',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20M1.mp3'} ];
     let audio=new Audio(), curTrack=0, isPlaying=false, audioErrors=0;
     function safeGetElement(id){ return document.getElementById(id); }
@@ -229,7 +161,6 @@
     function openPlayer(){ closeModal('musicOfferOverlay'); openModal('playerOverlay'); if(!audio.src) loadTrack(0,false); }
     function closePlayer(){ closeModal('playerOverlay'); if(audio) audio.pause(); setPlaying(false); }
     function closeMusicOffer(){ closeModal('musicOfferOverlay'); }
-    // Owner
     let pinBuffer='',tapCount=0,tapTimer=null;
     document.getElementById('headerLogo')?.addEventListener('click',()=>{ tapCount++; if(tapTimer) clearTimeout(tapTimer); tapTimer=setTimeout(()=>{tapCount=0;},500); if(tapCount>=2){ tapCount=0; openPin(); } });
     function openPin(){ pinBuffer=''; updatePinDots(); let err=document.getElementById('pinError'); if(err) err.innerText=''; openModal('pinOverlay'); }
@@ -246,7 +177,6 @@
     function confirmOrder(id){ let orders=getOrders(); let o=orders.find(x=>x.id===id); if(o && o.status!=='confirmed'){ o.status='confirmed'; saveOrders(orders); renderOwnerOrders(); showToast(`Order ${id} dikonfirmasi`,'success'); } }
     function deleteOrder(id){ let orders=getOrders().filter(o=>o.id!==id); saveOrders(orders); renderOwnerOrders(); showToast('Order dihapus','success'); }
     function clearAllOrders(){ if(confirm('Hapus semua order?')){ saveOrders([]); renderOwnerOrders(); showToast('Semua order dihapus','success'); } }
-    // Install
     let installPromptEvent=null, installShown=false;
     window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); installPromptEvent=e; if(!localStorage.getItem('installAnswered')) setTimeout(()=>showInstallModal(),1500); });
     function showInstallModal(){ if(installShown) return; installShown=true; let modal=document.getElementById('installModal'); if(!modal) return; let desc=document.getElementById('installDesc'); let hint=document.getElementById('installHint'); let ua=navigator.userAgent; let isIOS=/iPhone|iPad|iPod/.test(ua); let isAndroid=/Android/.test(ua); let safe='<br><span class="safe-note">✅ Aman, tidak makan memori</span>'; if(isIOS){ if(desc) desc.innerHTML='Tekan Share lalu "Tambahkan ke Layar Utama".'+safe; if(hint) hint.innerText='Petunjuk Safari'; }else if(isAndroid){ if(installPromptEvent){ if(desc) desc.innerHTML='Klik "Ya" untuk memasang sebagai aplikasi.'+safe; }else{ if(desc) desc.innerHTML='Buka menu browser → "Instal Aplikasi".'+safe; } }else{ if(desc) desc.innerHTML='Gunakan menu browser untuk memasang.'+safe; } modal.classList.add('show'); }
@@ -255,7 +185,6 @@
     document.getElementById('installYesBtn')?.addEventListener('click',installApp);
     document.getElementById('installNoBtn')?.addEventListener('click',declineInstall);
     setTimeout(()=>{ if(!installPromptEvent && !localStorage.getItem('installAnswered') && /Android|iPhone|iPad|iPod/.test(navigator.userAgent)) showInstallModal(); },3000);
-
     function init(){ renderMenu('menuUtama',menuUtama); renderMenu('menuTambahan',menuTambahan); renderMenu('menuMinuman',menuMinuman); let c=getCustomerData(); if(c.cart) state.cart=c.cart; if(c.name){ state.name=c.name; let un=document.getElementById('userName'); if(un) un.value=c.name; } if(c.orderType) setOrderType(c.orderType); let unInput=document.getElementById('userName'); if(unInput) unInput.addEventListener('input',e=>{ let val=e.target.value.slice(0,40); state.name=val.trim(); saveCustomerData(); updateUI(); }); allMenu.forEach(m=>{ let q=state.cart[m.id]||0; let qtySpan=document.getElementById('qty-'+m.id); if(qtySpan) qtySpan.innerText=q; let mi=document.getElementById('mi-'+m.id); if(mi) mi.classList.toggle('active-qty',q>0); }); checkTime(); setInterval(()=>checkTime(),60000); updateUI(); loadTrack(0,false); }
     window.WarungCT = { upd, setOrderType, getLocation, showConfirm, hideConfirm, doOrder, resetOrder, toggleQR, copyLink, openPlayer, closePlayer, closeMusicOffer, togglePlay, prevTrack, nextTrack, seekAudio, loadTrack, setVolume, enterPin, backspacePin, cancelPin, setOverride, changePin, confirmOrder, deleteOrder, clearAllOrders, hideOwnerPanel };
     init();
