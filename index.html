@@ -127,6 +127,7 @@ body{
 
 .menu-left{display:flex;align-items:center;gap:12px;}
 
+/* ── FIX: Icon menu lebih golden & vivid ── */
 .menu-icon{
   font-size:22px;width:42px;height:42px;
   background:linear-gradient(145deg, rgba(201,150,58,0.18), rgba(201,150,58,0.08));
@@ -168,7 +169,7 @@ body{
 
 /* ── MODALS ── */
 .modal-overlay,.qr-overlay,.owner-overlay,.pin-overlay,
-.player-overlay,.music-prompt-overlay{
+.player-overlay,.install-modal-overlay,.music-prompt-overlay{
   position:fixed;inset:0;
   background:rgba(4,3,2,0.88);
   backdrop-filter:blur(14px);
@@ -185,7 +186,7 @@ body{
   opacity:0;visibility:hidden;transition:opacity 0.24s,visibility 0.24s;
 }
 .modal-overlay.show,.qr-overlay.show,.owner-overlay.show,.pin-overlay.show,
-.order-sent-overlay.show,.player-overlay.show,.music-prompt-overlay.show{
+.order-sent-overlay.show,.player-overlay.show,.install-modal-overlay.show,.music-prompt-overlay.show{
   opacity:1;visibility:visible;
 }
 
@@ -224,7 +225,7 @@ body{
 .sent-icon{font-size:56px;margin-bottom:8px;display:block;text-align:center;}
 .sent-id{background:var(--gold-glow);border:1px solid var(--gold-border);border-radius:10px;padding:9px 18px;font-family:'Cinzel',serif;font-size:16px;color:var(--gold);letter-spacing:3px;display:inline-block;margin:10px 0 20px;}
 
-/* ── MUSIC PROMPT ── */
+/* ── MUSIC PROMPT (BARU) ── */
 .music-prompt-overlay{z-index:250;}
 .music-prompt-sheet{
   background:var(--void);
@@ -351,6 +352,10 @@ body{
 .track-name.on{color:var(--gold);}
 .track-artist{font-size:11px;color:var(--cream-faint);}
 
+/* Install */
+.install-icon{font-size:40px;margin-bottom:12px;display:block;}
+.safe-note{display:inline-flex;align-items:center;gap:6px;background:var(--green-bg);color:var(--green);border-radius:100px;padding:5px 14px;font-size:10px;font-weight:600;margin-top:10px;}
+
 /* Toast */
 .toast{position:fixed;top:22px;left:50%;transform:translateX(-50%) translateY(-8px);background:var(--surface-2);color:var(--cream);border:1px solid var(--border-mid);border-radius:100px;padding:10px 20px;font-size:12px;font-weight:500;z-index:1000;opacity:0;visibility:hidden;transition:all 0.24s;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,0.4);}
 .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
@@ -364,8 +369,8 @@ body{
 </style>
 </head>
 <body>
-
 <div class="app">
+
   <header class="header">
     <div class="header-top-line"></div>
     <div class="header-inner">
@@ -383,528 +388,766 @@ body{
   </header>
 
   <div class="closed-info" id="closedInfo">
-    <div class="closed-info-title">WARUNG SEDANG ISTIRAHAT</div>
-    <div class="closed-info-sub">Silahkan cek kembali nanti, bolo.</div>
+    <div class="closed-info-title" id="closedTitle"></div>
+    <div class="closed-info-sub" id="closedSub"></div>
   </div>
 
-  <section class="section-block">
-    <div class="step-label">
-      <div class="step-num">I</div>
-      <div class="step-title">SIAPA NAMAMU?</div>
-    </div>
-    <input type="text" id="userName" class="input-name" placeholder="Tulis namamu disini..." maxlength="40">
-  </section>
-
-  <section class="section-block" style="padding-top:0;">
-    <div class="step-label">
-      <div class="step-num">II</div>
-      <div class="step-title">MAU GIMANA?</div>
-    </div>
-    <div class="order-type-grid">
-      <div id="ot-delivery" class="order-type-btn active" onclick="WarungCT.setOrderType('delivery')">
-        <span class="ot-icon">🛵</span>ANTAR
+  <main>
+    <div class="section-block">
+      <div class="step-label"><div class="step-num">01</div><div class="step-title">INFO PENGIRIMAN</div></div>
+      <input id="userName" class="input-name" placeholder="Nama pemesan…" maxlength="40">
+      <div class="order-type-grid">
+        <button class="order-type-btn active" onclick="WarungCT.setOrderType('delivery')" id="ot-delivery"><span class="ot-icon">🛵</span>DIANTAR</button>
+        <button class="order-type-btn" onclick="WarungCT.setOrderType('pickup')" id="ot-pickup"><span class="ot-icon">🚶</span>AMBIL</button>
+        <button class="order-type-btn" onclick="WarungCT.setOrderType('dinein')" id="ot-dinein"><span class="ot-icon">🍽️</span>DI SINI</button>
       </div>
-      <div id="ot-takeaway" class="order-type-btn" onclick="WarungCT.setOrderType('takeaway')">
-        <span class="ot-icon">🛍️</span>BUNGKUS
-      </div>
-      <div id="ot-dinein" class="order-type-btn" onclick="WarungCT.setOrderType('dinein')">
-        <span class="ot-icon">🍽️</span>SINI
-      </div>
-    </div>
-
-    <div id="deliverySection">
-      <button id="locBtn" class="btn-loc" onclick="WarungCT.getLocation()">📍 BAGIKAN LOKASI</button>
-      <div id="locStatus" class="loc-status">
-        <div>
-          <div class="loc-label">ONGKIR ESTIMASI</div>
-          <div id="locText" class="loc-val">Rp 0</div>
+      <div id="gpsSection">
+        <button id="btnLocation" class="btn-loc" onclick="WarungCT.getLocation()">📍 KLIK LOKASI</button>
+        <div id="locStatus" class="loc-status">
+          <div><div class="loc-label">JARAK</div><div class="loc-val" id="locDist">0 km</div></div>
+          <div id="locExtra" style="text-align:right;font-size:13px;"></div>
         </div>
-        <div id="distText" style="font-size:10px;color:var(--cream-faint);text-align:right;">Mencari koordinat...</div>
       </div>
     </div>
-  </section>
 
-  <div class="menu-divider">
-    <div class="menu-divider-line"></div>
-    <div class="menu-divider-gem"></div>
-    <div class="menu-divider-label">PILIHAN MENU</div>
-    <div class="menu-divider-gem"></div>
-    <div class="menu-divider-line"></div>
-  </div>
-
-  <section class="menu-section">
-    <div class="menu-grid" id="menuUtama"></div>
-  </section>
-
-  <div class="menu-divider">
-    <div class="menu-divider-line"></div>
-    <div class="menu-divider-label">TAMBAHAN</div>
-    <div class="menu-divider-line"></div>
-  </div>
-  <section class="menu-section">
-    <div class="menu-grid" id="menuTambahan"></div>
-  </section>
-
-  <div class="menu-divider">
-    <div class="menu-divider-line"></div>
-    <div class="menu-divider-label">MINUMAN</div>
-    <div class="menu-divider-line"></div>
-  </div>
-  <section class="menu-section">
-    <div class="menu-grid" id="menuMinuman"></div>
-  </section>
-</div>
-
-<div class="bottom-bar">
-  <div class="bottom-row1">
-    <div class="bottom-label">TOTAL PESANAN</div>
-    <div class="grand-total" id="grandTotal">Rp 0</div>
-  </div>
-  <div class="bottom-meta" id="bottomMeta">Belum ada item dipilih</div>
-  <button id="btnOrder" class="btn-order" onclick="WarungCT.showConfirm()" disabled>PESAN SEKARANG</button>
-  <div class="btn-hint" id="btnHint">Lengkapi data untuk memesan</div>
-</div>
-
-<div id="modalConfirm" class="modal-overlay" onclick="if(event.target===this)WarungCT.hideConfirm()">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-title">KONFIRMASI PESANAN</div>
-    <div id="confirmList" style="margin-bottom:20px;"></div>
-    
-    <div class="field-label">CATATAN (OPSIONAL)</div>
-    <textarea id="orderNotes" class="notes-input" placeholder="Contoh: Gak pakai sambal, kopi pahit..."></textarea>
-    
-    <div class="confirm-total">
-      <div class="confirm-total-label">TOTAL AKHIR</div>
-      <div class="confirm-total-val" id="confirmTotal">Rp 0</div>
-    </div>
-    
-    <button class="btn-primary" onclick="WarungCT.doOrder()">KIRIM VIA WHATSAPP</button>
-    <button class="btn-ghost" onclick="WarungCT.hideConfirm()">KEMBALI</button>
-  </div>
-</div>
-
-<div id="modalSent" class="order-sent-overlay">
-  <div class="sheet sheet-center" style="border-radius:24px;text-align:center;padding:40px 24px;">
-    <span class="sent-icon">✅</span>
-    <div class="sheet-title" style="margin-bottom:8px;">PESANAN TERKIRIM!</div>
-    <p style="font-size:13px;color:var(--cream-mid);line-height:1.6;">WhatsApp kamu akan terbuka.<br>Silahkan klik <b>Kirim</b> di sana.</p>
-    <div id="sentId" class="sent-id">#CT-0000</div>
-    <button class="btn-primary" onclick="WarungCT.resetOrder()">OK, SIAP!</button>
-  </div>
-</div>
-
-<div id="modalQR" class="qr-overlay" onclick="if(event.target===this)WarungCT.toggleQR(false)">
-  <div class="sheet" style="text-align:center;">
-    <div class="sheet-handle"></div>
-    <div class="sheet-title">BAGIKAN WARUNG</div>
-    <div id="qrcode"></div>
-    <div class="qr-url" id="qrUrl">https://warungct.com</div>
-    <button class="btn-primary" onclick="WarungCT.copyLink()">SALIN LINK</button>
-    <button class="btn-ghost" onclick="WarungCT.toggleQR(false)">TUTUP</button>
-  </div>
-</div>
-
-<div id="musicPrompt" class="music-prompt-overlay">
-  <div class="music-prompt-sheet">
-    <div class="music-prompt-glow">🎵</div>
-    <div class="music-prompt-title">TEMENAN NYANTAI?</div>
-    <div class="music-prompt-sub">Putar musik biar makin syahdu, bolo.</div>
-    <div class="music-track-preview" id="musicPreview"></div>
-    <button class="btn-music-open" onclick="WarungCT.upd('musicPrompt','remove','show');WarungCT.upd('modalPlayer','add','show');WarungCT.playTrack()">PUTAR SEKARANG</button>
-    <button class="btn-music-skip" onclick="WarungCT.upd('musicPrompt','remove','show')">NANTI SAJA</button>
-  </div>
-</div>
-
-<div id="modalPlayer" class="player-overlay" onclick="if(event.target===this)WarungCT.upd('modalPlayer','remove','show')">
-  <div class="player-sheet">
-    <div class="sheet-handle"></div>
-    <span class="player-album" id="pIcon">📻</span>
-    <div class="player-title" id="pTitle">Radio Temenan</div>
-    <div class="player-artist" id="pArtist">Warung CT Official</div>
-    
-    <div class="progress-wrap" id="progWrap" onclick="WarungCT.seek(event)">
-      <div class="progress-fill" id="progFill" style="width:0%"></div>
-    </div>
-    <div class="time-row">
-      <span id="curTime">0:00</span>
-      <span id="durTime">0:00</span>
+    <div class="section-block" style="padding-bottom:0;">
+      <div class="step-label"><div class="step-num">02</div><div class="step-title">PILIH MENU</div></div>
     </div>
 
-    <div class="player-controls">
-      <button class="ctrl-btn" onclick="WarungCT.prevTrack()">⏮</button>
-      <button class="ctrl-play" id="playBtn" onclick="WarungCT.togglePlay()">▶</button>
-      <button class="ctrl-btn" onclick="WarungCT.nextTrack()">⏭</button>
+    <div class="menu-section"><div id="menuUtama" class="menu-grid"></div></div>
+
+    <div class="menu-divider">
+      <div class="menu-divider-line"></div><div class="menu-divider-gem"></div>
+      <div class="menu-divider-label">Tambahan</div>
+      <div class="menu-divider-gem"></div><div class="menu-divider-line"></div>
     </div>
+    <div class="menu-section"><div id="menuTambahan" class="menu-grid"></div></div>
 
-    <div class="tracklist" id="tracklist"></div>
+    <div class="menu-divider">
+      <div class="menu-divider-line"></div><div class="menu-divider-gem"></div>
+      <div class="menu-divider-label">Minuman</div>
+      <div class="menu-divider-gem"></div><div class="menu-divider-line"></div>
+    </div>
+    <div class="menu-section"><div id="menuMinuman" class="menu-grid"></div></div>
+  </main>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <div class="bottom-row1">
+      <div><div class="bottom-label">Total Bayar</div><div class="grand-total">Rp <span id="grandTotal">0</span></div></div>
+    </div>
+    <div class="bottom-meta">Ongkir: <span id="ongkirVal">Rp 0</span> &nbsp;·&nbsp; <span id="itemCount">0 item</span></div>
+    <button id="btnPesan" class="btn-order" disabled onclick="WarungCT.showConfirm()">ORDER VIA WHATSAPP</button>
+    <div id="btnHint" class="btn-hint"></div>
   </div>
-</div>
 
-<div id="toast" class="toast">Notifikasi</div>
+  <!-- KONFIRMASI -->
+  <div id="confirmModal" class="modal-overlay">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title">Konfirmasi Order</div>
+      <div id="confirmMeta" style="font-size:11px;color:var(--cream-faint);margin-bottom:14px;letter-spacing:0.5px;"></div>
+      <div id="confirmItems"></div>
+      <div class="confirm-total">
+        <div class="confirm-total-label">Total Bayar</div>
+        <div class="confirm-total-val" id="confirmTotal"></div>
+      </div>
+      <div class="field-label">Catatan (opsional)</div>
+      <textarea id="orderNotes" class="notes-input" placeholder="Permintaan khusus, sambal extra, dll…"></textarea>
+      <button class="btn-primary" onclick="WarungCT.doOrder()">KIRIM ORDER</button>
+      <button class="btn-ghost" onclick="WarungCT.hideConfirm()">Batal</button>
+    </div>
+  </div>
+
+  <!-- QR -->
+  <div id="qrOverlay" class="qr-overlay">
+    <div class="sheet" style="text-align:center;">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title" style="text-align:center;">Share Warung CT</div>
+      <div id="qrUrlDisplay" class="qr-url"></div>
+      <div id="qrcode"></div>
+      <button class="btn-primary" onclick="WarungCT.copyLink(event)">Salin Link</button>
+      <button class="btn-ghost" onclick="WarungCT.toggleQR(false)">Tutup</button>
+    </div>
+  </div>
+
+  <!-- ORDER SENT -->
+  <div id="orderSentOverlay" class="order-sent-overlay" style="align-items:center;padding:20px;">
+    <div class="sheet sheet-center" style="text-align:center;border-radius:24px;max-width:360px;width:100%;padding:32px 22px 28px;position:relative;">
+      <!-- Tombol tutup X -->
+      <button onclick="WarungCT.resetOrder()" style="position:absolute;top:14px;right:14px;background:var(--surface-3);border:1px solid var(--border-mid);border-radius:50%;width:32px;height:32px;color:var(--cream-faint);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
+      <span class="sent-icon">✅</span>
+      <div class="sheet-title" style="text-align:center;">Order Terkirim!</div>
+      <div style="font-size:12px;color:var(--cream-faint);margin-bottom:4px;">Nomor ordermu:</div>
+      <div class="sent-id" id="sentOrderId"></div>
+      <button class="btn-primary" onclick="WarungCT.afterOrderMusic()">🎵 BONUS 🎵</button>
+      <button class="btn-ghost" onclick="WarungCT.resetOrder()">Pesan Lagi</button>
+    </div>
+  </div>
+
+  <!-- MUSIC PROMPT (BARU) -->
+  <div id="musicPromptOverlay" class="music-prompt-overlay">
+    <div class="music-prompt-sheet">
+      <div class="sheet-handle" style="width:36px;height:3px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 22px;"></div>
+      <div class="music-prompt-glow">🎵</div>
+      <div class="music-prompt-title">SAMBIL NUNGGU ORDER</div>
+      <div class="music-prompt-sub">Dengerin musik pilihan CT & Bojo<br>biar makin betah nunggu! ☕</div>
+      <div class="music-track-preview" id="musicTrackList"></div>
+      <button class="btn-music-open" onclick="WarungCT.openPlayerFromPrompt()">🎶 BUKA PEMUTAR MUSIK</button>
+      <button class="btn-music-skip" onclick="WarungCT.closeMusicPrompt()">Nanti aja deh</button>
+    </div>
+  </div>
+
+  <!-- PLAYER -->
+  <div id="playerOverlay" class="player-overlay">
+    <div class="player-sheet">
+      <div class="sheet-handle"></div>
+      <span class="player-album" id="playerAlbum">🎵</span>
+      <div class="player-title" id="playerTitle">–</div>
+      <div class="player-artist" id="playerArtist">CT & BOJO</div>
+      <div class="progress-wrap" onclick="WarungCT.seekAudio(event)" id="progressBar">
+        <div class="progress-fill" id="progressFill" style="width:0%;"></div>
+      </div>
+      <div class="time-row"><span id="timeNow">0:00</span><span id="timeDur">0:00</span></div>
+      <div class="player-controls">
+        <div class="ctrl-btn" onclick="WarungCT.prevTrack()">⏮</div>
+        <div class="ctrl-play" id="playBtn" onclick="WarungCT.togglePlay()">▶</div>
+        <div class="ctrl-btn" onclick="WarungCT.nextTrack()">⏭</div>
+      </div>
+      <div class="tracklist" id="tracklistEl"></div>
+      <button class="btn-ghost" style="margin-top:14px;border-color:var(--border);color:var(--cream-faint);" onclick="WarungCT.closePlayer()">Tutup</button>
+    </div>
+  </div>
+
+  <!-- OWNER -->
+  <div id="ownerOverlay" class="owner-overlay">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title">⚙️ Panel Owner</div>
+      <div class="field-label">Status Warung</div>
+      <div class="owner-status-grid">
+        <button id="st-normal" onclick="WarungCT.setOverride('normal')">🟢 Normal</button>
+        <button id="st-tutup" onclick="WarungCT.setOverride('tutup_cepat')">🔴 Tutup Cepat</button>
+        <button id="st-libur" onclick="WarungCT.setOverride('libur')">🏖️ Libur</button>
+      </div>
+      <input type="number" id="tutupJam" placeholder="Jam tutup (misal: 20)" class="input-sm" style="display:none;">
+      <div class="field-label" style="margin-top:16px;">Ganti PIN</div>
+      <input type="password" id="newPin" maxlength="4" placeholder="PIN baru (4 digit)" class="input-sm">
+      <button class="btn-primary" style="margin-bottom:18px;" onclick="WarungCT.changePin()">Simpan PIN Baru</button>
+      <div class="field-label">Order Masuk (<span id="orderCount">0</span>)</div>
+      <div id="ownerOrderList"></div>
+      <button class="btn-ghost" style="border-color:rgba(224,96,80,0.2);color:var(--red);margin-top:12px;" onclick="WarungCT.clearAllOrders()">Hapus Semua Order</button>
+      <button class="btn-ghost" style="margin-top:8px;" onclick="WarungCT.hideOwnerPanel()">Tutup</button>
+    </div>
+  </div>
+
+  <!-- PIN -->
+  <div id="pinOverlay" class="pin-overlay">
+    <div class="sheet" style="text-align:center;">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title" style="text-align:center;">🔐 Masukkan PIN</div>
+      <div class="pin-dots" id="pinDots">
+        <div class="pin-dot"></div><div class="pin-dot"></div>
+        <div class="pin-dot"></div><div class="pin-dot"></div>
+      </div>
+      <div class="pin-error" id="pinError"></div>
+      <div class="pin-pad">
+        <div class="pin-key" onclick="WarungCT.enterPin(1)">1</div>
+        <div class="pin-key" onclick="WarungCT.enterPin(2)">2</div>
+        <div class="pin-key" onclick="WarungCT.enterPin(3)">3</div>
+        <div class="pin-key" onclick="WarungCT.enterPin(4)">4</div>
+        <div class="pin-key" onclick="WarungCT.enterPin(5)">5</div>
+        <div class="pin-key" onclick="WarungCT.enterPin(6)">6</div>
+        <div class="pin-key" onclick="WarungCT.enterPin(7)">7</div>
+        <div class="pin-key" onclick="WarungCT.enterPin(8)">8</div>
+        <div class="pin-key" onclick="WarungCT.enterPin(9)">9</div>
+        <div class="pin-key pin-zero" onclick="WarungCT.enterPin(0)">0</div>
+        <div class="pin-key" onclick="WarungCT.backspacePin()">⌫</div>
+      </div>
+      <button class="btn-ghost" style="margin-top:14px;" onclick="WarungCT.cancelPin()">Batal</button>
+    </div>
+  </div>
+
+  <!-- INSTALL -->
+  <div id="installModal" class="install-modal-overlay">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <span class="install-icon">📲</span>
+      <div class="sheet-title">Pasang Warung CT?</div>
+      <div id="installDesc" style="font-size:13px;color:var(--cream-mid);">Biar order lebih cepat, langsung dari home screen.</div>
+      <div><span class="safe-note">✅ Aman, tidak makan memori</span></div>
+      <div id="installHint" style="font-size:11px;color:var(--cream-faint);margin:12px 0 18px;"></div>
+      <button id="installYesBtn" class="btn-primary">Ya, Pasang Sekarang</button>
+      <button id="installNoBtn" class="btn-ghost">Nggak, makasih</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+</div>
 
 <script>
-  /* ── DATA & CONFIG ── */
-  const WA_NUMBER = "6285850125816";
-  const CT_COORD = { lat: -7.1895, lng: 112.3385 }; // Koordinat Warung CT
-  
-  const menuUtama = [
-    { id: 'cete', name: 'Kopi Cete Kereng', price: 5000, icon: '☕' },
-    { id: 'ijo', name: 'Kopi Ijo Khas', price: 5000, icon: '🍵' },
-    { id: 'teh', name: 'Teh Hangat/Es', price: 4000, icon: '🍹' },
-    { id: 'jeruk', name: 'Jeruk Hangat/Es', price: 6000, icon: '🍊' }
-  ];
-  const menuTambahan = [
-    { id: 'gorengan', name: 'Gorengan Anget', price: 1000, icon: '🥨' },
-    { id: 'kerupuk', name: 'Kerupuk/Snack', price: 2000, icon: '🍪' }
-  ];
-  const menuMinuman = [
-    { id: 'rokok_ecer', name: 'Rokok Eceran', price: 2500, icon: '🚬' },
-    { id: 'rokok_bungkus', name: 'Rokok Bungkus', price: 25000, icon: '📦' }
-  ];
-
-  const tracks = [
-    { title: "Nemu", artist: "Gilga Sahid", url: "https://files.catbox.moe/p9o7e0.mp3", icon: "🎸" },
-    { title: "Sanes", artist: "Guyon Waton", url: "https://files.catbox.moe/r52x5z.mp3", icon: "🎻" },
-    { title: "Kisinan 2", artist: "Masdddho", url: "https://files.catbox.moe/8m8p2n.mp3", icon: "🎹" }
-  ];
-
-  /* ── STATE ── */
-  let state = {
-    name: '',
-    orderType: 'delivery',
-    cart: {},
-    lat: null, lng: null,
-    dist: null,
-    shipping: 0,
-    isPlaying: false,
-    curTrack: 0
+(function(){
+  const CONFIG={
+    WARUNG_LAT:-7.166875,WARUNG_LON:112.326875,
+    MAX_KM:3,WA_NUMBER:'6285730030112',DEFAULT_PIN:'0000'
   };
 
-  const audio = new Audio();
-  const upd = (id,act,cls) => document.getElementById(id)?.classList[act](cls);
+  let state={
+    name:'',distKm:0,shipping:0,cart:{},
+    isClosed:false,locOk:false,locOver:false,
+    userLat:null,userLon:null,orderType:'delivery'
+  };
 
-  /* ── LOGIC: CORE ── */
-  function renderMenu(containerId, items){
-    const container = document.getElementById(containerId);
-    if(!container) return;
-    container.innerHTML = items.map(it => `
-      <div class="menu-item" id="item-${it.id}">
+  const menuUtama=[
+    {id:'u1',name:'Ayam Goreng',price:10000,icon:'🍗'},
+    {id:'u2',name:'Pecel Lele',price:10000,icon:'🐟'},
+    {id:'u3',name:'Dadar',price:7000,icon:'🍳'},
+    {id:'u4',name:'Ati Ampela',price:8000,icon:'🍖'},
+    {id:'u5',name:'Tempe Penyet',price:6000,icon:'🌿'},
+    {id:'u6',name:'Nasgor Ori',price:10000,icon:'🍚'},
+    {id:'u7',name:'Nasgor + Sosis',price:13000,icon:'🍛'},
+    {id:'u8',name:'Nasgor + Dadar',price:13000,icon:'🍜'}
+  ];
+  const menuTambahan=[
+    {id:'t1',name:'Telur',price:3000,icon:'🥚'},
+    {id:'t2',name:'Kepala',price:3000,icon:'🍗'},
+    {id:'t3',name:'Ati Ampela',price:5000,icon:'🍖'},
+    {id:'t4',name:'Sambal',price:3000,icon:'🌶️'},
+    {id:'t5',name:'Nasi Putih',price:3000,icon:'🍚'}
+  ];
+  const menuMinuman=[
+    {id:'m1',name:'Es Teh',price:3000,icon:'🧋'},
+    {id:'m2',name:'Teh Hangat',price:3000,icon:'🍵'},
+    {id:'m3',name:'Nutrisari',price:3000,icon:'🍊'},
+    {id:'m4',name:'Kopi Hitam',price:3000,icon:'☕'},
+    {id:'m5',name:'Kopi White',price:3000,icon:'🥤'},
+    {id:'m6',name:'Susu',price:3000,icon:'🥛'},
+    {id:'m7',name:'Pop Ice',price:3000,icon:'🧃'},
+    {id:'m8',name:'Es Jeruk',price:4000,icon:'🍋'},
+    {id:'m9',name:'Milo',price:4000,icon:'🍫'},
+    {id:'m10',name:'Good Day',price:4000,icon:'☀️'},
+    {id:'m11',name:'Chocolatos',price:4000,icon:'🍫'}
+  ];
+  const allMenu=[...menuUtama,...menuTambahan,...menuMinuman];
+
+  const playlist=[
+    {title:'KOPLO',artist:'CT & BOJO',icon:'🎺',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20K1.mp3'},
+    {title:'INDIA',artist:'CT & BOJO',icon:'🎶',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20%20I1.mp3'},
+    {title:'CAMPURSARI',artist:'CT & BOJO',icon:'🎻',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20C1.mp3'},
+    {title:'REGGAE',artist:'CT & BOJO',icon:'🎸',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20R1.mp3'},
+    {title:'K MODERN',artist:'CT & BOJO',icon:'🎹',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20KR.mp3'},
+    {title:'DJ REMIX',artist:'CT & BOJO',icon:'🎧',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20D1.mp3'},
+    {title:'POP',artist:'CT & BOJO',icon:'🎤',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20M1.mp3'}
+  ];
+
+  /* ── UTILS ── */
+  function fmt(n){return n.toLocaleString('id-ID');}
+  function escapeWA(t){return t.replace(/[*_`]/g,'\\$&');}
+  function generateId(){return 'CT'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,5).toUpperCase();}
+  function showToast(m,t){
+    let el=document.getElementById('toast');if(!el)return;
+    el.textContent=m;el.className='toast '+(t||'');
+    requestAnimationFrame(()=>el.classList.add('show'));
+    setTimeout(()=>el.classList.remove('show'),3000);
+  }
+
+  let returnFocus=null;
+  function openModal(id){
+    let m=document.getElementById(id);if(!m)return;
+    returnFocus=document.activeElement;
+    m.classList.add('show');document.body.style.overflow='hidden';
+  }
+  function closeModal(id){
+    let m=document.getElementById(id);if(m)m.classList.remove('show');
+    document.body.style.overflow='';
+    if(returnFocus){returnFocus.focus();returnFocus=null;}
+  }
+
+  /* ── STORAGE ── */
+  function saveCustomerData(){
+    try{localStorage.setItem('warungCT_pref',JSON.stringify({name:state.name,orderType:state.orderType}));}catch(e){}
+  }
+  function getCustomerData(){try{return JSON.parse(localStorage.getItem('warungCT_pref'))||{};}catch(e){return{};}}
+  function getOwnerData(){try{return JSON.parse(localStorage.getItem('warungCT_owner'))||{};}catch(e){return{};}}
+  function saveOwnerData(d){localStorage.setItem('warungCT_owner',JSON.stringify(d));}
+  function getOrders(){try{return JSON.parse(localStorage.getItem('warungCT_orders'))||[];}catch(e){return[];}}
+  function saveOrders(l){localStorage.setItem('warungCT_orders',JSON.stringify(l));}
+
+  /* ── CART DOM RESET ── */
+  function clearCartDOM(){
+    allMenu.forEach(m=>{
+      state.cart[m.id]=0;
+      let el=document.getElementById('qty-'+m.id);if(el)el.innerText='0';
+      let mi=document.getElementById('mi-'+m.id);if(mi)mi.classList.remove('active-qty');
+    });
+    updateUI();
+  }
+
+  /* ── MENU RENDER ── */
+  function renderMenu(containerId,items){
+    let wrap=document.getElementById(containerId);if(!wrap)return;wrap.innerHTML='';
+    items.forEach(m=>{
+      let div=document.createElement('div');
+      div.className='menu-item';div.id='mi-'+m.id;
+      div.innerHTML=`
         <div class="menu-left">
-          <div class="menu-icon">${it.icon}</div>
+          <div class="menu-icon">${m.icon}</div>
           <div>
-            <div class="menu-name">${it.name}</div>
-            <div class="menu-price">Rp ${it.price.toLocaleString('id-ID')}</div>
+            <div class="menu-name">${m.name}</div>
+            <div class="menu-price">Rp ${fmt(m.price)}</div>
           </div>
         </div>
         <div class="qty-ctrl">
-          <button class="qty-btn minus" onclick="WarungCT.updateQty('${it.id}', -1, ${it.price})">−</button>
-          <div class="qty-num" id="qty-${it.id}">0</div>
-          <button class="qty-btn plus" onclick="WarungCT.updateQty('${it.id}', 1, ${it.price})">+</button>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  function updateQty(id, delta, price){
-    if(!state.cart[id]) state.cart[id] = { qty: 0, price: price };
-    state.cart[id].qty = Math.max(0, state.cart[id].qty + delta);
-    
-    const elQty = document.getElementById(`qty-${id}`);
-    const elItem = document.getElementById(`item-${id}`);
-    if(elQty) elQty.innerText = state.cart[id].qty;
-    
-    if(state.cart[id].qty > 0) elItem?.classList.add('active-qty');
-    else elItem?.classList.remove('active-qty');
-    
-    updateUI();
-  }
-
-  function setOrderType(type){
-    state.orderType = type;
-    ['delivery','takeaway','dinein'].forEach(t => {
-      document.getElementById(`ot-${t}`)?.classList[t===type?'add':'remove']('active');
-    });
-    document.getElementById('deliverySection').style.display = type==='delivery'?'block':'none';
-    if(type!=='delivery'){ state.shipping = 0; }
-    updateUI();
-  }
-
-  function getLocation(){
-    const btn = document.getElementById('locBtn');
-    btn.innerText = "⏳ MENCARI...";
-    if(!navigator.geolocation){
-      showToast("GPS tidak didukung browser ini", "error");
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(pos => {
-      state.lat = pos.coords.latitude;
-      state.lng = pos.coords.longitude;
-      const d = calcDist(state.lat, state.lng, CT_COORD.lat, CT_COORD.lng);
-      state.dist = d;
-      state.shipping = d <= 1 ? 0 : Math.ceil(d) * 2000;
-      
-      btn.innerText = "✅ LOKASI TERHUBUNG";
-      btn.classList.add('success');
-      upd('locStatus','add','show');
-      document.getElementById('locText').innerText = state.shipping === 0 ? "GRATIS" : `Rp ${state.shipping.toLocaleString('id-ID')}`;
-      document.getElementById('distText').innerText = `Jarak: ${d.toFixed(1)} km dari Warung`;
-      updateUI();
-    }, err => {
-      btn.innerText = "❌ GAGAL AMBIL LOKASI";
-      btn.classList.add('error');
-      showToast("Aktifkan GPS kamu bolo!", "warn");
+          <button class="qty-btn minus" onclick="WarungCT.upd('${m.id}',-1)">−</button>
+          <span class="qty-num" id="qty-${m.id}">0</span>
+          <button class="qty-btn plus" onclick="WarungCT.upd('${m.id}',1)">+</button>
+        </div>`;
+      wrap.appendChild(div);
     });
   }
 
-  function calcDist(lat1, lon1, lat2, lon2){
-    const R = 6371;
-    const dLat = (lat2-lat1)*Math.PI/180;
-    const dLon = (lon2-lon1)*Math.PI/180;
-    const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
-    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+  function upd(id,delta){
+    state.cart[id]=Math.max(0,(state.cart[id]||0)+delta);
+    let el=document.getElementById('qty-'+id);if(el)el.innerText=state.cart[id];
+    let mi=document.getElementById('mi-'+id);if(mi)mi.classList.toggle('active-qty',state.cart[id]>0);
+    updateUI();
+  }
+
+  function calcTotals(){
+    let itemTotal=0,count=0;
+    allMenu.forEach(m=>{let q=state.cart[m.id]||0;itemTotal+=q*m.price;count+=q;});
+    return{itemTotal,count,grand:itemTotal+(count>0?state.shipping:0)};
   }
 
   function updateUI(){
-    let subtotal = 0;
-    let itemsCount = 0;
-    for(let id in state.cart){
-      subtotal += (state.cart[id].qty * state.cart[id].price);
-      itemsCount += state.cart[id].qty;
+    let{count,grand}=calcTotals();
+    let gt=document.getElementById('grandTotal');if(gt)gt.innerText=fmt(grand);
+    let ov=document.getElementById('ongkirVal');if(ov)ov.innerText='Rp '+fmt(state.shipping);
+    let ic=document.getElementById('itemCount');if(ic)ic.innerText=count+' item';
+    let btn=document.getElementById('btnPesan'),hint=document.getElementById('btnHint');
+    let msg='',can=false;
+    if(state.isClosed)msg='❌ Warung tutup';
+    else if(state.locOver)msg='❌ Jarak >'+CONFIG.MAX_KM+' km';
+    else if(!state.name.trim())msg='👤 Isi nama dulu';
+    else if(state.orderType==='delivery'&&!state.locOk)msg='📍 Klik lokasi dulu';
+    else if(count===0)msg='🛒 Pilih menu dulu';
+    else can=true;
+    if(hint)hint.innerText=msg;if(btn)btn.disabled=!can;
+  }
+
+  function setOrderType(t){
+    state.orderType=t;saveCustomerData();
+    ['delivery','pickup','dinein'].forEach(tt=>{
+      let el=document.getElementById('ot-'+tt);if(el)el.classList.toggle('active',tt===t);
+    });
+    let gps=document.getElementById('gpsSection');
+    if(gps){
+      if(t==='delivery'){gps.style.display='';}
+      else{gps.style.display='none';state.locOk=false;state.locOver=false;state.distKm=0;state.shipping=0;}
     }
-    const total = subtotal + state.shipping;
-    document.getElementById('grandTotal').innerText = `Rp ${total.toLocaleString('id-ID')}`;
-    document.getElementById('bottomMeta').innerText = itemsCount > 0 ? `${itemsCount} item terpilih` : "Belum ada item dipilih";
-    
-    const canOrder = itemsCount > 0 && state.name.length > 1 && (state.orderType !== 'delivery' || state.lat !== null);
-    document.getElementById('btnOrder').disabled = !canOrder;
-    
-    let hint = "";
-    if(!state.name) hint = "Masukkan nama dulu bolo";
-    else if(itemsCount === 0) hint = "Pilih menu favoritmu";
-    else if(state.orderType==='delivery' && !state.lat) hint = "Klik Bagikan Lokasi";
-    else hint = "Pesanan siap dikirim!";
-    document.getElementById('btnHint').innerText = hint;
+    checkTime();updateUI();
+  }
+
+  function haversine(lat1,lon1,lat2,lon2){
+    let R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
+    let a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+    return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  }
+
+  function getLocation(){
+    let btn=document.getElementById('btnLocation');if(!btn)return;
+    btn.innerHTML='⏳ MENCARI…';btn.style.pointerEvents='none';
+    if(!navigator.geolocation){
+      showToast('GPS tidak didukung','error');
+      btn.innerHTML='📍 KLIK LOKASI';btn.style.pointerEvents='';return;
+    }
+    navigator.geolocation.getCurrentPosition(pos=>{
+      let d=haversine(CONFIG.WARUNG_LAT,CONFIG.WARUNG_LON,pos.coords.latitude,pos.coords.longitude);
+      state.distKm=parseFloat(d.toFixed(1));
+      state.userLat=pos.coords.latitude;state.userLon=pos.coords.longitude;
+      let ls=document.getElementById('locStatus'),ld=document.getElementById('locDist'),le=document.getElementById('locExtra');
+      if(ld)ld.innerText=state.distKm+' km';if(ls)ls.classList.add('show');
+      if(state.distKm>CONFIG.MAX_KM){
+        state.locOk=false;state.locOver=true;state.shipping=0;
+        btn.innerHTML='❌ TERLALU JAUH';btn.className='btn-loc error';
+        if(ls)ls.classList.add('warn');
+        if(ld)ld.style.color='var(--red)';
+        if(le)le.innerHTML=`<span style="color:var(--red);font-size:12px;font-weight:600;">Maks ${CONFIG.MAX_KM} km</span>`;
+      }else{
+        state.locOk=true;state.locOver=false;
+        state.shipping=state.distKm<=1?2000:2000+Math.ceil(state.distKm-1)*1000;
+        btn.innerHTML='✅ LOKASI OK';btn.className='btn-loc success';
+        if(ls)ls.classList.remove('warn');
+        if(ld)ld.style.color='var(--gold)';
+        if(le)le.innerHTML=`<span style="color:var(--gold);font-family:'Cinzel',serif;font-size:15px;font-weight:700;">Ongkir Rp ${fmt(state.shipping)}</span>`;
+        showToast('Ongkir Rp '+fmt(state.shipping),'success');
+      }
+      btn.style.pointerEvents='';updateUI();
+    },err=>{
+      showToast('Gagal ambil lokasi','error');
+      btn.innerHTML='📍 KLIK LOKASI';btn.style.pointerEvents='';
+    },{enableHighAccuracy:true,timeout:10000});
+  }
+
+  function getCountdownText(h){
+    let now=new Date(),t=new Date();
+    t.setHours(h,0,0,0);if(now>=t)t.setDate(t.getDate()+1);
+    let diff=t-now,hh=Math.floor(diff/3600000),mm=Math.floor((diff%3600000)/60000);
+    return `Buka lagi dalam ${hh} jam ${mm} menit`;
+  }
+
+  function checkTime(){
+    let now=new Date(),h=now.getHours(),owner=getOwnerData();
+    let closed=false,reason='';
+    if(owner.overrideStatus==='libur'){closed=true;reason='libur';}
+    else if(owner.overrideStatus==='tutup_cepat'){
+      let ch=owner.overrideHour||20;if(h>=ch){closed=true;reason='tutup_cepat';}
+    }
+    if(!closed){
+      let cd=(h<15||h>=22),cw=(h<13||h>=23);
+      closed=state.orderType==='delivery'?cd:cw;
+      if(closed)reason='jam';
+    }
+    state.isClosed=closed;
+    let badge=document.getElementById('statusBadge'),txt=document.getElementById('statusText');
+    let ci=document.getElementById('closedInfo'),ct=document.getElementById('closedTitle'),cs=document.getElementById('closedSub');
+    if(badge)badge.className='header-status';if(ci)ci.classList.remove('show');
+    if(reason==='libur'){
+      if(badge)badge.classList.add('closed');if(txt)txt.innerText='WARUNG LIBUR';
+      if(ct)ct.innerText='WARUNG LIBUR HARI INI';
+      if(cs)cs.innerText='Owner sedang istirahat. Silakan kembali besok ya 😊';
+      if(ci)ci.classList.add('show');
+    }else if(reason==='tutup_cepat'){
+      if(badge)badge.classList.add('closed');if(txt)txt.innerText='TUTUP CEPAT';
+      if(ct)ct.innerText='WARUNG SUDAH TUTUP';
+      if(cs)cs.innerText='Hari ini tutup lebih cepat. Buka normal besok.';
+      if(ci)ci.classList.add('show');
+    }else if(closed){
+      if(badge)badge.classList.add('closed');
+      let oh=state.orderType==='delivery'?15:13;
+      let ibo=state.orderType==='delivery'?h<15:h<13;
+      if(txt)txt.innerText=ibo?'BELUM BUKA':'SUDAH TUTUP';
+      if(ct)ct.innerText='WARUNG TUTUP';
+      if(cs)cs.innerText=getCountdownText(oh);
+      if(ci)ci.classList.add('show');
+    }else{
+      if(badge)badge.classList.add('open');
+      if(txt)txt.innerText=state.orderType==='delivery'?'BUKA 15:00–22:00':'BUKA 13:00–23:00';
+    }
+    updateUI();
   }
 
   function showConfirm(){
-    const list = document.getElementById('confirmList');
-    let html = "";
-    let subtotal = 0;
-    for(let id in state.cart){
-      if(state.cart[id].qty > 0){
-        const item = [...menuUtama, ...menuTambahan, ...menuMinuman].find(m => m.id === id);
-        const lineTotal = state.cart[id].qty * item.price;
-        subtotal += lineTotal;
-        html += `
-          <div class="confirm-row">
-            <span>${item.name} (${state.cart[id].qty}x)</span>
-            <span>Rp ${lineTotal.toLocaleString('id-ID')}</span>
-          </div>
-        `;
-      }
-    }
-    if(state.shipping > 0){
-      html += `
-        <div class="confirm-row" style="color:var(--gold-bright)">
-          <span>Ongkir (${state.dist.toFixed(1)} km)</span>
-          <span>Rp ${state.shipping.toLocaleString('id-ID')}</span>
-        </div>
-      `;
-    }
-    list.innerHTML = html;
-    document.getElementById('confirmTotal').innerText = `Rp ${(subtotal + state.shipping).toLocaleString('id-ID')}`;
-    upd('modalConfirm','add','show');
-  }
-
-  function hideConfirm(){ upd('modalConfirm','remove','show'); }
-
-  function doOrder(){
-    const notes = document.getElementById('orderNotes').value;
-    const orderId = "CT-" + Math.floor(1000 + Math.random() * 9000);
-    let msg = `Halo Warung CT! 👋%0A%0A`;
-    msg += `*Pesanan: ${orderId}*%0A`;
-    msg += `Nama: ${state.name}%0A`;
-    msg += `Metode: ${state.orderType.toUpperCase()}%0A%0A`;
-    msg += `*Detail Pesanan:*%0A`;
-    
-    let subtotal = 0;
-    for(let id in state.cart){
-      if(state.cart[id].qty > 0){
-        const item = [...menuUtama, ...menuTambahan, ...menuMinuman].find(m => m.id === id);
-        msg += `- ${item.name} (${state.cart[id].qty}x)%0A`;
-        subtotal += (state.cart[id].qty * item.price);
-      }
-    }
-    
-    if(state.shipping > 0) msg += `%0AOngkir: Rp ${state.shipping.toLocaleString('id-ID')}`;
-    msg += `%0A*TOTAL: Rp ${(subtotal + state.shipping).toLocaleString('id-ID')}*%0A`;
-    if(notes) msg += `%0A_Catatan: ${notes}_%0A`;
-    if(state.lat) msg += `%0ALokasi: https://www.google.com/maps?q=${state.lat},${state.lng}`;
-
-    window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
-    document.getElementById('sentId').innerText = "#" + orderId;
-    hideConfirm();
-    upd('modalSent','add','show');
-  }
-
-  function resetOrder(){
-    state.cart = {};
-    renderMenu('menuUtama',menuUtama);
-    renderMenu('menuTambahan',menuTambahan);
-    renderMenu('menuMinuman',menuMinuman);
-    updateUI();
-    upd('modalSent','remove','show');
-    window.scrollTo({top:0, behavior:'smooth'});
-  }
-
-  /* ── MUSIC LOGIC ── */
-  function loadTrack(idx, play = true){
-    state.curTrack = idx;
-    const t = tracks[idx];
-    audio.src = t.url;
-    document.getElementById('pTitle').innerText = t.title;
-    document.getElementById('pArtist').innerText = t.artist;
-    document.getElementById('pIcon').innerText = t.icon;
-    
-    document.querySelectorAll('.track-item').forEach((el, i) => {
-      el.classList[i === idx ? 'add' : 'remove']('active');
+    let{count,grand}=calcTotals();
+    if(count===0||(state.orderType==='delivery'&&!state.locOk)||!state.name.trim()||state.isClosed||state.locOver)return;
+    let html='';
+    allMenu.forEach(m=>{
+      let q=state.cart[m.id]||0;
+      if(q>0)html+=`<div class="confirm-row"><span>${m.icon} ${m.name} ×${q}</span><span style="font-family:'Cinzel',serif;">Rp ${fmt(m.price*q)}</span></div>`;
     });
+    if(state.shipping>0)html+=`<div class="confirm-row"><span>🛵 Ongkir (${state.distKm} km)</span><span style="font-family:'Cinzel',serif;">Rp ${fmt(state.shipping)}</span></div>`;
+    let meta=document.getElementById('confirmMeta');
+    if(meta)meta.innerText=`${state.name} · ${state.orderType==='delivery'?'Diantar':state.orderType==='pickup'?'Ambil Sendiri':'Makan di Tempat'} · ${count} item`;
+    let id=document.getElementById('confirmItems');if(id)id.innerHTML=html;
+    let tv=document.getElementById('confirmTotal');if(tv)tv.innerText='Rp '+fmt(grand);
+    openModal('confirmModal');
+  }
+  function hideConfirm(){closeModal('confirmModal');}
 
-    if(play) playTrack();
+  let _cooldown=false;
+  function doOrder(){
+    if(_cooldown){showToast('Tunggu sebentar','warn');return;}
+    _cooldown=true;setTimeout(()=>_cooldown=false,8000);
+    let{grand}=calcTotals(),
+        notes=document.getElementById('orderNotes')?.value||'',
+        orderId=generateId();
+    let tl={delivery:'Diantar',pickup:'Ambil Sendiri',dinein:'Makan di Tempat'};
+    let msg=`*ORDER WARUNG CT*\nID: ${orderId}\nNama: ${escapeWA(state.name)}\nTipe: ${tl[state.orderType]}\n`;
+    if(state.orderType==='delivery')
+      msg+=`Lokasi: https://maps.google.com/?q=${state.userLat},${state.userLon}\nJarak: ${state.distKm} km\n`;
+    msg+=`PESANAN:\n`;
+    allMenu.forEach(m=>{let q=state.cart[m.id]||0;if(q>0)msg+=`- ${escapeWA(m.name)} x${q} = Rp ${fmt(m.price*q)}\n`;});
+    if(state.orderType==='delivery')msg+=`Ongkir: Rp ${fmt(state.shipping)}\n`;
+    msg+=`TOTAL: Rp ${fmt(grand)}\n`;
+    if(notes)msg+=`Catatan: ${escapeWA(notes)}\n`;
+
+    let orders=getOrders();
+    orders.unshift({
+      id:orderId,name:state.name,type:state.orderType,dist:state.distKm,
+      items:allMenu.filter(m=>state.cart[m.id]>0).map(m=>({name:m.name,qty:state.cart[m.id],price:m.price})),
+      total:grand,notes,status:'pending',timestamp:Date.now()
+    });
+    saveOrders(orders);
+
+    clearCartDOM();
+    hideConfirm();
+
+    let waWin=window.open(`https://wa.me/${CONFIG.WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
+    if(!waWin)showToast('Izinkan popup WA','error');
+
+    let sid=document.getElementById('sentOrderId');if(sid)sid.innerText=orderId;
+    setTimeout(()=>openModal('orderSentOverlay'),600);
   }
 
-  function playTrack(){
-    audio.play().then(() => {
-      state.isPlaying = true;
-      document.getElementById('playBtn').innerText = "⏸";
-    }).catch(e => console.log("Audio play blocked"));
+  function resetOrder(){closeModal('orderSentOverlay');}
+
+  /* ── MUSIC PROMPT (BARU) ── */
+  function afterOrderMusic(){
+    closeModal('orderSentOverlay');
+    renderMusicPrompt();
+    setTimeout(()=>openModal('musicPromptOverlay'),300);
   }
 
-  function togglePlay(){
-    if(state.isPlaying){ audio.pause(); state.isPlaying = false; document.getElementById('playBtn').innerText = "▶"; }
-    else{ playTrack(); }
+  function renderMusicPrompt(){
+    let el=document.getElementById('musicTrackList');if(!el)return;
+    el.innerHTML=playlist.map((t,i)=>`
+      <div class="music-track-row" onclick="WarungCT.openPlayerFromPromptTrack(${i})">
+        <div class="music-track-icon">${t.icon}</div>
+        <div class="music-track-name">${t.title}</div>
+        <div class="music-track-play">▶ Play</div>
+      </div>`).join('');
   }
 
-  function nextTrack(){ loadTrack((state.curTrack + 1) % tracks.length); }
-  function prevTrack(){ loadTrack((state.curTrack - 1 + tracks.length) % tracks.length); }
-
-  audio.ontimeupdate = () => {
-    const p = (audio.currentTime / audio.duration) * 100;
-    document.getElementById('progFill').style.width = p + "%";
-    document.getElementById('curTime').innerText = formatTime(audio.currentTime);
-    document.getElementById('durTime').innerText = formatTime(audio.duration);
-  };
-  audio.onended = () => nextTrack();
-
-  function seek(e){
-    const rect = document.getElementById('progWrap').getBoundingClientRect();
-    const p = (e.clientX - rect.left) / rect.width;
-    audio.currentTime = p * audio.duration;
+  function openPlayerFromPrompt(){
+    closeModal('musicPromptOverlay');
+    setTimeout(()=>{openModal('playerOverlay');if(!audio.src)loadTrack(0,true);},300);
   }
 
-  function formatTime(s){
-    if(isNaN(s)) return "0:00";
-    const m = Math.floor(s/60);
-    const rs = Math.floor(s%60);
-    return `${m}:${rs<10?'0':''}${rs}`;
+  function openPlayerFromPromptTrack(idx){
+    closeModal('musicPromptOverlay');
+    setTimeout(()=>{openModal('playerOverlay');loadTrack(idx,true);},300);
   }
 
-  /* ── UTILS ── */
-  function showToast(msg, type=""){
-    const t = document.getElementById('toast');
-    t.innerText = msg;
-    t.className = "toast show " + type;
-    setTimeout(() => t.classList.remove('show'), 3000);
+  function closeMusicPrompt(){
+    closeModal('musicPromptOverlay');
+    showToast('Order berhasil dikirim! 🎉','success');
   }
 
   function toggleQR(show){
     if(show){
-      const url = window.location.href;
-      document.getElementById('qrUrl').innerText = url;
-      document.getElementById('qrcode').innerHTML = "";
-      new QRCode(document.getElementById('qrcode'), { text: url, width: 180, height: 180, colorDark: "#c9963a", colorLight: "#17130e" });
-      upd('modalQR','add','show');
-    } else upd('modalQR','remove','show');
+      openModal('qrOverlay');
+      let url=window.location.href;
+      let ud=document.getElementById('qrUrlDisplay');if(ud)ud.innerText=url;
+      setTimeout(()=>{
+        let qd=document.getElementById('qrcode');
+        if(qd&&typeof QRCode!=='undefined'){qd.innerHTML='';new QRCode(qd,{text:url,width:175,height:175});}
+      },100);
+    }else{closeModal('qrOverlay');}
+  }
+  function copyLink(e){
+    navigator.clipboard.writeText(window.location.href).then(()=>{
+      let b=e.target;b.textContent='✅ Disalin!';
+      setTimeout(()=>b.textContent='Salin Link',2000);
+    });
   }
 
-  function copyLink(){
-    navigator.clipboard.writeText(window.location.href);
-    showToast("Link berhasil disalin!", "success");
+  /* ── PLAYER ── */
+  let audio=new Audio(),curTrack=0,isPlaying=false;
+
+  function renderTracklist(){
+    let el=document.getElementById('tracklistEl');if(!el)return;
+    el.innerHTML=playlist.map((t,i)=>`
+      <div class="track-item ${i===curTrack?'active':''}" onclick="WarungCT.loadTrack(${i},true)">
+        <div class="track-num">${i===curTrack?'▶':i+1}</div>
+        <div class="track-icon">${t.icon}</div>
+        <div class="track-info">
+          <div class="track-name ${i===curTrack?'on':''}">${t.title}</div>
+          <div class="track-artist">${t.artist}</div>
+        </div>
+      </div>`).join('');
+  }
+  function loadTrack(idx,autoplay){
+    curTrack=idx;let t=playlist[idx];
+    if(audio)audio.src=t.url;
+    let te=document.getElementById('playerTitle');if(te)te.innerText=t.title;
+    let ae=document.getElementById('playerArtist');if(ae)ae.innerText=t.artist;
+    let al=document.getElementById('playerAlbum');if(al)al.innerText=t.icon;
+    let pf=document.getElementById('progressFill');if(pf)pf.style.width='0%';
+    renderTracklist();
+    if(autoplay&&audio)audio.play().then(()=>setPlaying(true)).catch(()=>setPlaying(false));
+  }
+  function setPlaying(v){
+    isPlaying=v;
+    let b=document.getElementById('playBtn');if(b)b.innerText=v?'⏸':'▶';
+    renderTracklist();
+  }
+  function togglePlay(){
+    if(!audio.src)loadTrack(0,true);
+    else if(isPlaying){audio.pause();setPlaying(false);}
+    else audio.play().then(()=>setPlaying(true)).catch(()=>setPlaying(false));
+  }
+  function prevTrack(){loadTrack((curTrack-1+playlist.length)%playlist.length,isPlaying);}
+  function nextTrack(){loadTrack((curTrack+1)%playlist.length,isPlaying);}
+  function seekAudio(e){
+    if(!audio.duration)return;
+    let bar=document.getElementById('progressBar');if(!bar)return;
+    let rect=bar.getBoundingClientRect();
+    audio.currentTime=Math.min(1,Math.max(0,(e.clientX-rect.left)/rect.width))*audio.duration;
+  }
+  if(audio){
+    audio.addEventListener('timeupdate',()=>{
+      if(audio.duration){
+        let pf=document.getElementById('progressFill');if(pf)pf.style.width=(audio.currentTime/audio.duration)*100+'%';
+        let tn=document.getElementById('timeNow');if(tn)tn.innerText=Math.floor(audio.currentTime/60)+':'+Math.floor(audio.currentTime%60).toString().padStart(2,'0');
+        let td=document.getElementById('timeDur');if(td)td.innerText=Math.floor(audio.duration/60)+':'+Math.floor(audio.duration%60).toString().padStart(2,'0');
+      }
+    });
+    audio.addEventListener('ended',nextTrack);
+  }
+  function openPlayer(){openModal('playerOverlay');if(!audio.src)loadTrack(0,false);}
+  function closePlayer(){closeModal('playerOverlay');if(audio)audio.pause();setPlaying(false);}
+
+  /* ── PIN / OWNER ── */
+  let pinBuffer='',tapCount=0,tapTimer=null;
+  document.getElementById('headerLogo')?.addEventListener('click',()=>{
+    tapCount++;
+    if(tapTimer)clearTimeout(tapTimer);
+    tapTimer=setTimeout(()=>{tapCount=0;},500);
+    if(tapCount>=2){tapCount=0;openPin();}
+  });
+  function openPin(){
+    pinBuffer='';updatePinDots();
+    let e=document.getElementById('pinError');if(e)e.innerText='';
+    openModal('pinOverlay');
+  }
+  function cancelPin(){closeModal('pinOverlay');pinBuffer='';}
+  function enterPin(n){
+    if(pinBuffer.length>=4)return;
+    pinBuffer+=n;updatePinDots();
+    if(pinBuffer.length===4)verifyPin();
+  }
+  function backspacePin(){pinBuffer=pinBuffer.slice(0,-1);updatePinDots();let e=document.getElementById('pinError');if(e)e.innerText='';}
+  function updatePinDots(){document.querySelectorAll('#pinDots .pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<pinBuffer.length));}
+  function verifyPin(){
+    let owner=getOwnerData(),correct=owner.pin||CONFIG.DEFAULT_PIN;
+    if(pinBuffer===correct){cancelPin();openOwnerPanel();}
+    else{let e=document.getElementById('pinError');if(e)e.innerText='PIN salah';pinBuffer='';setTimeout(updatePinDots,200);}
+  }
+  function openOwnerPanel(){
+    renderOwnerOrders();let owner=getOwnerData();
+    let n=document.getElementById('st-normal');if(n)n.classList.toggle('active',!owner.overrideStatus||owner.overrideStatus==='normal');
+    let t=document.getElementById('st-tutup');if(t)t.classList.toggle('active',owner.overrideStatus==='tutup_cepat');
+    let l=document.getElementById('st-libur');if(l)l.classList.toggle('active',owner.overrideStatus==='libur');
+    let tj=document.getElementById('tutupJam');if(tj)tj.style.display=owner.overrideStatus==='tutup_cepat'?'block':'none';
+    if(owner.overrideHour&&tj)tj.value=owner.overrideHour;
+    openModal('ownerOverlay');
+  }
+  function hideOwnerPanel(){closeModal('ownerOverlay');}
+  function setOverride(mode){
+    let owner=getOwnerData();owner.overrideStatus=mode;
+    if(mode==='tutup_cepat'){
+      let jam=parseInt(document.getElementById('tutupJam')?.value||20);
+      owner.overrideHour=(jam>=13&&jam<=23)?jam:20;
+      let tj=document.getElementById('tutupJam');if(tj)tj.style.display='block';
+    }else{let tj=document.getElementById('tutupJam');if(tj)tj.style.display='none';}
+    saveOwnerData(owner);checkTime();openOwnerPanel();
+    showToast(mode==='libur'?'Warung LIBUR':(mode==='tutup_cepat'?`Tutup jam ${owner.overrideHour}:00`:'Status Normal'),'success');
+  }
+  function changePin(){
+    let val=document.getElementById('newPin')?.value;
+    if(!/^\d{4}$/.test(val)){showToast('PIN harus 4 digit','error');return;}
+    let owner=getOwnerData();owner.pin=val;saveOwnerData(owner);
+    if(document.getElementById('newPin'))document.getElementById('newPin').value='';
+    showToast('PIN berhasil diganti','success');
+  }
+  function renderOwnerOrders(){
+    let orders=getOrders();
+    let cs=document.getElementById('orderCount');if(cs)cs.innerText=orders.length;
+    let container=document.getElementById('ownerOrderList');if(!container)return;
+    if(!orders.length){container.innerHTML='<div style="font-size:12px;color:var(--cream-faint);padding:10px 0;">Belum ada order masuk</div>';return;}
+    container.innerHTML=orders.map(o=>`
+      <div class="owner-order-card">
+        <div class="owner-order-id">${o.id}</div>
+        <div class="owner-order-meta">${o.name} · ${o.type} · ${new Date(o.timestamp).toLocaleString('id-ID')}</div>
+        <div class="owner-order-items">${o.items.map(i=>i.name+' ×'+i.qty).join(', ')}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+          <div class="owner-order-total">Rp ${fmt(o.total)}</div>
+          <div>
+            <button class="btn-sm-success" onclick="WarungCT.confirmOrder('${o.id}')">✓ OK</button>
+            <button class="btn-sm-danger" onclick="WarungCT.deleteOrder('${o.id}')">✕ Hapus</button>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+  function confirmOrder(id){
+    let orders=getOrders();let o=orders.find(x=>x.id===id);
+    if(o&&o.status!=='confirmed'){o.status='confirmed';saveOrders(orders);renderOwnerOrders();showToast('Order dikonfirmasi','success');}
+  }
+  function deleteOrder(id){saveOrders(getOrders().filter(o=>o.id!==id));renderOwnerOrders();showToast('Order dihapus','success');}
+  function clearAllOrders(){
+    if(confirm('Hapus semua order?')){saveOrders([]);renderOwnerOrders();showToast('Semua order dihapus','success');}
   }
 
-  function checkTime(){
-    const hr = new Date().getHours();
-    const isOpen = hr >= 6 && hr <= 23;
-    const badge = document.getElementById('statusBadge');
-    const info = document.getElementById('closedInfo');
-    if(isOpen){
-      badge.className = "header-status open";
-      document.getElementById('statusText').innerText = "BUKA SEKARANG";
-      info.classList.remove('show');
-    } else {
-      badge.className = "header-status closed";
-      document.getElementById('statusText').innerText = "SEDANG TUTUP";
-      info.classList.add('show');
+  /* ── PWA INSTALL ── */
+  let installPromptEvent=null,installShown=false;
+  window.addEventListener('beforeinstallprompt',e=>{
+    e.preventDefault();installPromptEvent=e;
+    if(!localStorage.getItem('installAnswered'))setTimeout(()=>showInstallModal(),1500);
+  });
+  function showInstallModal(){
+    if(installShown)return;installShown=true;
+    let modal=document.getElementById('installModal');if(!modal)return;
+    let desc=document.getElementById('installDesc'),hint=document.getElementById('installHint');
+    let ua=navigator.userAgent,isIOS=/iPhone|iPad|iPod/.test(ua);
+    let safe='<br><span class="safe-note">✅ Aman, tidak makan memori</span>';
+    if(isIOS){if(desc)desc.innerHTML='Tekan Share lalu "Tambahkan ke Layar Utama".'+safe;if(hint)hint.innerText='Petunjuk Safari';}
+    else if(installPromptEvent){if(desc)desc.innerHTML='Klik "Ya" untuk memasang sebagai aplikasi.'+safe;}
+    else{if(desc)desc.innerHTML='Buka menu browser → "Instal Aplikasi".'+safe;}
+    modal.classList.add('show');
+  }
+  function installApp(){
+    if(installPromptEvent){
+      installPromptEvent.prompt();
+      installPromptEvent.userChoice.then(res=>{
+        if(res.outcome==='accepted')showToast('Warung CT akan dipasang','success');
+        installPromptEvent=null;
+      });
+    }else{
+      if(/iPhone|iPad|iPod/.test(navigator.userAgent))showToast('Safari: Share → Tambahkan ke Layar Utama','');
+      else showToast('Menu browser → Instal Aplikasi','');
     }
+    localStorage.setItem('installAnswered','yes');
+    document.getElementById('installModal')?.classList.remove('show');
   }
-
-  function saveCustomerData(){ localStorage.setItem('ct_cust', JSON.stringify({ name: state.name, orderType: state.orderType })); }
-  function getCustomerData(){ return JSON.parse(localStorage.getItem('ct_cust') || '{}'); }
+  function declineInstall(){
+    localStorage.setItem('installAnswered','no');
+    document.getElementById('installModal')?.classList.remove('show');
+  }
+  document.getElementById('installYesBtn')?.addEventListener('click',installApp);
+  document.getElementById('installNoBtn')?.addEventListener('click',declineInstall);
+  setTimeout(()=>{
+    if(!installPromptEvent&&!localStorage.getItem('installAnswered')&&/Android|iPhone|iPad|iPod/.test(navigator.userAgent))showInstallModal();
+  },3000);
 
   /* ── INIT ── */
   function init(){
-    renderMenu('menuUtama', menuUtama);
-    renderMenu('menuTambahan', menuTambahan);
-    renderMenu('menuMinuman', menuMinuman);
+    renderMenu('menuUtama',menuUtama);
+    renderMenu('menuTambahan',menuTambahan);
+    renderMenu('menuMinuman',menuMinuman);
 
-    // Render tracklist
-    document.getElementById('tracklist').innerHTML = tracks.map((t, i) => `
-      <div class="track-item" onclick="WarungCT.loadTrack(${i})">
-        <div class="track-num">${i+1}</div>
-        <div class="track-icon">${t.icon}</div>
-        <div class="track-info">
-          <div class="track-name">${t.title}</div>
-          <div class="track-artist">${t.artist}</div>
-        </div>
-      </div>
-    `).join('');
+    let c=getCustomerData();
+    if(c.name){state.name=c.name;let un=document.getElementById('userName');if(un)un.value=c.name;}
+    if(c.orderType)setOrderType(c.orderType);else setOrderType('delivery');
 
-    // Music Preview
-    document.getElementById('musicPreview').innerHTML = tracks.slice(0,2).map(t => `
-      <div class="music-track-row">
-        <div class="music-track-icon">${t.icon}</div>
-        <div class="music-track-name">${t.title} - ${t.artist}</div>
-        <div class="music-track-play">PREVIEW</div>
-      </div>
-    `).join('');
-
-    let c = getCustomerData();
-    if(c.name){ state.name = c.name; document.getElementById('userName').value = c.name; }
-    if(c.orderType) setOrderType(c.orderType);
-
-    document.getElementById('userName').addEventListener('input', e => {
-      state.name = e.target.value.trim();
-      saveCustomerData();
-      updateUI();
+    let unInput=document.getElementById('userName');
+    if(unInput)unInput.addEventListener('input',e=>{
+      state.name=e.target.value.slice(0,40).trim();saveCustomerData();updateUI();
     });
 
     checkTime();
-    setInterval(checkTime, 60000);
+    setInterval(()=>checkTime(),60000);
     updateUI();
-    loadTrack(0, false);
-
-    // Tampilkan prompt musik setelah 2 detik
-    setTimeout(() => upd('musicPrompt','add','show'), 2000);
+    loadTrack(0,false);
   }
 
-  window.WarungCT = {
-    upd, setOrderType, getLocation, showConfirm, hideConfirm, doOrder, resetOrder,
-    toggleQR, copyLink, updateQty, loadTrack, playTrack, togglePlay, nextTrack, prevTrack, seek
+  window.WarungCT={
+    upd,setOrderType,getLocation,showConfirm,hideConfirm,doOrder,resetOrder,
+    toggleQR,copyLink,openPlayer,closePlayer,togglePlay,prevTrack,nextTrack,seekAudio,loadTrack,
+    enterPin,backspacePin,cancelPin,setOverride,changePin,confirmOrder,deleteOrder,clearAllOrders,hideOwnerPanel,
+    afterOrderMusic,openPlayerFromPrompt,openPlayerFromPromptTrack,closeMusicPrompt
   };
-
-  window.onload = init;
+  init();
+})();
 </script>
-
 </body>
 </html>
