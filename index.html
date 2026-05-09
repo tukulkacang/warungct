@@ -1045,7 +1045,7 @@ body{
       let ch=owner.overrideHour||20;if(h>=ch){closed=true;reason='tutup_cepat';}
     }
     if(!closed){
-      let cd=(h<15||h>=22),cw=(h<13||h>=23);
+      let cd=(h<06||h>=22),cw=(h<13||h>=23);
       closed=S.orderType==='delivery'?cd:cw;
       if(closed)reason='jam';
     }
