@@ -722,6 +722,7 @@ body{
       <div class="sttl" style="text-align:center;">Share Warung CT</div>
       <div id="qrUrlDisplay" class="qr-url"></div>
       <div id="qrcode"></div>
+      <div style="font-size:11px;color:var(--parch-3);margin:-6px 0 12px;font-weight:300;">Tekan lama gambar QR untuk simpan 📲</div>
       <button class="btn-primary" onclick="WCT.copyLink(event)">Salin Link</button>
       <button class="btn-ghost" onclick="WCT.toggleQR(false)">Tutup</button>
     </div>
@@ -1170,6 +1171,13 @@ body{
       },100);
     }else closeOverlay('qrOverlay');
   }
+  function copyLink(e){
+    navigator.clipboard.writeText(CFG.SHARE_URL).then(()=>{
+      let b=e.target;b.textContent='✅ Disalin!';
+      setTimeout(()=>b.textContent='Salin Link',2000);
+    });
+  }
+
   function copyLink(e){
     navigator.clipboard.writeText(CFG.SHARE_URL).then(()=>{
       let b=e.target;b.textContent='✅ Disalin!';
