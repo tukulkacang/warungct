@@ -49,7 +49,6 @@ body{
   font-family:'DM Sans',sans-serif;
   font-weight:400;
   padding-bottom:220px;
-  /* Subtle grain */
   background-image:
     url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.03'/%3E%3C/svg%3E"),
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(200,145,58,0.04) 0%, transparent 60%);
@@ -424,8 +423,8 @@ body{
   font-size:11px;font-weight:500;color:var(--no);cursor:pointer;transition:all 0.15s;
 }
 
-/* QR */
-#qrcode{display:inline-block;margin:14px auto;border-radius:10px;overflow:hidden;border:3px solid var(--card-2);box-shadow:0 4px 24px rgba(0,0,0,0.4);}
+/* QR — FIXED: padding + white bg so finder patterns aren't clipped */
+#qrcode{display:inline-block;margin:14px auto;border-radius:10px;overflow:hidden;border:3px solid var(--card-2);box-shadow:0 4px 24px rgba(0,0,0,0.4);padding:10px;background:#ffffff;}
 .qr-url{font-size:11px;color:var(--parch-2);background:var(--card-2);padding:9px 13px;border-radius:9px;word-break:break-all;margin-bottom:8px;border:1px solid var(--wire);}
 
 /* Order Sent */
@@ -747,7 +746,7 @@ body{
       <div class="drag"></div>
       <div class="music-ring">🎵</div>
       <div class="music-ttl">Sambil Nunggu Order</div>
-      <div class="music-sub">Dengerin musik pilihan CT & Bojo<br>biar makin betah nunggu ☕</div>
+      <div class="music-sub">Dengerin musik pilihan CT &amp; Bojo<br>biar makin betah nunggu ☕</div>
       <div class="music-list" id="musicTrackList"></div>
       <button class="btn-primary" onclick="WCT.openPlayerFromPrompt()">🎶 Buka Pemutar Musik</button>
       <button class="btn-ghost" onclick="WCT.closeMusicPrompt()">Nanti aja deh</button>
@@ -760,7 +759,7 @@ body{
       <div class="drag"></div>
       <span class="pl-art" id="playerAlbum">🎵</span>
       <div class="pl-ttl" id="playerTitle">–</div>
-      <div class="pl-artist" id="playerArtist">CT & BOJO</div>
+      <div class="pl-artist" id="playerArtist">CT &amp; BOJO</div>
       <div class="progress-bar" onclick="WCT.seekAudio(event)" id="progressBar">
         <div class="progress-fill" id="progressFill" style="width:0%;"></div>
       </div>
@@ -831,7 +830,8 @@ body{
 (function(){
   const CFG={
     WARUNG_LAT:-7.166875, WARUNG_LON:112.326875,
-    MAX_KM:3, WA:'+6285730030112', PIN:'0000'
+    MAX_KM:3, WA:'+6285730030112', PIN:'0000',
+    SHARE_URL:'https://tukulkacang.github.io/warungct/' // ← ganti dengan URL asli
   };
 
   let S={
@@ -1162,7 +1162,7 @@ body{
   function toggleQR(show){
     if(show){
       openOverlay('qrOverlay');
-      let url=window.location.href;
+      let url=CFG.SHARE_URL;
       let ud=document.getElementById('qrUrlDisplay');if(ud)ud.innerText=url;
       setTimeout(()=>{
         let qd=document.getElementById('qrcode');
@@ -1171,7 +1171,7 @@ body{
     }else closeOverlay('qrOverlay');
   }
   function copyLink(e){
-    navigator.clipboard.writeText(window.location.href).then(()=>{
+    navigator.clipboard.writeText(CFG.SHARE_URL).then(()=>{
       let b=e.target;b.textContent='✅ Disalin!';
       setTimeout(()=>b.textContent='Salin Link',2000);
     });
