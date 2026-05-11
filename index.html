@@ -1244,70 +1244,40 @@ Kalau ada pertanyaan di luar warung, jawab saja dengan ramah tapi tetap arahkan 
 
     chatHistory.push({ role: 'user', content: text });
 
-    const API_KEY = getAiKey();
+    // Susun pesan dengan system prompt dari AI_SYSTEM_PROMPT
+    const messages = [
+      { role: 'system', content: AI_SYSTEM_PROMPT },
+      ...chatHistory.slice(-10)
+    ];
 
-    // ✅ Mode Offline — selalu jalan tanpa API key
-    if (!API_KEY || API_KEY.trim() === '') {
-      await new Promise(r => setTimeout(r, 300 + Math.random() * 400));
-      removeTyping();
-      const reply = getAIResponse(text);
-      addMsg(reply, 'bot');
-      chatHistory.push({ role: 'assistant', content: reply });
-      return;
-    }
-
-    // ✅ Mode Online — Gemini Flash via OpenRouter
     try {
-      const messages = [
-        { role: 'user', content: AI_SYSTEM_PROMPT + '\n\n[Mulai percakapan]' },
-        { role: 'assistant', content: 'Siap! Aku Asisten Warung CT, siap bantu!' },
-        ...chatHistory.slice(-10)
-      ];
-
       const res = await fetch(OR_API_URL, {
         method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + API_KEY,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': window.location.href,
-          'X-Title': 'Warung CT Assistant'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: OR_MODEL,
           messages: messages,
           temperature: 0.75,
           max_tokens: 500
         })
       });
 
-      // ✅ FIXED: Semua error fallback ke offline, tidak tampilkan error ke user
-      if (!res.ok) {
-        console.warn('OpenRouter error:', res.status);
-        removeTyping();
-        const reply = getAIResponse(text);
-        addMsg(reply, 'bot');
-        chatHistory.push({ role: 'assistant', content: reply });
-        return;
-      }
+      removeTyping();
+
+      if (!res.ok) throw new Error('Worker HTTP ' + res.status);
 
       const data = await res.json();
-      removeTyping();
-
       const reply = data.choices?.[0]?.message?.content;
-      if (!reply) {
-        const fallback = getAIResponse(text);
-        addMsg(fallback, 'bot');
-        chatHistory.push({ role: 'assistant', content: fallback });
-        return;
+
+      if (reply) {
+        addMsg(reply, 'bot');
+        chatHistory.push({ role: 'assistant', content: reply });
+      } else {
+        throw new Error('Empty reply');
       }
-
-      addMsg(reply, 'bot');
-      chatHistory.push({ role: 'assistant', content: reply });
-
     } catch (e) {
-      // ✅ Network error → fallback offline, no error message shown
-      console.warn('Chat fetch error:', e);
+      console.warn('Worker fetch error:', e);
       removeTyping();
+      // Fallback ke offline
       const reply = getAIResponse(text);
       addMsg(reply, 'bot');
       chatHistory.push({ role: 'assistant', content: reply });
