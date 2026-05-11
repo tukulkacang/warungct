@@ -524,6 +524,106 @@ body{
 .o-card-items{font-size:12px;color:var(--parch-2);margin-bottom:9px;font-weight:300;}
 .o-card-total{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--parch);}
 
+/* ── OWNER ORDERS RAPI ── */
+.owner-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;
+}
+.owner-stat{
+  background:var(--card-2);border:1px solid var(--wire);border-radius:var(--r-sm);
+  padding:12px 8px;text-align:center;
+}
+.owner-stat-nm{
+  font-size:7.5px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--parch-3);margin-bottom:4px;
+}
+.owner-stat-val{
+  font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--au);
+}
+.owner-stat-val.no{color:var(--parch-2);}
+
+.owner-tabs{
+  display:flex;gap:6px;margin-bottom:12px;
+}
+.owner-tab{
+  flex:1;background:var(--card-2);border:1px solid var(--wire);border-radius:var(--r-xs);
+  padding:8px 4px;font-family:'DM Sans';font-size:10px;font-weight:500;color:var(--parch-3);
+  cursor:pointer;transition:all 0.15s;text-align:center;letter-spacing:0.5px;
+}
+.owner-tab:hover{border-color:var(--au-ring);color:var(--parch);}
+.owner-tab.active{
+  background:var(--au-glow);border-color:var(--au-ring);color:var(--au);
+}
+
+.o-card{
+  background:var(--card-2);border:1px solid var(--wire);border-radius:var(--r-sm);
+  padding:0;margin-bottom:10px;overflow:hidden;
+  transition:all 0.18s;
+}
+.o-card:hover{border-color:var(--wire-2);}
+.o-card.confirmed{border-left:3px solid var(--ok);}
+.o-card.pending{border-left:3px solid var(--au);}
+
+.o-card-hdr{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 14px 10px;border-bottom:1px solid var(--wire);
+  background:var(--card);
+}
+.o-card-id{
+  font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--au);letter-spacing:1.5px;
+}
+.o-card-badge{
+  font-size:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  padding:3px 10px;border-radius:100px;
+}
+.o-card-badge.pending{background:var(--au-glow);color:var(--au);border:1px solid var(--au-ring);}
+.o-card-badge.confirmed{background:var(--ok-bg);color:var(--ok);border:1px solid rgba(77,184,112,0.22);}
+
+.o-card-body{padding:12px 14px;}
+.o-card-meta{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  font-size:11px;color:var(--parch-3);margin-bottom:10px;font-weight:300;
+}
+.o-card-meta span{display:flex;align-items:center;gap:4px;}
+.o-card-meta .dot{width:3px;height:3px;background:var(--wire-2);border-radius:50%;}
+
+.o-card-items{
+  display:flex;flex-direction:column;gap:6px;
+  font-size:12px;color:var(--parch-2);font-weight:300;
+  margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--wire);
+}
+.o-item{
+  display:flex;justify-content:space-between;align-items:center;
+}
+.o-item-nm{color:var(--parch);font-weight:400;}
+.o-item-qty{color:var(--parch-3);font-size:11px;}
+.o-item-price{font-family:'Playfair Display',serif;color:var(--parch-2);font-size:12px;}
+
+.o-card-ftr{
+  display:flex;justify-content:space-between;align-items:center;
+}
+.o-card-total{
+  font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--parch);
+}
+.o-card-total small{
+  font-family:'DM Sans';font-size:9px;color:var(--parch-3);font-weight:300;display:block;letter-spacing:1px;
+}
+
+.o-empty{
+  text-align:center;padding:28px 14px;
+  background:var(--card);border:1px dashed var(--wire);border-radius:var(--r-sm);
+}
+.o-empty-ic{font-size:28px;margin-bottom:8px;opacity:0.4;}
+.o-empty-txt{font-size:12px;color:var(--parch-3);font-weight:300;}
+
+.owner-hdr-row{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;
+}
+.owner-hdr-row .flbl{margin:0;}
+.owner-refresh{
+  font-size:10px;color:var(--au);background:var(--au-glow);border:1px solid var(--au-ring);
+  border-radius:6px;padding:4px 10px;cursor:pointer;transition:all 0.15s;
+}
+.owner-refresh:hover{background:var(--au);color:var(--ink);}
+
 /* PIN */
 .pin-dots{display:flex;justify-content:center;gap:14px;margin:22px 0 8px;}
 .pin-dot{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--wire-2);background:transparent;transition:all 0.15s;}
@@ -608,6 +708,7 @@ body{
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--wire-2);border-radius:2px;}
 </style>
+<base target="_blank">
 <base target="_blank">
 </head>
 <body>
@@ -791,7 +892,30 @@ body{
       <div class="flbl" style="margin-top:16px;">Ganti PIN</div>
       <input type="password" id="newPin" maxlength="4" placeholder="PIN baru (4 digit)" class="input-sm">
       <button class="btn-primary" style="margin-bottom:18px;" onclick="WCT.changePin()">Simpan PIN Baru</button>
-      <div class="flbl">Order Masuk (<span id="orderCount">0</span>)</div>
+
+      <div class="owner-hdr-row">
+        <div class="flbl">Order Masuk</div>
+        <button class="owner-refresh" onclick="WCT.renderOwnerOrders()">🔄 Refresh</button>
+      </div>
+      <div class="owner-stats">
+        <div class="owner-stat">
+          <div class="owner-stat-nm">Total</div>
+          <div class="owner-stat-val" id="statTotal">0</div>
+        </div>
+        <div class="owner-stat">
+          <div class="owner-stat-nm">Pending</div>
+          <div class="owner-stat-val no" id="statPending">0</div>
+        </div>
+        <div class="owner-stat">
+          <div class="owner-stat-nm">Pendapatan</div>
+          <div class="owner-stat-val" id="statRevenue">0</div>
+        </div>
+      </div>
+      <div class="owner-tabs">
+        <button class="owner-tab active" onclick="WCT.setOrderFilter('all')" id="tab-all">Semua</button>
+        <button class="owner-tab" onclick="WCT.setOrderFilter('pending')" id="tab-pending">Pending</button>
+        <button class="owner-tab" onclick="WCT.setOrderFilter('confirmed')" id="tab-confirmed">Selesai</button>
+      </div>
       <div id="ownerOrderList"></div>
       <button class="btn-ghost" style="border-color:rgba(217,91,74,0.2);color:var(--no);margin-top:12px;" onclick="WCT.clearAllOrders()">Hapus Semua Order</button>
       <button class="btn-ghost" style="margin-top:8px;" onclick="WCT.hideOwnerPanel()">Tutup</button>
@@ -1047,7 +1171,7 @@ body{
       let ch=owner.overrideHour||20;if(h>=ch){closed=true;reason='tutup_cepat';}
     }
     if(!closed){
-      let cd=(h<15||h>=22),cw=(h<13||h>=23);
+      let cd=(h<09||h>=22),cw=(h<09||h>=23);
       closed=S.orderType==='delivery'?cd:cw;
       if(closed)reason='jam';
     }
@@ -1179,14 +1303,7 @@ body{
     });
   }
 
-  function copyLink(e){
-    navigator.clipboard.writeText(CFG.SHARE_URL).then(()=>{
-      let b=e.target;b.textContent='✅ Disalin!';
-      setTimeout(()=>b.textContent='Salin Link',2000);
-    });
-  }
-
-  /* ── PLAYER ── */
+    /* ── PLAYER ── */
   let audio=new Audio(),curTrack=0,isPlaying=false;
 
   function renderTracklist(){
@@ -1295,21 +1412,47 @@ body{
     if(document.getElementById('newPin'))document.getElementById('newPin').value='';
     toast('PIN berhasil diganti','success');
   }
+  let _orderFilter='all';
+  function setOrderFilter(f){_orderFilter=f;['all','pending','confirmed'].forEach(t=>{let el=document.getElementById('tab-'+t);if(el)el.classList.toggle('active',t===f);});renderOwnerOrders();}
+  function timeAgo(ts){
+    let diff=Math.floor((Date.now()-ts)/1000);
+    if(diff<60)return diff+' detik lalu';
+    let m=Math.floor(diff/60);if(m<60)return m+' menit lalu';
+    let h=Math.floor(m/60);if(h<24)return h+' jam lalu';
+    return Math.floor(h/24)+' hari lalu';
+  }
   function renderOwnerOrders(){
     let orders=getOrders();
-    let cs=document.getElementById('orderCount');if(cs)cs.innerText=orders.length;
+    let filtered=_orderFilter==='all'?orders:orders.filter(o=>o.status===_orderFilter);
+    let pendingCount=orders.filter(o=>o.status==='pending').length;
+    let totalRevenue=orders.filter(o=>o.status==='confirmed').reduce((a,o)=>a+o.total,0);
+    let st=document.getElementById('statTotal');if(st)st.innerText=orders.length;
+    let sp=document.getElementById('statPending');if(sp)sp.innerText=pendingCount;
+    let sr=document.getElementById('statRevenue');if(sr)sr.innerText='Rp '+fmt(totalRevenue);
     let container=document.getElementById('ownerOrderList');if(!container)return;
-    if(!orders.length){container.innerHTML='<div style="font-size:12px;color:var(--parch-3);padding:10px 0;font-weight:300;">Belum ada order masuk</div>';return;}
-    container.innerHTML=orders.map(o=>`
-      <div class="o-card">
-        <div class="o-card-id">${o.id}</div>
-        <div class="o-card-meta">${o.name} · ${o.type} · ${new Date(o.timestamp).toLocaleString('id-ID')}</div>
-        <div class="o-card-items">${o.items.map(i=>i.name+' ×'+i.qty).join(', ')}</div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
-          <div class="o-card-total">Rp ${fmt(o.total)}</div>
-          <div>
-            <button class="btn-sm-ok" onclick="WCT.confirmOrder('${o.id}')">✓ OK</button>
-            <button class="btn-sm-no" onclick="WCT.deleteOrder('${o.id}')">✕ Hapus</button>
+    if(!filtered.length){
+      container.innerHTML=`<div class="o-empty"><div class="o-empty-ic">📭</div><div class="o-empty-txt">${_orderFilter==='all'?'Belum ada order masuk':'Tidak ada order '+_orderFilter}</div></div>`;
+      return;
+    }
+    container.innerHTML=filtered.map(o=>`
+      <div class="o-card ${o.status||'pending'}">
+        <div class="o-card-hdr">
+          <div class="o-card-id">${o.id}</div>
+          <div class="o-card-badge ${o.status||'pending'}">${o.status==='confirmed'?'✓ Selesai':'⏳ Pending'}</div>
+        </div>
+        <div class="o-card-body">
+          <div class="o-card-meta">
+            <span>👤 ${o.name}</span><span class="dot"></span>
+            <span>${o.type==='delivery'?'🛵 Diantar':o.type==='pickup'?'🚶 Ambil':'🍽️ Dine-in'}</span><span class="dot"></span>
+            <span>🕐 ${timeAgo(o.timestamp)}</span>
+          </div>
+          <div class="o-card-items">${o.items.map(i=>`<div class="o-item"><span class="o-item-nm">${i.name} <span class="o-item-qty">×${i.qty}</span></span><span class="o-item-price">Rp ${fmt(i.price*i.qty)}</span></div>`).join('')}</div>
+          <div class="o-card-ftr">
+            <div class="o-card-total"><small>Total Bayar</small>Rp ${fmt(o.total)}</div>
+            <div>
+              ${o.status!=='confirmed'?`<button class="btn-sm-ok" onclick="WCT.confirmOrder('${o.id}')">✓ Konfirmasi</button>`:''}
+              <button class="btn-sm-no" onclick="WCT.deleteOrder('${o.id}')">✕ Hapus</button>
+            </div>
           </div>
         </div>
       </div>`).join('');
@@ -1348,7 +1491,8 @@ body{
     upd,setOrderType,getLocation,showConfirm,hideConfirm,doOrder,resetOrder,
     toggleQR,copyLink,openPlayer,closePlayer,togglePlay,prevTrack,nextTrack,seekAudio,loadTrack,
     enterPin,backspacePin,cancelPin,setOverride,changePin,confirmOrder,deleteOrder,clearAllOrders,hideOwnerPanel,
-    afterOrderMusic,openPlayerFromPrompt,openPlayerFromPromptTrack,closeMusicPrompt
+    afterOrderMusic,openPlayerFromPrompt,openPlayerFromPromptTrack,closeMusicPrompt,
+    renderOwnerOrders,setOrderFilter
   };
   init();
 })();
