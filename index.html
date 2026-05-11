@@ -239,7 +239,6 @@ body{
 ::-webkit-scrollbar-thumb{background:var(--wire-2);border-radius:2px;}
 </style>
 <base target="_blank">
-<base target="_blank">
 </head>
 <body>
 <div class="app">
@@ -562,7 +561,7 @@ body{
 
   /* UTILS */
   const fmt=n=>n.toLocaleString('id-ID');
-  const escWA=t=>t.replace(/[*_`]/g,'\$&');
+  const escWA=t=>t.replace(/[*_`]/g,'\\$&');
   const genId=()=>'CT'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,5).toUpperCase();
 
   function toast(msg,type){
@@ -611,7 +610,7 @@ body{
     items.forEach(m=>{
       let d=document.createElement('div');
       d.className='menu-item';d.id='mi-'+m.id;
-      d.innerHTML='<div class="m-left"><div class="m-icon">'+m.icon+'</div><div><div class="m-name">'+m.name+'</div><div class="m-price">Rp '+fmt(m.price)+'</div></div></div><div class="qty-wrap"><button class="q-btn minus" onclick="WCT.upd(''+m.id+'',-1)">−</button><span class="q-num" id="qty-'+m.id+'">0</span><button class="q-btn plus" onclick="WCT.upd(''+m.id+'',1)">+</button></div>';
+      d.innerHTML='<div class="m-left"><div class="m-icon">'+m.icon+'</div><div><div class="m-name">'+m.name+'</div><div class="m-price">Rp '+fmt(m.price)+'</div></div></div><div class="qty-wrap"><button class="q-btn minus" onclick="WCT.upd(\''+m.id+'\',-1)">−</button><span class="q-num" id="qty-'+m.id+'">0</span><button class="q-btn plus" onclick="WCT.upd(\''+m.id+'\',1)">+</button></div>';
       wrap.appendChild(d);
     });
   }
@@ -689,7 +688,7 @@ body{
         btn.innerHTML='<span>✅</span><span>Lokasi OK</span>';btn.className='btn-loc success';
         if(lp)lp.classList.remove('warn');
         if(ld)ld.style.color='var(--au)';
-        if(le)le.innerHTML='<span style="color:var(--au);font-family:'Playfair Display',serif;font-size:16px;font-weight:700;">Rp '+fmt(S.shipping)+'</span>';
+        if(le)le.innerHTML='<span style="color:var(--au);font-family:\'Playfair Display\',serif;font-size:16px;font-weight:700;">Rp '+fmt(S.shipping)+'</span>';
         toast('Ongkir Rp '+fmt(S.shipping),'success');
       }
       btn.style.pointerEvents='';updateUI();
@@ -753,9 +752,9 @@ body{
     let html='';
     allMenu.forEach(m=>{
       let q=S.cart[m.id]||0;
-      if(q>0)html+='<div class="cfm-row"><span>'+m.icon+' '+m.name+' ×'+q+'</span><span style="font-family:'Playfair Display',serif;">Rp '+fmt(m.price*q)+'</span></div>';
+      if(q>0)html+='<div class="cfm-row"><span>'+m.icon+' '+m.name+' ×'+q+'</span><span style="font-family:\'Playfair Display\',serif;">Rp '+fmt(m.price*q)+'</span></div>';
     });
-    if(S.shipping>0)html+='<div class="cfm-row"><span>🛵 Ongkir ('+S.distKm+' km)</span><span style="font-family:'Playfair Display',serif;">Rp '+fmt(S.shipping)+'</span></div>';
+    if(S.shipping>0)html+='<div class="cfm-row"><span>🛵 Ongkir ('+S.distKm+' km)</span><span style="font-family:\'Playfair Display\',serif;">Rp '+fmt(S.shipping)+'</span></div>';
     let meta=document.getElementById('confirmMeta');
     if(meta)meta.innerText=S.name+' · '+(S.orderType==='delivery'?'Diantar':S.orderType==='pickup'?'Ambil Sendiri':'Makan di Tempat')+' · '+count+' item';
     let id=document.getElementById('confirmItems');if(id)id.innerHTML=html;
@@ -772,25 +771,22 @@ body{
         notes=document.getElementById('orderNotes')?.value||'',
         orderId=genId();
     let tl={delivery:'Diantar',pickup:'Ambil Sendiri',dinein:'Makan di Tempat'};
-    let msg='*ORDER WARUNG CT*
-ID: '+orderId+'
-Nama: '+escWA(S.name)+'
-Tipe: '+tl[S.orderType]+'
-';
-    if(S.orderType==='delivery')
-      msg+='Lokasi: https://maps.google.com/?q='+S.userLat+','+S.userLon+'
-Jarak: '+S.distKm+' km
-';
-    msg+='PESANAN:
-';
-    allMenu.forEach(m=>{let q=S.cart[m.id]||0;if(q>0)msg+='- '+escWA(m.name)+' x'+q+' = Rp '+fmt(m.price*q)+'
-';});
-    if(S.orderType==='delivery')msg+='Ongkir: Rp '+fmt(S.shipping)+'
-';
-    msg+='TOTAL: Rp '+fmt(grand)+'
-';
-    if(notes)msg+='Catatan: '+escWA(notes)+'
-';
+    let msg='*ORDER WARUNG CT*\n';
+    msg+='ID: '+orderId+'\n';
+    msg+='Nama: '+escWA(S.name)+'\n';
+    msg+='Tipe: '+tl[S.orderType]+'\n';
+    if(S.orderType==='delivery'){
+      msg+='Lokasi: https://maps.google.com/?q='+S.userLat+','+S.userLon+'\n';
+      msg+='Jarak: '+S.distKm+' km\n';
+    }
+    msg+='\nPESANAN:\n';
+    allMenu.forEach(m=>{
+      let q=S.cart[m.id]||0;
+      if(q>0) msg+='- '+escWA(m.name)+' x'+q+' = Rp '+fmt(m.price*q)+'\n';
+    });
+    if(S.orderType==='delivery') msg+='Ongkir: Rp '+fmt(S.shipping)+'\n';
+    msg+='TOTAL: Rp '+fmt(grand)+'\n';
+    if(notes) msg+='Catatan: '+escWA(notes)+'\n';
 
     let orders=getOrders();
     orders.unshift({
@@ -988,7 +984,7 @@ Jarak: '+S.distKm+' km
     let cs=document.getElementById('orderCount');if(cs)cs.innerText=orders.length;
     let container=document.getElementById('ownerOrderList');if(!container)return;
     if(!orders.length){container.innerHTML='<div style="font-size:12px;color:var(--parch-3);padding:10px 0;font-weight:300;">Belum ada order masuk</div>';return;}
-    container.innerHTML=orders.map(o=>'<div class="o-card"><div class="o-card-id">'+o.id+'</div><div class="o-card-meta">'+o.name+' · '+o.type+' · '+new Date(o.timestamp).toLocaleString('id-ID')+'</div><div class="o-card-items">'+o.items.map(i=>i.name+' ×'+i.qty).join(', ')+'</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;"><div class="o-card-total">Rp '+fmt(o.total)+'</div><div><button class="btn-sm-ok" onclick="WCT.confirmOrder(''+o.id+'')">✓ OK</button><button class="btn-sm-no" onclick="WCT.deleteOrder(''+o.id+'')">✕ Hapus</button></div></div></div>').join('');
+    container.innerHTML=orders.map(o=>'<div class="o-card"><div class="o-card-id">'+o.id+'</div><div class="o-card-meta">'+o.name+' · '+o.type+' · '+new Date(o.timestamp).toLocaleString('id-ID')+'</div><div class="o-card-items">'+o.items.map(i=>i.name+' ×'+i.qty).join(', ')+'</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;"><div class="o-card-total">Rp '+fmt(o.total)+'</div><div><button class="btn-sm-ok" onclick="WCT.confirmOrder(\''+o.id+'\')">✓ OK</button><button class="btn-sm-no" onclick="WCT.deleteOrder(\''+o.id+'\')">✕ Hapus</button></div></div></div>').join('');
   }
   function confirmOrder(id){
     let orders=getOrders();let o=orders.find(x=>x.id===id);
@@ -1003,41 +999,7 @@ Jarak: '+S.distKm+' km
   const GEMINI_MODEL='gemini-1.5-flash-latest';
   const GEMINI_URL=key=>'https://generativelanguage.googleapis.com/v1beta/models/'+GEMINI_MODEL+':generateContent?key='+key;
 
-  const WARUNG_CONTEXT='Kamu adalah Asisten Warung CT — warung makan sederhana yang menjual makanan & minuman dengan harga terjangkau. Berikut data akurat warung:
-
-MENU UTAMA:
-- Ayam Goreng Rp 10.000
-- Pecel Lele Rp 10.000
-- Dadar Rp 7.000
-- Ati Ampela Rp 8.000
-- Tempe Penyet Rp 6.000
-- Nasgor Ori Rp 10.000
-- Nasgor + Sosis Rp 13.000
-- Nasgor + Dadar Rp 13.000
-
-TAMBAHAN:
-- Telur Rp 3.000, Kepala Rp 3.000, Ati Ampela Rp 5.000, Sambal Rp 3.000, Nasi Putih Rp 3.000
-
-MINUMAN:
-- Es Teh, Teh Hangat, Nutrisari, Kopi Hitam, Kopi White, Susu, Pop Ice (semua Rp 3.000)
-- Es Jeruk, Milo, Good Day, Chocolatos (semua Rp 4.000)
-
-INFO WARUNG:
-- Nama: Warung CT
-- Tagline: "The Real Temenan"
-- Lokasi: Sekitar koordinat -7.166875, 112.326875
-- Jam buka: Delivery 15:00-21:00 | Pickup/Dine-in 13:00-23:00
-- Ongkir: Rp 2.000 (≤1km), tambah Rp 1.000/km berikutnya. Maks jarak 3 km.
-- Kontak WhatsApp: +6285730030112
-- Cara order: Isi nama → pilih tipe order → pilih menu → klik Order via WhatsApp
-
-PERILAKU:
-- Jawab dengan ramah, santai, gaya anak muda Indonesia (boleh pake "bro", "gan", "bang", tapi tetap sopan)
-- Kalau ditanya rekomendasi, sesuaikan dengan waktu: pagi/siang → nasgor/ayam, malam → pecel lele + kopi
-- Kalau ditanya yang pedas, rekomendasikan Pecel Lele + Sambal ekstra
-- Kalau ditanya yang hemat, rekomendasikan Tempe Penyet + Es Teh (total Rp 9.000)
-- Selalu ajak user untuk order via tombol "Order via WhatsApp" di bawah
-- Jangan buat info palsu. Kalau tidak tahu, bilang "Coba tanya langsung ke owner ya bro via WA"';
+  const WARUNG_CONTEXT='Kamu adalah Asisten Warung CT — warung makan sederhana yang menjual makanan & minuman dengan harga terjangkau. Berikut data akurat warung:\n\nMENU UTAMA:\n- Ayam Goreng Rp 10.000\n- Pecel Lele Rp 10.000\n- Dadar Rp 7.000\n- Ati Ampela Rp 8.000\n- Tempe Penyet Rp 6.000\n- Nasgor Ori Rp 10.000\n- Nasgor + Sosis Rp 13.000\n- Nasgor + Dadar Rp 13.000\n\nTAMBAHAN:\n- Telur Rp 3.000, Kepala Rp 3.000, Ati Ampela Rp 5.000, Sambal Rp 3.000, Nasi Putih Rp 3.000\n\nMINUMAN:\n- Es Teh, Teh Hangat, Nutrisari, Kopi Hitam, Kopi White, Susu, Pop Ice (semua Rp 3.000)\n- Es Jeruk, Milo, Good Day, Chocolatos (semua Rp 4.000)\n\nINFO WARUNG:\n- Nama: Warung CT\n- Tagline: "The Real Temenan"\n- Lokasi: Sekitar koordinat -7.166875, 112.326875\n- Jam buka: Delivery 15:00-21:00 | Pickup/Dine-in 13:00-23:00\n- Ongkir: Rp 2.000 (≤1km), tambah Rp 1.000/km berikutnya. Maks jarak 3 km.\n- Kontak WhatsApp: +6285730030112\n- Cara order: Isi nama → pilih tipe order → pilih menu → klik Order via WhatsApp\n\nPERILAKU:\n- Jawab dengan ramah, santai, gaya anak muda Indonesia (boleh pake "bro", "gan", "bang", tapi tetap sopan)\n- Kalau ditanya rekomendasi, sesuaikan dengan waktu: pagi/siang → nasgor/ayam, malam → pecel lele + kopi\n- Kalau ditanya yang pedas, rekomendasikan Pecel Lele + Sambal ekstra\n- Kalau ditanya yang hemat, rekomendasikan Tempe Penyet + Es Teh (total Rp 9.000)\n- Selalu ajak user untuk order via tombol "Order via WhatsApp" di bawah\n- Jangan buat info palsu. Kalau tidak tahu, bilang "Coba tanya langsung ke owner ya bro via WA"';
 
   const RULE_REPLIES=[
     {keys:['halo','hi','hello'],reply:'Halo bro! Mau order apa hari ini? 😊'},
@@ -1065,8 +1027,7 @@ PERILAKU:
     const body=document.getElementById('aiBody');
     const div=document.createElement('div');
     div.className='ai-bubble '+from;
-    div.innerHTML=text.replace(/
-/g,'<br>');
+    div.innerHTML=text.replace(/\n/g,'<br>');
     body.appendChild(div);
     body.scrollTop=body.scrollHeight;
   }
@@ -1112,10 +1073,7 @@ PERILAKU:
         body:JSON.stringify({
           contents:[{
             role:'user',
-            parts:[{text:WARUNG_CONTEXT+'
-
-User: '+text+'
-Asisten CT:'}]
+            parts:[{text:WARUNG_CONTEXT+'\n\nUser: '+text+'\nAsisten CT:'}]
           }],
           generationConfig:{temperature:0.7,maxOutputTokens:400}
         })
