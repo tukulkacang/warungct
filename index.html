@@ -1492,10 +1492,7 @@ PANDUAN TUGASMU – ikuti urutan ini:
       let res = await fetch('https://warungct-ai.caktoaja.workers.dev/', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${key}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': CFG.SHARE_URL,
-          'X-Title': 'Warung CT AI'
         },
         body: JSON.stringify({
           model: CFG.AI_MODEL,
