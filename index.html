@@ -1259,8 +1259,7 @@ Kalau ada pertanyaan di luar warung, jawab saja dengan ramah tapi tetap arahkan 
     // ✅ Mode Online — Gemini Flash via OpenRouter
     try {
       const messages = [
-        { role: 'user', content: AI_SYSTEM_PROMPT + '\n\n[Mulai percakapan]' },
-        { role: 'assistant', content: 'Siap! Aku Asisten Warung CT, siap bantu!' },
+        { role: 'user', content: AI_SYSTEM_PROMPT },
         ...chatHistory.slice(-10)
       ];
 
