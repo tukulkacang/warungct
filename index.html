@@ -1075,7 +1075,7 @@ body{
       if(cn)cn.classList.add('show');
     }else{
       if(badge)badge.classList.add('open');
-      if(txt)txt.innerText=S.orderType==='delivery'?'BUKA 15:00–22:00':'BUKA 13:00–23:00';
+      if(txt)txt.innerText=S.orderType==='delivery'?'BUKA 09:00–21:00':'BUKA 09:00–23:00';
     }
     updateUI();
   }
@@ -1338,7 +1338,7 @@ body{
     let owner=getOwner();owner.overrideStatus=mode;
     if(mode==='tutup_cepat'){
       let jam=parseInt(document.getElementById('tutupJam')?.value||20);
-      owner.overrideHour=(jam>=13&&jam<=23)?jam:20;
+      owner.overrideHour=(jam>=09&&jam<=23)?jam:20;
       let tj=document.getElementById('tutupJam');if(tj)tj.style.display='block';
     }else{let tj=document.getElementById('tutupJam');if(tj)tj.style.display='none';}
     saveOwner(owner);checkTime();openOwnerPanel();
