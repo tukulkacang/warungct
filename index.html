@@ -1482,17 +1482,14 @@ PANDUAN TUGASMU – ikuti urutan ini:
     aiChatHistory.push({ role:'user', content: msg });
 
     let key = getAIKey();
-    if(!key){
-      appendAIMsg('ai', 'Aduh, fitur AI-nya belum diaktifkan 😅\nMinta ownernya masukin OpenRouter API key dulu di Panel Owner ya. Gratis kok daftarnya!');
-      return;
-    }
+    let key = true; // proxy handles auth
 
     aiThinking = true;
     if(sendBtn) sendBtn.disabled = true;
     showTyping(true);
 
     try {
-      let res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      let res = await fetch('https://warungct-ai.caktoaja.workers.dev/', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${key}`,
