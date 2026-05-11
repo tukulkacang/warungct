@@ -497,7 +497,7 @@ body{
 
   const OR_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
   // ✅ FIXED: pakai model berbayar, no rate limit
-  const OR_MODEL = 'qwen/qwen-2.5-3b-instruct';
+  const OR_MODEL = 'google/gemini-2.0-flash-001';
 
   let S = {
     name: '', distKm: 0, shipping: 0, cart: {},
@@ -1259,7 +1259,8 @@ Kalau ada pertanyaan di luar warung, jawab saja dengan ramah tapi tetap arahkan 
     // ✅ Mode Online — Gemini Flash via OpenRouter
     try {
       const messages = [
-        { role: 'user', content: AI_SYSTEM_PROMPT },
+        { role: 'user', content: AI_SYSTEM_PROMPT + '\n\n[Mulai percakapan]' },
+        { role: 'assistant', content: 'Siap! Aku Asisten Warung CT, siap bantu!' },
         ...chatHistory.slice(-10)
       ];
 
