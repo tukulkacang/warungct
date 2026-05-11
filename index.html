@@ -20,11 +20,10 @@ html{scroll-behavior:smooth;}
 body{
   background:var(--bg); color:var(--parch); font-family:'DM Sans',sans-serif; font-weight:400;
   padding-bottom:220px;
-  background-image: url("image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.03'/%3E%3C/svg%3E"), radial-gradient(ellipse 80% 50% at 50% 0%, rgba(37,211,102,0.04) 0%, transparent 60%);
+  background-image: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(37,211,102,0.04) 0%, transparent 60%);
 }
 .app{max-width:430px;margin:0 auto;background:var(--bg);min-height:100vh;position:relative;overflow:hidden;}
 
-/* HEADER */
 .hdr{background:var(--ink); position:relative;overflow:hidden;}
 .hdr-glow{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%); width:260px;height:80px; background:radial-gradient(ellipse, rgba(37,211,102,0.15) 0%, transparent 70%); pointer-events:none;}
 .hdr-rule-top{height:1px; background:linear-gradient(90deg, transparent 0%, var(--au-line) 30%, var(--au-hi) 50%, var(--au-line) 70%, transparent 100%);}
@@ -52,7 +51,6 @@ body{
 .closed-notice-ttl{font-family:'Playfair Display',serif;font-size:11px;font-weight:600; letter-spacing:2.5px;text-transform:uppercase;color:var(--no);}
 .closed-notice-sub{font-size:12px;color:var(--parch-2);margin-top:4px;font-weight:300;}
 
-/* SECTIONS */
 .sec{padding:32px 20px 8px;}
 .step-row{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
 .step-badge{font-family:'Playfair Display',serif;font-size:10px;font-weight:700; background:linear-gradient(135deg, var(--au) 0%, var(--au-hi) 100%); color:var(--ink);width:30px;height:30px;border-radius:9px; display:flex;align-items:center;justify-content:center;flex-shrink:0; box-shadow:0 2px 14px rgba(37,211,102,0.28); letter-spacing:0;}
@@ -76,13 +74,11 @@ body{
 .loc-micro{font-size:7.5px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--parch-3);margin-bottom:4px;}
 .loc-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700; color:var(--au);text-shadow:0 0 24px rgba(37,211,102,0.25);}
 
-/* DIVIDER */
 .divider{display:flex;align-items:center;gap:14px; padding:24px 20px 14px;}
 .divider-ln{flex:1;height:1px;background:var(--wire);}
 .divider-txt{font-family:'Cormorant',serif;font-style:italic;font-size:14px;font-weight:300; letter-spacing:1.5px;color:var(--parch-3);white-space:nowrap;}
 .divider-gem{width:4px;height:4px;background:var(--au-lo);transform:rotate(45deg);flex-shrink:0;}
 
-/* MENU */
 .menu-wrap{padding:0 20px 4px;}
 .menu-list{display:flex;flex-direction:column;gap:5px;}
 .menu-item{background:var(--card);border:1px solid var(--wire);border-radius:var(--r-sm); padding:12px 14px;display:flex;justify-content:space-between;align-items:center; transition:all 0.16s;}
@@ -101,7 +97,6 @@ body{
 .q-btn.plus:hover{background:var(--au-glow);color:var(--au-hi);}
 .q-num{min-width:26px;text-align:center; font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--parch);}
 
-/* BOTTOM BAR */
 .btm{position:fixed;bottom:0;left:0;right:0;max-width:430px;margin:0 auto; background:var(--ink); border-top:1px solid var(--au-ring); padding:16px 20px max(24px, env(safe-area-inset-bottom)); z-index:50; backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); box-shadow:0 -30px 70px rgba(0,0,0,0.55);}
 .btm::before{content:'';position:absolute;top:-1px;left:8%;right:8%;height:1px; background:linear-gradient(90deg, transparent, var(--au-hi), transparent);}
 .btm-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2px;}
@@ -114,7 +109,6 @@ body{
 .btn-order:disabled{background:var(--card-2);color:var(--parch-3); cursor:default;box-shadow:none;transform:none;}
 .btn-hint{font-size:11px;color:var(--parch-3);margin-top:8px;text-align:center;min-height:14px;font-weight:300;}
 
-/* MODALS */
 .overlay{position:fixed;inset:0; background:rgba(4,3,2,0.85); backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px); z-index:200;display:flex;align-items:flex-end;justify-content:center; opacity:0;visibility:hidden;transition:opacity 0.22s, visibility 0.22s;}
 .overlay-center{align-items:center;padding:20px;}
 .overlay.show{opacity:1;visibility:visible;}
@@ -205,7 +199,6 @@ body{
 .toast.error{background:#2b1714;border-color:rgba(217,91,74,0.3);color:var(--no);}
 .toast.warn{background:#251a08;border-color:var(--au-ring);color:var(--au);}
 
-/* AI CHAT WIDGET */
 .ai-fab{position:fixed;bottom:90px;right:14px;z-index:60; width:52px;height:52px;border-radius:50%; background:linear-gradient(135deg, var(--au) 0%, var(--au-hi) 100%); border:none;cursor:pointer; display:flex;align-items:center;justify-content:center; font-size:22px;box-shadow:0 4px 20px rgba(37,211,102,0.35); transition:all 0.25s cubic-bezier(0.22,1,0.36,1); color:var(--ink);}
 .ai-fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(37,211,102,0.5);}
 .ai-chat{position:fixed;bottom:150px;right:14px;z-index:60; width:calc(100% - 28px);max-width:360px;height:460px; background:var(--card);border:1px solid var(--wire-2); border-radius:var(--r);display:flex;flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,0.6); opacity:0;visibility:hidden;transform:translateY(20px) scale(0.96); transition:all 0.28s cubic-bezier(0.22,1,0.36,1);}
@@ -242,11 +235,10 @@ body{
 </head>
 <body>
 <div class="app">
-  <!-- HEADER -->
   <header class="hdr">
     <div class="hdr-rule-top"></div>
     <div class="hdr-inner">
-      <button class="btn-qr" onclick="WCT.toggleQR(true)">⬛</button>
+      <button class="btn-qr" onclick="WCT.toggleQR(true)">&#9899;</button>
       <div class="hdr-pre">Sejak Zaman Mojopahit</div>
       <div class="hdr-orn"><div class="orn-lozenge"></div></div>
       <div class="hdr-logo" id="hdrLogo">WARUNG <em>CT</em></div>
@@ -266,21 +258,20 @@ body{
   </div>
 
   <main>
-    <!-- STEP 1 -->
     <div class="sec">
       <div class="step-row">
         <div class="step-badge">01</div>
         <div class="step-title">Info Pengiriman</div>
       </div>
-      <input id="userName" class="field" placeholder="Nama pemesan…" maxlength="40">
+      <input id="userName" class="field" placeholder="Nama pemesan&#8230;" maxlength="40">
       <div class="ot-grid">
-        <button class="ot-btn active" onclick="WCT.setOrderType('delivery')" id="ot-delivery"><span class="oi">🛵</span>Diantar</button>
-        <button class="ot-btn" onclick="WCT.setOrderType('pickup')" id="ot-pickup"><span class="oi">🚶</span>Ambil</button>
-        <button class="ot-btn" onclick="WCT.setOrderType('dinein')" id="ot-dinein"><span class="oi">🍽️</span>Di Sini</button>
+        <button class="ot-btn active" onclick="WCT.setOrderType('delivery')" id="ot-delivery"><span class="oi">&#128757;</span>Diantar</button>
+        <button class="ot-btn" onclick="WCT.setOrderType('pickup')" id="ot-pickup"><span class="oi">&#128694;</span>Ambil</button>
+        <button class="ot-btn" onclick="WCT.setOrderType('dinein')" id="ot-dinein"><span class="oi">&#127860;</span>Di Sini</button>
       </div>
       <div id="gpsSection">
         <button id="btnLocation" class="btn-loc" onclick="WCT.getLocation()">
-          <span>📍</span><span>Tandai Lokasi</span>
+          <span>&#128205;</span><span>Tandai Lokasi</span>
         </button>
         <div id="locPill" class="loc-pill">
           <div><div class="loc-micro">Jarak</div><div class="loc-val" id="locDist">0 km</div></div>
@@ -289,7 +280,6 @@ body{
       </div>
     </div>
 
-    <!-- STEP 2 -->
     <div class="sec" style="padding-bottom:0;">
       <div class="step-row">
         <div class="step-badge">02</div>
@@ -314,7 +304,6 @@ body{
     <div class="menu-wrap"><div id="menuMinuman" class="menu-list"></div></div>
   </main>
 
-  <!-- BOTTOM BAR -->
   <div class="btm">
     <div class="btm-top">
       <div>
@@ -322,12 +311,11 @@ body{
         <div class="btm-total">Rp <span id="grandTotal">0</span></div>
       </div>
     </div>
-    <div class="btm-meta">Ongkir: <span id="ongkirVal">Rp 0</span> &nbsp;·&nbsp; <span id="itemCount">0 item</span></div>
+    <div class="btm-meta">Ongkir: <span id="ongkirVal">Rp 0</span> &nbsp;&#183;&nbsp; <span id="itemCount">0 item</span></div>
     <button id="btnPesan" class="btn-order" disabled onclick="WCT.showConfirm()">Order via WhatsApp</button>
     <div id="btnHint" class="btn-hint"></div>
   </div>
 
-  <!-- CONFIRM -->
   <div id="confirmModal" class="overlay">
     <div class="sheet">
       <div class="drag"></div>
@@ -339,30 +327,28 @@ body{
         <div class="cfm-total-val" id="confirmTotal"></div>
       </div>
       <div class="flbl">Catatan (opsional)</div>
-      <textarea id="orderNotes" class="notes-field" placeholder="Misal: yang pecel lele tolong tandai…"></textarea>
+      <textarea id="orderNotes" class="notes-field" placeholder="Misal: yang pecel lele tolong tandai&#8230;"></textarea>
       <button class="btn-primary" onclick="WCT.doOrder()">Kirim Order</button>
       <button class="btn-ghost" onclick="WCT.hideConfirm()">Batal</button>
     </div>
   </div>
 
-  <!-- QR -->
   <div id="qrOverlay" class="overlay">
     <div class="sheet" style="text-align:center;">
       <div class="drag"></div>
       <div class="sttl" style="text-align:center;">Share Warung CT</div>
       <div id="qrUrlDisplay" class="qr-url"></div>
       <div id="qrcode"></div>
-      <div style="font-size:11px;color:var(--parch-3);margin:-6px 0 12px;font-weight:300;">Tekan lama gambar QR untuk simpan 📲</div>
+      <div style="font-size:11px;color:var(--parch-3);margin:-6px 0 12px;font-weight:300;">Tekan lama gambar QR untuk simpan</div>
       <button class="btn-primary" onclick="WCT.copyLink(event)">Salin Link</button>
       <button class="btn-ghost" onclick="WCT.toggleQR(false)">Tutup</button>
     </div>
   </div>
 
-  <!-- ORDER SENT -->
   <div id="orderSentOverlay" class="overlay overlay-center">
     <div class="sheet sheet-center" style="text-align:center;position:relative;">
-      <button onclick="WCT.resetOrder()" style="position:absolute;top:14px;right:14px;background:var(--card-2);border:1px solid var(--wire-2);border-radius:50%;width:32px;height:32px;color:var(--parch-3);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
-      <div class="sent-icon-wrap">✅</div>
+      <button onclick="WCT.resetOrder()" style="position:absolute;top:14px;right:14px;background:var(--card-2);border:1px solid var(--wire-2);border-radius:50%;width:32px;height:32px;color:var(--parch-3);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#10005;</button>
+      <div class="sent-icon-wrap">&#9989;</div>
       <div class="sttl" style="text-align:center;">Order Terkirim!</div>
       <div style="font-size:12px;color:var(--parch-3);margin-bottom:4px;font-weight:300;">Nomor ordermu:</div>
       <div class="sent-id" id="sentOrderId"></div>
@@ -371,66 +357,62 @@ body{
     </div>
   </div>
 
-  <!-- MUSIC PROMPT -->
   <div id="musicPromptOverlay" class="overlay music-overlay">
     <div class="music-sheet">
       <div class="drag"></div>
-      <div class="music-ring">🎵</div>
+      <div class="music-ring">&#127925;</div>
       <div class="music-ttl">Sambil Nunggu Order</div>
-      <div class="music-sub">Dengerin musik pilihan CT &amp; Bojo<br>biar makin betah nunggu </div>
+      <div class="music-sub">Dengerin musik pilihan CT &amp; Bojo<br>biar makin betah nunggu</div>
       <div class="music-list" id="musicTrackList"></div>
-      <button class="btn-primary" onclick="WCT.openPlayerFromPrompt()">🎶 Buka Pemutar Musik</button>
+      <button class="btn-primary" onclick="WCT.openPlayerFromPrompt()"> Buka Pemutar Musik</button>
       <button class="btn-ghost" onclick="WCT.closeMusicPrompt()">Nanti aja deh</button>
     </div>
   </div>
 
-  <!-- PLAYER -->
   <div id="playerOverlay" class="overlay">
     <div class="player-sheet">
       <div class="drag"></div>
-      <span class="pl-art" id="playerAlbum">🎵</span>
-      <div class="pl-ttl" id="playerTitle">–</div>
+      <span class="pl-art" id="playerAlbum">&#127925;</span>
+      <div class="pl-ttl" id="playerTitle">-</div>
       <div class="pl-artist" id="playerArtist">CT &amp; BOJO</div>
       <div class="progress-bar" onclick="WCT.seekAudio(event)" id="progressBar">
         <div class="progress-fill" id="progressFill" style="width:0%;"></div>
       </div>
       <div class="time-row"><span id="timeNow">0:00</span><span id="timeDur">0:00</span></div>
       <div class="pl-ctrls">
-        <div class="ctrl-btn" onclick="WCT.prevTrack()"></div>
-        <div class="ctrl-play" id="playBtn" onclick="WCT.togglePlay()">▶</div>
-        <div class="ctrl-btn" onclick="WCT.nextTrack()">⏭</div>
+        <div class="ctrl-btn" onclick="WCT.prevTrack()">&#9198;</div>
+        <div class="ctrl-play" id="playBtn" onclick="WCT.togglePlay()">&#9654;</div>
+        <div class="ctrl-btn" onclick="WCT.nextTrack()">&#9197;</div>
       </div>
       <div class="tracklist" id="tracklistEl"></div>
       <button class="btn-ghost" style="margin-top:16px;" onclick="WCT.closePlayer()">Tutup</button>
     </div>
   </div>
 
-  <!-- OWNER -->
   <div id="ownerOverlay" class="overlay">
     <div class="sheet">
       <div class="drag"></div>
       <div class="sttl">Panel Owner</div>
       <div class="flbl">Status Warung</div>
       <div class="owner-grid">
-        <button id="st-normal" onclick="WCT.setOverride('normal')">🟢 Normal</button>
-        <button id="st-tutup" onclick="WCT.setOverride('tutup_cepat')">🔴 Tutup Cepat</button>
-        <button id="st-libur" onclick="WCT.setOverride('libur')">🏖️ Libur</button>
+        <button id="st-normal" onclick="WCT.setOverride('normal')"> Normal</button>
+        <button id="st-tutup" onclick="WCT.setOverride('tutup_cepat')"> Tutup Cepat</button>
+        <button id="st-libur" onclick="WCT.setOverride('libur')"> Libur</button>
       </div>
       <input type="number" id="tutupJam" placeholder="Jam tutup (misal: 20)" class="input-sm" style="display:none;">
       <div class="flbl" style="margin-top:16px;">Ganti PIN</div>
       <input type="password" id="newPin" maxlength="4" placeholder="PIN baru (4 digit)" class="input-sm">
       <button class="btn-primary" style="margin-bottom:18px;" onclick="WCT.changePin()">Simpan PIN Baru</button>
 
-      <!-- AI API KEY INPUT -->
-      <div class="flbl" style="margin-top:4px;">🔑 API Key Gemini (Opsional)</div>
+      <div class="flbl" style="margin-top:4px;"> API Key AI (OpenRouter / Gemini)</div>
       <div style="font-size:10px;color:var(--parch-3);margin-bottom:6px;font-weight:300;">
-        Masukkan API key untuk aktifkan AI Gemini. Kosongkan = mode manual.
-        <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--au);">Dapatkan key gratis →</a>
+        Masukkan API key untuk aktifkan AI chat. Kosongkan = mode manual.
+        <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--au);">Dapatkan OpenRouter key gratis</a>
       </div>
-      <input type="password" id="aiApiKey" placeholder="Paste API Key Gemini di sini…" class="input-sm">
+      <input type="password" id="aiApiKey" placeholder="Paste API Key di sini&#8230;" class="input-sm">
       <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <button class="btn-primary" style="flex:1;margin-bottom:0;" onclick="WCT.saveAiKey()">💾 Simpan Key</button>
-        <button class="btn-ghost" style="flex:1;" onclick="WCT.clearAiKey()">🗑️ Hapus Key</button>
+        <button class="btn-primary" style="flex:1;margin-bottom:0;" onclick="WCT.saveAiKey()"> Simpan Key</button>
+        <button class="btn-ghost" style="flex:1;" onclick="WCT.clearAiKey()"> Hapus Key</button>
       </div>
       <div id="aiKeyStatus" style="font-size:10px;color:var(--parch-3);margin-bottom:12px;font-weight:300;"></div>
 
@@ -441,7 +423,6 @@ body{
     </div>
   </div>
 
-  <!-- PIN -->
   <div id="pinOverlay" class="overlay">
     <div class="sheet" style="text-align:center;">
       <div class="drag"></div>
@@ -462,28 +443,27 @@ body{
         <div class="pin-key" onclick="WCT.enterPin(8)">8</div>
         <div class="pin-key" onclick="WCT.enterPin(9)">9</div>
         <div class="pin-key pin-zero" onclick="WCT.enterPin(0)">0</div>
-        <div class="pin-key" onclick="WCT.backspacePin()"></div>
+        <div class="pin-key" onclick="WCT.backspacePin()">&#9003;</div>
       </div>
       <button class="btn-ghost" style="margin-top:14px;" onclick="WCT.cancelPin()">Batal</button>
     </div>
   </div>
 
-  <!-- AI CHAT -->
-  <button class="ai-fab" id="aiFab" onclick="WCT.toggleChat()">💬</button>
+  <button class="ai-fab" id="aiFab" onclick="WCT.toggleChat()">&#128172;</button>
   <div class="ai-chat" id="aiChat">
     <div class="ai-head">
       <div class="ai-head-l">
-        <div class="ai-ava">🤖</div>
+        <div class="ai-ava">&#129302;</div>
         <div>
           <div class="ai-name">Asisten CT</div>
-          <div class="ai-status" id="aiStatus">● Online</div>
+          <div class="ai-status" id="aiStatus"> Online</div>
         </div>
       </div>
-      <button class="ai-close" onclick="WCT.toggleChat()">✕</button>
+      <button class="ai-close" onclick="WCT.toggleChat()">&#10005;</button>
     </div>
     <div class="ai-body" id="aiBody">
       <div class="ai-bubble bot">
-        Halo! Aku <strong>Asisten Warung CT</strong> 🤖<br><br>
+        Halo! Aku <strong>Asisten Warung CT</strong> &#129302;<br><br>
         Mau tanya menu, rekomendasi, atau jam buka? Silakan tanya aja!<br><br>
         <em style="color:var(--parch-3);font-size:11px;">Tips: Klik salah satu pertanyaan cepat di bawah </em>
         <div class="ai-chip-wrap">
@@ -495,8 +475,8 @@ body{
       </div>
     </div>
     <div class="ai-foot">
-      <input class="ai-inp" id="aiInput" placeholder="Tanya Asisten CT…" onkeydown="if(event.key==='Enter')WCT.sendChat()">
-      <button class="ai-send" onclick="WCT.sendChat()">➤</button>
+      <input class="ai-inp" id="aiInput" placeholder="Tanya Asisten CT&#8230;" onkeydown="if(event.key==='Enter')WCT.sendChat()">
+      <button class="ai-send" onclick="WCT.sendChat()">&#10148;</button>
     </div>
   </div>
 
@@ -505,694 +485,972 @@ body{
 
 <script>
 (function(){
-  const CFG={
-    WARUNG_LAT:-7.166875, WARUNG_LON:112.326875,
-    MAX_KM:3, WA:'+6285730030112', PIN:'0000',
-    SHARE_URL:'https://tukulkacang.github.io/warungct/'
+  /* ============================
+     CONFIGURATION
+     ============================ */
+  const CFG = {
+    WARUNG_LAT: -7.166875,
+    WARUNG_LON: 112.326875,
+    MAX_KM: 3,
+    WA: '+6285730030112',
+    PIN: '0000',
+    SHARE_URL: 'https://tukulkacang.github.io/warungct/'
   };
 
-  let S={
-    name:'',distKm:0,shipping:0,cart:{},
-    isClosed:false,locOk:false,locOver:false,
-    userLat:null,userLon:null,orderType:'delivery'
+  // OpenRouter Config
+  const OR_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+  const OR_MODEL = 'meta-llama/llama-3.1-8b-instruct:free';
+
+  /* ============================
+     STATE
+     ============================ */
+  let S = {
+    name: '', distKm: 0, shipping: 0, cart: {},
+    isClosed: false, locOk: false, locOver: false,
+    userLat: null, userLon: null, orderType: 'delivery'
   };
 
-  const menuUtama=[
-    {id:'u1',name:'Ayam Goreng',price:10000,icon:'🍗'},
-    {id:'u2',name:'Pecel Lele',price:10000,icon:'🐟'},
-    {id:'u3',name:'Dadar',price:7000,icon:'🍳'},
-    {id:'u4',name:'Ati Ampela',price:8000,icon:'🍖'},
-    {id:'u5',name:'Tempe Penyet',price:6000,icon:''},
-    {id:'u6',name:'Nasgor Ori',price:10000,icon:'🍚'},
-    {id:'u7',name:'Nasgor + Sosis',price:13000,icon:''},
-    {id:'u8',name:'Nasgor + Dadar',price:13000,icon:'🍜'}
+  /* ============================
+     MENU DATA
+     ============================ */
+  const menuUtama = [
+    { id: 'u1', name: 'Ayam Goreng', price: 10000, icon: '\uD83C\uDF57' },
+    { id: 'u2', name: 'Pecel Lele', price: 10000, icon: '\uD83D\uDC1F' },
+    { id: 'u3', name: 'Dadar', price: 7000, icon: '\uD83C\uDF73' },
+    { id: 'u4', name: 'Ati Ampela', price: 8000, icon: '\uD83C\uDF56' },
+    { id: 'u5', name: 'Tempe Penyet', price: 6000, icon: '\uD83C\uDF3F' },
+    { id: 'u6', name: 'Nasgor Ori', price: 10000, icon: '\uD83C\uDF5A' },
+    { id: 'u7', name: 'Nasgor + Sosis', price: 13000, icon: '\uD83C\uDF5B' },
+    { id: 'u8', name: 'Nasgor + Dadar', price: 13000, icon: '\uD83C\uDF5C' }
   ];
-  const menuTambahan=[
-    {id:'t1',name:'Telur',price:3000,icon:'🥚'},
-    {id:'t2',name:'Kepala',price:3000,icon:'🍗'},
-    {id:'t3',name:'Ati Ampela',price:5000,icon:''},
-    {id:'t4',name:'Sambal',price:3000,icon:'🌶️'},
-    {id:'t5',name:'Nasi Putih',price:3000,icon:'🍚'}
+  const menuTambahan = [
+    { id: 't1', name: 'Telur', price: 3000, icon: '\uD83E\uDD5A' },
+    { id: 't2', name: 'Kepala', price: 3000, icon: '\uD83C\uDF57' },
+    { id: 't3', name: 'Ati Ampela', price: 5000, icon: '\uD83C\uDF56' },
+    { id: 't4', name: 'Sambal', price: 3000, icon: '\uD83C\uDF36️' },
+    { id: 't5', name: 'Nasi Putih', price: 3000, icon: '\uD83C\uDF5A' }
   ];
-  const menuMinuman=[
-    {id:'m1',name:'Es Teh',price:3000,icon:'🧋'},
-    {id:'m2',name:'Teh Hangat',price:3000,icon:''},
-    {id:'m3',name:'Nutrisari',price:3000,icon:'🍊'},
-    {id:'m4',name:'Kopi Hitam',price:3000,icon:'☕'},
-    {id:'m5',name:'Kopi White',price:3000,icon:'🥤'},
-    {id:'m6',name:'Susu',price:3000,icon:'🥛'},
-    {id:'m7',name:'Pop Ice',price:3000,icon:''},
-    {id:'m8',name:'Es Jeruk',price:4000,icon:'🍋'},
-    {id:'m9',name:'Milo',price:4000,icon:'🍫'},
-    {id:'m10',name:'Good Day',price:4000,icon:'☀️'},
-    {id:'m11',name:'Chocolatos',price:4000,icon:''}
+  const menuMinuman = [
+    { id: 'm1', name: 'Es Teh', price: 3000, icon: '\uD83E\uDDCB' },
+    { id: 'm2', name: 'Teh Hangat', price: 3000, icon: '\uD83C\uDF75' },
+    { id: 'm3', name: 'Nutrisari', price: 3000, icon: '\uD83C\uDF4A' },
+    { id: 'm4', name: 'Kopi Hitam', price: 3000, icon: '\u2615' },
+    { id: 'm5', name: 'Kopi White', price: 3000, icon: '\uD83E\uDD64' },
+    { id: 'm6', name: 'Susu', price: 3000, icon: '\uD83E\uDD5B' },
+    { id: 'm7', name: 'Pop Ice', price: 3000, icon: '\uD83E\uDDC3' },
+    { id: 'm8', name: 'Es Jeruk', price: 4000, icon: '\uD83C\uDF4B' },
+    { id: 'm9', name: 'Milo', price: 4000, icon: '\uD83C\uDF6B' },
+    { id: 'm10', name: 'Good Day', price: 4000, icon: '\u2600️' },
+    { id: 'm11', name: 'Chocolatos', price: 4000, icon: '\uD83C\uDF6B' }
   ];
-  const allMenu=[...menuUtama,...menuTambahan,...menuMinuman];
+  const allMenu = [...menuUtama, ...menuTambahan, ...menuMinuman];
 
-  const playlist=[
-    {title:'KOPLO',artist:'CT & BOJO',icon:'',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20K1.mp3'},
-    {title:'INDIA',artist:'CT & BOJO',icon:'🎶',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20%20I1.mp3'},
-    {title:'CAMPURSARI',artist:'CT & BOJO',icon:'🎻',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20C1.mp3'},
-    {title:'REGGAE',artist:'CT & BOJO',icon:'🎸',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20R1.mp3'},
-    {title:'K MODERN',artist:'CT & BOJO',icon:'',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20KR.mp3'},
-    {title:'DJ REMIX',artist:'CT & BOJO',icon:'',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20D1.mp3'},
-    {title:'POP',artist:'CT & BOJO',icon:'',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20M1.mp3'}
+  /* ============================
+     PLAYLIST
+     ============================ */
+  const playlist = [
+    { title: 'KOPLO', artist: 'CT & BOJO', icon: '\uD83C\uDFBA', url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20K1.mp3' },
+    { title: 'INDIA', artist: 'CT & BOJO', icon: '\uD83C\uDFB6', url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20%20I1.mp3' },
+    { title: 'CAMPURSARI', artist: 'CT & BOJO', icon: '\uD83C\uDFBB', url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20C1.mp3' },
+    { title: 'REGGAE', artist: 'CT & BOJO', icon: '\uD83C\uDFB8', url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20R1.mp3' },
+    { title: 'K MODERN', artist: 'CT & BOJO', icon: '\uD83C\uDFB9', url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20KR.mp3' },
+    { title: 'DJ REMIX', artist: 'CT & BOJO', icon: '\uD83C\uDFA7', url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20D1.mp3' },
+    { title: 'POP', artist: 'CT & BOJO', icon: '\uD83C\uDFA4', url: 'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20M1.mp3' }
   ];
 
-  /* UTILS */
-  const fmt=n=>n.toLocaleString('id-ID');
-  const escWA=t=>t.replace(/[*_`]/g,'\\$&');
-  const genId=()=>'CT'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,5).toUpperCase();
+  /* ============================
+     UTILS
+     ============================ */
+  const fmt = function(n) { return n.toLocaleString('id-ID'); };
+  const escWA = function(t) { return t.replace(/[*_`]/g, '\\$&'); };
+  const genId = function() { return 'CT' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 5).toUpperCase(); };
 
-  function toast(msg,type){
-    let el=document.getElementById('toast');if(!el)return;
-    el.textContent=msg;el.className='toast '+(type||'');
-    requestAnimationFrame(()=>el.classList.add('show'));
-    setTimeout(()=>el.classList.remove('show'),3000);
+  function toast(msg, type) {
+    var el = document.getElementById('toast');
+    if (!el) return;
+    el.textContent = msg;
+    el.className = 'toast ' + (type || '');
+    requestAnimationFrame(function() { el.classList.add('show'); });
+    setTimeout(function() { el.classList.remove('show'); }, 3000);
   }
 
-  let _retFocus=null;
-  function openOverlay(id){
-    let m=document.getElementById(id);if(!m)return;
-    _retFocus=document.activeElement;
-    m.classList.add('show');document.body.style.overflow='hidden';
+  var _retFocus = null;
+  function openOverlay(id) {
+    var m = document.getElementById(id);
+    if (!m) return;
+    _retFocus = document.activeElement;
+    m.classList.add('show');
+    document.body.style.overflow = 'hidden';
   }
-  function closeOverlay(id){
-    let m=document.getElementById(id);if(m)m.classList.remove('show');
-    document.body.style.overflow='';
-    if(_retFocus){_retFocus.focus();_retFocus=null;}
+  function closeOverlay(id) {
+    var m = document.getElementById(id);
+    if (m) m.classList.remove('show');
+    document.body.style.overflow = '';
+    if (_retFocus) { _retFocus.focus(); _retFocus = null; }
   }
 
-  /* STORAGE */
-  const getPref=()=>{try{return JSON.parse(localStorage.getItem('wct_pref'))||{};}catch{return{};}};
-  const savePref=()=>{try{localStorage.setItem('wct_pref',JSON.stringify({name:S.name,orderType:S.orderType}));}catch{}};
-  const getOwner=()=>{try{return JSON.parse(localStorage.getItem('wct_owner'))||{};}catch{return{};}};
-  const saveOwner=d=>localStorage.setItem('wct_owner',JSON.stringify(d));
-  const getOrders=()=>{try{return JSON.parse(localStorage.getItem('wct_orders'))||[];}catch{return[];}};
-  const saveOrders=l=>localStorage.setItem('wct_orders',JSON.stringify(l));
-  const getAiKey=()=>{try{return localStorage.getItem('wct_ai_key')||'';}catch{return'';}};
-  const saveAiKeyStorage=k=>{try{localStorage.setItem('wct_ai_key',k);}catch{}};
-  const clearAiKeyStorage=()=>{try{localStorage.removeItem('wct_ai_key');}catch{}};
+  /* ============================
+     STORAGE
+     ============================ */
+  function getPref() { try { return JSON.parse(localStorage.getItem('wct_pref')) || {}; } catch (e) { return {}; } }
+  function savePref() { try { localStorage.setItem('wct_pref', JSON.stringify({ name: S.name, orderType: S.orderType })); } catch (e) { } }
+  function getOwner() { try { return JSON.parse(localStorage.getItem('wct_owner')) || {}; } catch (e) { return {}; } }
+  function saveOwner(d) { localStorage.setItem('wct_owner', JSON.stringify(d)); }
+  function getOrders() { try { return JSON.parse(localStorage.getItem('wct_orders')) || []; } catch (e) { return []; } }
+  function saveOrders(l) { localStorage.setItem('wct_orders', JSON.stringify(l)); }
+  function getAiKey() { try { return localStorage.getItem('wct_ai_key') || ''; } catch (e) { return ''; } }
+  function saveAiKeyStorage(k) { try { localStorage.setItem('wct_ai_key', k); } catch (e) { } }
+  function clearAiKeyStorage() { try { localStorage.removeItem('wct_ai_key'); } catch (e) { } }
 
-  /* CART */
-  function clearCartDOM(){
-    allMenu.forEach(m=>{
-      S.cart[m.id]=0;
-      let el=document.getElementById('qty-'+m.id);if(el)el.innerText='0';
-      let mi=document.getElementById('mi-'+m.id);if(mi)mi.classList.remove('sel');
+  /* ============================
+     CART & MENU RENDERING
+     ============================ */
+  function clearCartDOM() {
+    allMenu.forEach(function(m) {
+      S.cart[m.id] = 0;
+      var el = document.getElementById('qty-' + m.id);
+      if (el) el.innerText = '0';
+      var mi = document.getElementById('mi-' + m.id);
+      if (mi) mi.classList.remove('sel');
     });
     updateUI();
   }
 
-  /* RENDER MENU */
-  function renderMenu(cid,items){
-    let wrap=document.getElementById(cid);if(!wrap)return;wrap.innerHTML='';
-    items.forEach(m=>{
-      let d=document.createElement('div');
-      d.className='menu-item';d.id='mi-'+m.id;
-      d.innerHTML='<div class="m-left"><div class="m-icon">'+m.icon+'</div><div><div class="m-name">'+m.name+'</div><div class="m-price">Rp '+fmt(m.price)+'</div></div></div><div class="qty-wrap"><button class="q-btn minus" onclick="WCT.upd(\''+m.id+'\',-1)">−</button><span class="q-num" id="qty-'+m.id+'">0</span><button class="q-btn plus" onclick="WCT.upd(\''+m.id+'\',1)">+</button></div>';
+  function renderMenu(cid, items) {
+    var wrap = document.getElementById(cid);
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    items.forEach(function(m) {
+      var d = document.createElement('div');
+      d.className = 'menu-item';
+      d.id = 'mi-' + m.id;
+      d.innerHTML = '<div class="m-left"><div class="m-icon">' + m.icon + '</div><div><div class="m-name">' + m.name + '</div><div class="m-price">Rp ' + fmt(m.price) + '</div></div></div><div class="qty-wrap"><button class="q-btn minus" onclick="WCT.upd(\'' + m.id + '\',-1)">−</button><span class="q-num" id="qty-' + m.id + '">0</span><button class="q-btn plus" onclick="WCT.upd(\'' + m.id + '\',1)">+</button></div>';
       wrap.appendChild(d);
     });
   }
 
-  function upd(id,delta){
-    S.cart[id]=Math.max(0,(S.cart[id]||0)+delta);
-    let el=document.getElementById('qty-'+id);if(el)el.innerText=S.cart[id];
-    let mi=document.getElementById('mi-'+id);if(mi)mi.classList.toggle('sel',S.cart[id]>0);
+  function upd(id, delta) {
+    S.cart[id] = Math.max(0, (S.cart[id] || 0) + delta);
+    var el = document.getElementById('qty-' + id);
+    if (el) el.innerText = S.cart[id];
+    var mi = document.getElementById('mi-' + id);
+    if (mi) mi.classList.toggle('sel', S.cart[id] > 0);
     updateUI();
   }
 
-  function calcTotals(){
-    let itemTotal=0,count=0;
-    allMenu.forEach(m=>{let q=S.cart[m.id]||0;itemTotal+=q*m.price;count+=q;});
-    return{itemTotal,count,grand:itemTotal+(count>0?S.shipping:0)};
-  }
-
-  function updateUI(){
-    let{count,grand}=calcTotals();
-    let gt=document.getElementById('grandTotal');if(gt)gt.innerText=fmt(grand);
-    let ov=document.getElementById('ongkirVal');if(ov)ov.innerText='Rp '+fmt(S.shipping);
-    let ic=document.getElementById('itemCount');if(ic)ic.innerText=count+' item';
-    let btn=document.getElementById('btnPesan'),hint=document.getElementById('btnHint');
-    let msg='',can=false;
-    if(S.isClosed)msg='❌ Warung tutup';
-    else if(S.locOver)msg='❌ Jarak >'+CFG.MAX_KM+' km';
-    else if(!S.name.trim())msg='👤 Isi nama dulu';
-    else if(S.orderType==='delivery'&&!S.locOk)msg='📍 Klik lokasi dulu';
-    else if(count===0)msg='🛒 Pilih menu dulu';
-    else can=true;
-    if(hint)hint.innerText=msg;if(btn)btn.disabled=!can;
-  }
-
-  function setOrderType(t){
-    S.orderType=t;savePref();
-    ['delivery','pickup','dinein'].forEach(tt=>{
-      let el=document.getElementById('ot-'+tt);if(el)el.classList.toggle('active',tt===t);
+  function calcTotals() {
+    var itemTotal = 0, count = 0;
+    allMenu.forEach(function(m) {
+      var q = S.cart[m.id] || 0;
+      itemTotal += q * m.price;
+      count += q;
     });
-    let gps=document.getElementById('gpsSection');
-    if(gps){
-      if(t==='delivery'){gps.style.display='';}
-      else{gps.style.display='none';S.locOk=false;S.locOver=false;S.distKm=0;S.shipping=0;}
-    }
-    checkTime();updateUI();
+    return { itemTotal: itemTotal, count: count, grand: itemTotal + (count > 0 ? S.shipping : 0) };
   }
 
-  function haversine(lat1,lon1,lat2,lon2){
-    let R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
-    let a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
-    return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  function updateUI() {
+    var t = calcTotals();
+    var gt = document.getElementById('grandTotal');
+    if (gt) gt.innerText = fmt(t.grand);
+    var ov = document.getElementById('ongkirVal');
+    if (ov) ov.innerText = 'Rp ' + fmt(S.shipping);
+    var ic = document.getElementById('itemCount');
+    if (ic) ic.innerText = t.count + ' item';
+    var btn = document.getElementById('btnPesan');
+    var hint = document.getElementById('btnHint');
+    var msg = '', can = false;
+    if (S.isClosed) msg = '\u274C Warung tutup';
+    else if (S.locOver) msg = '\u274C Jarak >' + CFG.MAX_KM + ' km';
+    else if (!S.name.trim()) msg = '\uD83D\uDC64 Isi nama dulu';
+    else if (S.orderType === 'delivery' && !S.locOk) msg = '\uD83D\uDCCD Klik lokasi dulu';
+    else if (t.count === 0) msg = '\uD83D\uDED2 Pilih menu dulu';
+    else can = true;
+    if (hint) hint.innerText = msg;
+    if (btn) btn.disabled = !can;
   }
 
-  function getLocation(){
-    let btn=document.getElementById('btnLocation');if(!btn)return;
-    btn.innerHTML='<span>⏳</span><span>Mencari…</span>';btn.style.pointerEvents='none';
-    if(!navigator.geolocation){
-      toast('GPS tidak didukung','error');
-      btn.innerHTML='<span>📍</span><span>Tandai Lokasi</span>';btn.style.pointerEvents='';return;
+  function setOrderType(t) {
+    S.orderType = t;
+    savePref();
+    ['delivery', 'pickup', 'dinein'].forEach(function(tt) {
+      var el = document.getElementById('ot-' + tt);
+      if (el) el.classList.toggle('active', tt === t);
+    });
+    var gps = document.getElementById('gpsSection');
+    if (gps) {
+      if (t === 'delivery') { gps.style.display = ''; }
+      else { gps.style.display = 'none'; S.locOk = false; S.locOver = false; S.distKm = 0; S.shipping = 0; }
     }
-    navigator.geolocation.getCurrentPosition(pos=>{
-      let d=haversine(CFG.WARUNG_LAT,CFG.WARUNG_LON,pos.coords.latitude,pos.coords.longitude);
-      S.distKm=parseFloat(d.toFixed(1));
-      S.userLat=pos.coords.latitude;S.userLon=pos.coords.longitude;
-      let lp=document.getElementById('locPill'),ld=document.getElementById('locDist'),le=document.getElementById('locExtra');
-      if(ld)ld.innerText=S.distKm+' km';if(lp)lp.classList.add('show');
-      if(S.distKm>CFG.MAX_KM){
-        S.locOk=false;S.locOver=true;S.shipping=0;
-        btn.innerHTML='<span></span><span>Terlalu Jauh</span>';btn.className='btn-loc error';
-        if(lp)lp.classList.add('warn');
-        if(ld)ld.style.color='var(--no)';
-        if(le)le.innerHTML='<span style="color:var(--no);font-size:12px;font-weight:500;">Maks '+CFG.MAX_KM+' km</span>';
-      }else{
-        S.locOk=true;S.locOver=false;
-        S.shipping=S.distKm<=1?2000:2000+Math.ceil(S.distKm-1)*1000;
-        btn.innerHTML='<span>✅</span><span>Lokasi OK</span>';btn.className='btn-loc success';
-        if(lp)lp.classList.remove('warn');
-        if(ld)ld.style.color='var(--au)';
-        if(le)le.innerHTML='<span style="color:var(--au);font-family:\'Playfair Display\',serif;font-size:16px;font-weight:700;">Rp '+fmt(S.shipping)+'</span>';
-        toast('Ongkir Rp '+fmt(S.shipping),'success');
+    checkTime();
+    updateUI();
+  }
+
+  /* ============================
+     GPS / LOCATION
+     ============================ */
+  function haversine(lat1, lon1, lat2, lon2) {
+    var R = 6371;
+    var dLat = (lat2 - lat1) * Math.PI / 180;
+    var dLon = (lon2 - lon1) * Math.PI / 180;
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function getLocation() {
+    var btn = document.getElementById('btnLocation');
+    if (!btn) return;
+    btn.innerHTML = '<span>⏳</span><span>Mencari&#8230;</span>';
+    btn.style.pointerEvents = 'none';
+    if (!navigator.geolocation) {
+      toast('GPS tidak didukung', 'error');
+      btn.innerHTML = '<span></span><span>Tandai Lokasi</span>';
+      btn.style.pointerEvents = '';
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      var d = haversine(CFG.WARUNG_LAT, CFG.WARUNG_LON, pos.coords.latitude, pos.coords.longitude);
+      S.distKm = parseFloat(d.toFixed(1));
+      S.userLat = pos.coords.latitude;
+      S.userLon = pos.coords.longitude;
+      var lp = document.getElementById('locPill');
+      var ld = document.getElementById('locDist');
+      var le = document.getElementById('locExtra');
+      if (ld) ld.innerText = S.distKm + ' km';
+      if (lp) lp.classList.add('show');
+      if (S.distKm > CFG.MAX_KM) {
+        S.locOk = false;
+        S.locOver = true;
+        S.shipping = 0;
+        btn.innerHTML = '<span>❌</span><span>Terlalu Jauh</span>';
+        btn.className = 'btn-loc error';
+        if (lp) lp.classList.add('warn');
+        if (ld) ld.style.color = 'var(--no)';
+        if (le) le.innerHTML = '<span style="color:var(--no);font-size:12px;font-weight:500;">Maks ' + CFG.MAX_KM + ' km</span>';
+      } else {
+        S.locOk = true;
+        S.locOver = false;
+        S.shipping = S.distKm <= 1 ? 2000 : 2000 + Math.ceil(S.distKm - 1) * 1000;
+        btn.innerHTML = '<span>✅</span><span>Lokasi OK</span>';
+        btn.className = 'btn-loc success';
+        if (lp) lp.classList.remove('warn');
+        if (ld) ld.style.color = 'var(--au)';
+        if (le) le.innerHTML = '<span style="color:var(--au);font-size:16px;font-weight:700;">Rp ' + fmt(S.shipping) + '</span>';
+        toast('Ongkir Rp ' + fmt(S.shipping), 'success');
       }
-      btn.style.pointerEvents='';updateUI();
-    },()=>{
-      toast('Gagal ambil lokasi','error');
-      btn.innerHTML='<span>📍</span><span>Tandai Lokasi</span>';btn.style.pointerEvents='';
-    },{enableHighAccuracy:true,timeout:10000});
+      btn.style.pointerEvents = '';
+      updateUI();
+    }, function() {
+      toast('Gagal ambil lokasi', 'error');
+      btn.innerHTML = '<span></span><span>Tandai Lokasi</span>';
+      btn.style.pointerEvents = '';
+    }, { enableHighAccuracy: true, timeout: 10000 });
   }
 
-  function countdownText(h){
-    let now=new Date(),t=new Date();
-    t.setHours(h,0,0,0);if(now>=t)t.setDate(t.getDate()+1);
-    let diff=t-now,hh=Math.floor(diff/3600000),mm=Math.floor((diff%3600000)/60000);
-    return'Buka lagi dalam '+hh+' jam '+mm+' menit';
+  /* ============================
+     TIME / OPEN-CLOSE CHECK
+     ============================ */
+  function countdownText(h) {
+    var now = new Date(), t = new Date();
+    t.setHours(h, 0, 0, 0);
+    if (now >= t) t.setDate(t.getDate() + 1);
+    var diff = t - now;
+    var hh = Math.floor(diff / 3600000);
+    var mm = Math.floor((diff % 3600000) / 60000);
+    return 'Buka lagi dalam ' + hh + ' jam ' + mm + ' menit';
   }
 
-  function checkTime(){
-    let now=new Date(),h=now.getHours(),owner=getOwner();
-    let closed=false,reason='';
-    if(owner.overrideStatus==='libur'){closed=true;reason='libur';}
-    else if(owner.overrideStatus==='tutup_cepat'){
-      let ch=owner.overrideHour||20;if(h>=ch){closed=true;reason='tutup_cepat';}
+  function checkTime() {
+    var now = new Date(), h = now.getHours(), owner = getOwner();
+    var closed = false, reason = '';
+    if (owner.overrideStatus === 'libur') { closed = true; reason = 'libur'; }
+    else if (owner.overrideStatus === 'tutup_cepat') {
+      var ch = owner.overrideHour || 20;
+      if (h >= ch) { closed = true; reason = 'tutup_cepat'; }
     }
-    if(!closed){
-      let cd=(h<15||h>=21),cw=(h<13||h>=23);
-      closed=S.orderType==='delivery'?cd:cw;
-      if(closed)reason='jam';
+    if (!closed) {
+      var cd = (h < 15 || h >= 21), cw = (h < 13 || h >= 23);
+      closed = S.orderType === 'delivery' ? cd : cw;
+      if (closed) reason = 'jam';
     }
-    S.isClosed=closed;
-    let badge=document.getElementById('statusBadge'),txt=document.getElementById('statusText');
-    let cn=document.getElementById('closedNotice'),ct=document.getElementById('closedTitle'),cs=document.getElementById('closedSub');
-    if(badge)badge.className='hdr-badge';if(cn)cn.classList.remove('show');
-    if(reason==='libur'){
-      if(badge)badge.classList.add('closed');if(txt)txt.innerText='WARUNG LIBUR';
-      if(ct)ct.innerText='WARUNG LIBUR HARI INI';
-      if(cs)cs.innerText='Owner sedang istirahat. Silakan kembali besok ya 😊';
-      if(cn)cn.classList.add('show');
-    }else if(reason==='tutup_cepat'){
-      if(badge)badge.classList.add('closed');if(txt)txt.innerText='TUTUP CEPAT';
-      if(ct)ct.innerText='WARUNG SUDAH TUTUP';
-      if(cs)cs.innerText='Hari ini tutup lebih cepat. Buka normal besok.';
-      if(cn)cn.classList.add('show');
-    }else if(closed){
-      if(badge)badge.classList.add('closed');
-      let oh=S.orderType==='delivery'?15:13;
-      let ibo=S.orderType==='delivery'?h<15:h<13;
-      if(txt)txt.innerText=ibo?'BELUM BUKA':'SUDAH TUTUP';
-      if(ct)ct.innerText='WARUNG TUTUP';
-      if(cs)cs.innerText=countdownText(oh);
-      if(cn)cn.classList.add('show');
-    }else{
-      if(badge)badge.classList.add('open');
-      if(txt)txt.innerText=S.orderType==='delivery'?'BUKA 15:00–21:00':'BUKA 13:00–23:00';
+    S.isClosed = closed;
+    var badge = document.getElementById('statusBadge');
+    var txt = document.getElementById('statusText');
+    var cn = document.getElementById('closedNotice');
+    var ct = document.getElementById('closedTitle');
+    var cs = document.getElementById('closedSub');
+    if (badge) badge.className = 'hdr-badge';
+    if (cn) cn.classList.remove('show');
+    if (reason === 'libur') {
+      if (badge) badge.classList.add('closed');
+      if (txt) txt.innerText = 'WARUNG LIBUR';
+      if (ct) ct.innerText = 'WARUNG LIBUR HARI INI';
+      if (cs) cs.innerText = 'Owner sedang istirahat. Silakan kembali besok ya 😊';
+      if (cn) cn.classList.add('show');
+    } else if (reason === 'tutup_cepat') {
+      if (badge) badge.classList.add('closed');
+      if (txt) txt.innerText = 'TUTUP CEPAT';
+      if (ct) ct.innerText = 'WARUNG SUDAH TUTUP';
+      if (cs) cs.innerText = 'Hari ini tutup lebih cepat. Buka normal besok.';
+      if (cn) cn.classList.add('show');
+    } else if (closed) {
+      if (badge) badge.classList.add('closed');
+      var oh = S.orderType === 'delivery' ? 15 : 13;
+      var ibo = S.orderType === 'delivery' ? h < 15 : h < 13;
+      if (txt) txt.innerText = ibo ? 'BELUM BUKA' : 'SUDAH TUTUP';
+      if (ct) ct.innerText = 'WARUNG TUTUP';
+      if (cs) cs.innerText = countdownText(oh);
+      if (cn) cn.classList.add('show');
+    } else {
+      if (badge) badge.classList.add('open');
+      if (txt) txt.innerText = S.orderType === 'delivery' ? 'BUKA 15:00–21:00' : 'BUKA 13:00–23:00';
     }
     updateUI();
   }
 
-  function showConfirm(){
-    let{count,grand}=calcTotals();
-    if(count===0||(S.orderType==='delivery'&&!S.locOk)||!S.name.trim()||S.isClosed||S.locOver)return;
-    let html='';
-    allMenu.forEach(m=>{
-      let q=S.cart[m.id]||0;
-      if(q>0)html+='<div class="cfm-row"><span>'+m.icon+' '+m.name+' ×'+q+'</span><span style="font-family:\'Playfair Display\',serif;">Rp '+fmt(m.price*q)+'</span></div>';
+  /* ============================
+     ORDER CONFIRMATION
+     ============================ */
+  function showConfirm() {
+    var t = calcTotals();
+    if (t.count === 0 || (S.orderType === 'delivery' && !S.locOk) || !S.name.trim() || S.isClosed || S.locOver) return;
+    var html = '';
+    allMenu.forEach(function(m) {
+      var q = S.cart[m.id] || 0;
+      if (q > 0) {
+        html += '<div class="cfm-row"><span>' + m.icon + ' ' + m.name + ' ×' + q + '</span><span style="font-family:\'Playfair Display\',serif;">Rp ' + fmt(m.price * q) + '</span></div>';
+      }
     });
-    if(S.shipping>0)html+='<div class="cfm-row"><span>🛵 Ongkir ('+S.distKm+' km)</span><span style="font-family:\'Playfair Display\',serif;">Rp '+fmt(S.shipping)+'</span></div>';
-    let meta=document.getElementById('confirmMeta');
-    if(meta)meta.innerText=S.name+' · '+(S.orderType==='delivery'?'Diantar':S.orderType==='pickup'?'Ambil Sendiri':'Makan di Tempat')+' · '+count+' item';
-    let id=document.getElementById('confirmItems');if(id)id.innerHTML=html;
-    let tv=document.getElementById('confirmTotal');if(tv)tv.innerText='Rp '+fmt(grand);
+    if (S.shipping > 0) {
+      html += '<div class="cfm-row"><span>🛵 Ongkir (' + S.distKm + ' km)</span><span style="font-family:\'Playfair Display\',serif;">Rp ' + fmt(S.shipping) + '</span></div>';
+    }
+    var meta = document.getElementById('confirmMeta');
+    if (meta) meta.innerText = S.name + ' · ' + (S.orderType === 'delivery' ? 'Diantar' : S.orderType === 'pickup' ? 'Ambil Sendiri' : 'Makan di Tempat') + ' · ' + t.count + ' item';
+    var id = document.getElementById('confirmItems');
+    if (id) id.innerHTML = html;
+    var tv = document.getElementById('confirmTotal');
+    if (tv) tv.innerText = 'Rp ' + fmt(t.grand);
     openOverlay('confirmModal');
   }
-  function hideConfirm(){closeOverlay('confirmModal');}
 
-  let _cd=false;
-  function doOrder(){
-    if(_cd){toast('Tunggu sebentar','warn');return;}
-    _cd=true;setTimeout(()=>_cd=false,8000);
-    let{grand}=calcTotals(),
-        notes=document.getElementById('orderNotes')?.value||'',
-        orderId=genId();
-    let tl={delivery:'Diantar',pickup:'Ambil Sendiri',dinein:'Makan di Tempat'};
-    let msg='*ORDER WARUNG CT*\n';
-    msg+='ID: '+orderId+'\n';
-    msg+='Nama: '+escWA(S.name)+'\n';
-    msg+='Tipe: '+tl[S.orderType]+'\n';
-    if(S.orderType==='delivery'){
-      msg+='Lokasi: https://maps.google.com/?q='+S.userLat+','+S.userLon+'\n';
-      msg+='Jarak: '+S.distKm+' km\n';
+  function hideConfirm() { closeOverlay('confirmModal'); }
+
+  var _cd = false;
+  function doOrder() {
+    if (_cd) { toast('Tunggu sebentar', 'warn'); return; }
+    _cd = true;
+    setTimeout(function() { _cd = false; }, 8000);
+    var t = calcTotals();
+    var notes = document.getElementById('orderNotes') ? document.getElementById('orderNotes').value || '' : '';
+    var orderId = genId();
+    var tl = { delivery: 'Diantar', pickup: 'Ambil Sendiri', dinein: 'Makan di Tempat' };
+    var msg = '*ORDER WARUNG CT*\n';
+    msg += 'ID: ' + orderId + '\n';
+    msg += 'Nama: ' + escWA(S.name) + '\n';
+    msg += 'Tipe: ' + tl[S.orderType] + '\n';
+    if (S.orderType === 'delivery') {
+      msg += 'Lokasi: https://maps.google.com/?q=' + S.userLat + ',' + S.userLon + '\n';
+      msg += 'Jarak: ' + S.distKm + ' km\n';
     }
-    msg+='\nPESANAN:\n';
-    allMenu.forEach(m=>{
-      let q=S.cart[m.id]||0;
-      if(q>0) msg+='- '+escWA(m.name)+' x'+q+' = Rp '+fmt(m.price*q)+'\n';
+    msg += '\nPESANAN:\n';
+    allMenu.forEach(function(m) {
+      var q = S.cart[m.id] || 0;
+      if (q > 0) msg += '- ' + escWA(m.name) + ' x' + q + ' = Rp ' + fmt(m.price * q) + '\n';
     });
-    if(S.orderType==='delivery') msg+='Ongkir: Rp '+fmt(S.shipping)+'\n';
-    msg+='TOTAL: Rp '+fmt(grand)+'\n';
-    if(notes) msg+='Catatan: '+escWA(notes)+'\n';
+    if (S.orderType === 'delivery') msg += 'Ongkir: Rp ' + fmt(S.shipping) + '\n';
+    msg += 'TOTAL: Rp ' + fmt(t.grand) + '\n';
+    if (notes) msg += 'Catatan: ' + escWA(notes) + '\n';
 
-    let orders=getOrders();
+    var orders = getOrders();
     orders.unshift({
-      id:orderId,name:S.name,type:S.orderType,dist:S.distKm,
-      items:allMenu.filter(m=>S.cart[m.id]>0).map(m=>({name:m.name,qty:S.cart[m.id],price:m.price})),
-      total:grand,notes,status:'pending',timestamp:Date.now()
+      id: orderId, name: S.name, type: S.orderType, dist: S.distKm,
+      items: allMenu.filter(function(m) { return S.cart[m.id] > 0; }).map(function(m) { return { name: m.name, qty: S.cart[m.id], price: m.price }; }),
+      total: t.grand, notes: notes, status: 'pending', timestamp: Date.now()
     });
     saveOrders(orders);
     clearCartDOM();
     hideConfirm();
 
-    let waWin=window.open('https://wa.me/'+CFG.WA+'?text='+encodeURIComponent(msg),'_blank');
-    if(!waWin)toast('Izinkan popup WA','error');
+    var waWin = window.open('https://wa.me/' + CFG.WA + '?text=' + encodeURIComponent(msg), '_blank');
+    if (!waWin) toast('Izinkan popup WA', 'error');
 
-    let sid=document.getElementById('sentOrderId');if(sid)sid.innerText=orderId;
-    setTimeout(()=>openOverlay('orderSentOverlay'),600);
+    var sid = document.getElementById('sentOrderId');
+    if (sid) sid.innerText = orderId;
+    setTimeout(function() { openOverlay('orderSentOverlay'); }, 600);
   }
 
-  function resetOrder(){closeOverlay('orderSentOverlay');}
+  function resetOrder() { closeOverlay('orderSentOverlay'); }
 
-  /* MUSIC */
-  function afterOrderMusic(){
+  /* ============================
+     MUSIC
+     ============================ */
+  function afterOrderMusic() {
     closeOverlay('orderSentOverlay');
     renderMusicPrompt();
-    setTimeout(()=>openOverlay('musicPromptOverlay'),300);
+    setTimeout(function() { openOverlay('musicPromptOverlay'); }, 300);
   }
-  function renderMusicPrompt(){
-    let el=document.getElementById('musicTrackList');if(!el)return;
-    el.innerHTML=playlist.map((t,i)=>'<div class="music-row" onclick="WCT.openPlayerFromPromptTrack('+i+')"><div class="music-row-ic">'+t.icon+'</div><div class="music-row-nm">'+t.title+'</div><div class="music-row-cta">▶ Play</div></div>').join('');
+  function renderMusicPrompt() {
+    var el = document.getElementById('musicTrackList');
+    if (!el) return;
+    el.innerHTML = playlist.map(function(t, i) {
+      return '<div class="music-row" onclick="WCT.openPlayerFromPromptTrack(' + i + ')"><div class="music-row-ic">' + t.icon + '</div><div class="music-row-nm">' + t.title + '</div><div class="music-row-cta">▶ Play</div></div>';
+    }).join('');
   }
-  function openPlayerFromPrompt(){
+  function openPlayerFromPrompt() {
     closeOverlay('musicPromptOverlay');
-    setTimeout(()=>{openOverlay('playerOverlay');if(!audio.src)loadTrack(0,true);},300);
+    setTimeout(function() {
+      openOverlay('playerOverlay');
+      if (!audio.src) loadTrack(0, true);
+    }, 300);
   }
-  function openPlayerFromPromptTrack(idx){
+  function openPlayerFromPromptTrack(idx) {
     closeOverlay('musicPromptOverlay');
-    setTimeout(()=>{openOverlay('playerOverlay');loadTrack(idx,true);},300);
+    setTimeout(function() {
+      openOverlay('playerOverlay');
+      loadTrack(idx, true);
+    }, 300);
   }
-  function closeMusicPrompt(){
-    closeOverlay('musicPromptOverlay');toast('Order berhasil dikirim! ','success');
+  function closeMusicPrompt() {
+    closeOverlay('musicPromptOverlay');
+    toast('Order berhasil dikirim! ', 'success');
   }
 
-  /* QR */
-  function toggleQR(show){
-    if(show){
+  /* ============================
+     QR CODE
+     ============================ */
+  function toggleQR(show) {
+    if (show) {
       openOverlay('qrOverlay');
-      let url=CFG.SHARE_URL;
-      let ud=document.getElementById('qrUrlDisplay');if(ud)ud.innerText=url;
-      setTimeout(()=>{
-        let qd=document.getElementById('qrcode');
-        if(qd&&typeof QRCode!=='undefined'){qd.innerHTML='';new QRCode(qd,{text:url,width:175,height:175});}
-      },100);
-    }else closeOverlay('qrOverlay');
+      var url = CFG.SHARE_URL;
+      var ud = document.getElementById('qrUrlDisplay');
+      if (ud) ud.innerText = url;
+      setTimeout(function() {
+        var qd = document.getElementById('qrcode');
+        if (qd && typeof QRCode !== 'undefined') {
+          qd.innerHTML = '';
+          new QRCode(qd, { text: url, width: 175, height: 175 });
+        }
+      }, 100);
+    } else {
+      closeOverlay('qrOverlay');
+    }
   }
-  function copyLink(e){
-    navigator.clipboard.writeText(CFG.SHARE_URL).then(()=>{
-      let b=e.target;b.textContent='✅ Disalin!';
-      setTimeout(()=>b.textContent='Salin Link',2000);
+  function copyLink(e) {
+    navigator.clipboard.writeText(CFG.SHARE_URL).then(function() {
+      var b = e.target;
+      b.textContent = '✅ Disalin!';
+      setTimeout(function() { b.textContent = 'Salin Link'; }, 2000);
     });
   }
 
-  /* PLAYER */
-  let audio=new Audio(),curTrack=0,isPlaying=false;
+  /* ============================
+     AUDIO PLAYER
+     ============================ */
+  var audio = new Audio(), curTrack = 0, isPlaying = false;
 
-  function renderTracklist(){
-    let el=document.getElementById('tracklistEl');if(!el)return;
-    el.innerHTML=playlist.map((t,i)=>'<div class="track-item '+(i===curTrack?'active':'')+'" onclick="WCT.loadTrack('+i+',true)"><div class="t-num">'+(i===curTrack?'▶':i+1)+'</div><div class="t-ic">'+t.icon+'</div><div class="t-info"><div class="t-nm '+(i===curTrack?'on':'')+'">'+t.title+'</div><div class="t-artist">'+t.artist+'</div></div></div>').join('');
+  function renderTracklist() {
+    var el = document.getElementById('tracklistEl');
+    if (!el) return;
+    el.innerHTML = playlist.map(function(t, i) {
+      return '<div class="track-item ' + (i === curTrack ? 'active' : '') + '" onclick="WCT.loadTrack(' + i + ',true)"><div class="t-num">' + (i === curTrack ? '▶' : (i + 1)) + '</div><div class="t-ic">' + t.icon + '</div><div class="t-info"><div class="t-nm ' + (i === curTrack ? 'on' : '') + '">' + t.title + '</div><div class="t-artist">' + t.artist + '</div></div></div>';
+    }).join('');
   }
-  function loadTrack(idx,autoplay){
-    curTrack=idx;let t=playlist[idx];
-    if(audio)audio.src=t.url;
-    let te=document.getElementById('playerTitle');if(te)te.innerText=t.title;
-    let ae=document.getElementById('playerArtist');if(ae)ae.innerText=t.artist;
-    let al=document.getElementById('playerAlbum');if(al)al.innerText=t.icon;
-    let pf=document.getElementById('progressFill');if(pf)pf.style.width='0%';
+  function loadTrack(idx, autoplay) {
+    curTrack = idx;
+    var t = playlist[idx];
+    if (audio) audio.src = t.url;
+    var te = document.getElementById('playerTitle');
+    if (te) te.innerText = t.title;
+    var ae = document.getElementById('playerArtist');
+    if (ae) ae.innerText = t.artist;
+    var al = document.getElementById('playerAlbum');
+    if (al) al.innerText = t.icon;
+    var pf = document.getElementById('progressFill');
+    if (pf) pf.style.width = '0%';
     renderTracklist();
-    if(autoplay&&audio)audio.play().then(()=>setPlaying(true)).catch(()=>setPlaying(false));
+    if (autoplay && audio) {
+      audio.play().then(function() { setPlaying(true); }).catch(function() { setPlaying(false); });
+    }
   }
-  function setPlaying(v){
-    isPlaying=v;
-    let b=document.getElementById('playBtn');if(b)b.innerText=v?'⏸':'▶';
+  function setPlaying(v) {
+    isPlaying = v;
+    var b = document.getElementById('playBtn');
+    if (b) b.innerText = v ? '' : '▶';
     renderTracklist();
   }
-  function togglePlay(){
-    if(!audio.src)loadTrack(0,true);
-    else if(isPlaying){audio.pause();setPlaying(false);}
-    else audio.play().then(()=>setPlaying(true)).catch(()=>setPlaying(false));
+  function togglePlay() {
+    if (!audio.src) loadTrack(0, true);
+    else if (isPlaying) { audio.pause(); setPlaying(false); }
+    else audio.play().then(function() { setPlaying(true); }).catch(function() { setPlaying(false); });
   }
-  function prevTrack(){loadTrack((curTrack-1+playlist.length)%playlist.length,isPlaying);}
-  function nextTrack(){loadTrack((curTrack+1)%playlist.length,isPlaying);}
-  function seekAudio(e){
-    if(!audio.duration)return;
-    let bar=document.getElementById('progressBar');if(!bar)return;
-    let rect=bar.getBoundingClientRect();
-    audio.currentTime=Math.min(1,Math.max(0,(e.clientX-rect.left)/rect.width))*audio.duration;
+  function prevTrack() { loadTrack((curTrack - 1 + playlist.length) % playlist.length, isPlaying); }
+  function nextTrack() { loadTrack((curTrack + 1) % playlist.length, isPlaying); }
+  function seekAudio(e) {
+    if (!audio.duration) return;
+    var bar = document.getElementById('progressBar');
+    if (!bar) return;
+    var rect = bar.getBoundingClientRect();
+    audio.currentTime = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width)) * audio.duration;
   }
-  if(audio){
-    audio.addEventListener('timeupdate',()=>{
-      if(audio.duration){
-        let pf=document.getElementById('progressFill');if(pf)pf.style.width=(audio.currentTime/audio.duration)*100+'%';
-        let tn=document.getElementById('timeNow');if(tn)tn.innerText=Math.floor(audio.currentTime/60)+':'+Math.floor(audio.currentTime%60).toString().padStart(2,'0');
-        let td=document.getElementById('timeDur');if(td)td.innerText=Math.floor(audio.duration/60)+':'+Math.floor(audio.duration%60).toString().padStart(2,'0');
+  if (audio) {
+    audio.addEventListener('timeupdate', function() {
+      if (audio.duration) {
+        var pf = document.getElementById('progressFill');
+        if (pf) pf.style.width = (audio.currentTime / audio.duration) * 100 + '%';
+        var tn = document.getElementById('timeNow');
+        if (tn) tn.innerText = Math.floor(audio.currentTime / 60) + ':' + Math.floor(audio.currentTime % 60).toString().padStart(2, '0');
+        var td = document.getElementById('timeDur');
+        if (td) td.innerText = Math.floor(audio.duration / 60) + ':' + Math.floor(audio.duration % 60).toString().padStart(2, '0');
       }
     });
-    audio.addEventListener('ended',nextTrack);
+    audio.addEventListener('ended', nextTrack);
   }
-  function openPlayer(){openOverlay('playerOverlay');if(!audio.src)loadTrack(0,false);}
-  function closePlayer(){closeOverlay('playerOverlay');if(audio)audio.pause();setPlaying(false);}
+  function openPlayer() {
+    openOverlay('playerOverlay');
+    if (!audio.src) loadTrack(0, false);
+  }
+  function closePlayer() {
+    closeOverlay('playerOverlay');
+    if (audio) audio.pause();
+    setPlaying(false);
+  }
 
-  /* PIN / OWNER */
-  let pinBuf='',tapCount=0,tapTimer=null;
-  document.getElementById('hdrLogo')?.addEventListener('click',()=>{
-    tapCount++;
-    if(tapTimer)clearTimeout(tapTimer);
-    tapTimer=setTimeout(()=>tapCount=0,500);
-    if(tapCount>=2){tapCount=0;openPin();}
-  });
-  function openPin(){
-    pinBuf='';updatePinDots();
-    let e=document.getElementById('pinError');if(e)e.innerText='';
+  /* ============================
+     PIN / OWNER PANEL
+     ============================ */
+  var pinBuf = '', tapCount = 0, tapTimer = null;
+  var hdrLogoEl = document.getElementById('hdrLogo');
+  if (hdrLogoEl) {
+    hdrLogoEl.addEventListener('click', function() {
+      tapCount++;
+      if (tapTimer) clearTimeout(tapTimer);
+      tapTimer = setTimeout(function() { tapCount = 0; }, 500);
+      if (tapCount >= 2) { tapCount = 0; openPin(); }
+    });
+  }
+
+  function openPin() {
+    pinBuf = '';
+    updatePinDots();
+    var e = document.getElementById('pinError');
+    if (e) e.innerText = '';
     openOverlay('pinOverlay');
   }
-  function cancelPin(){closeOverlay('pinOverlay');pinBuf='';}
-  function enterPin(n){
-    if(pinBuf.length>=4)return;
-    pinBuf+=n;updatePinDots();
-    if(pinBuf.length===4)verifyPin();
+  function cancelPin() { closeOverlay('pinOverlay'); pinBuf = ''; }
+  function enterPin(n) {
+    if (pinBuf.length >= 4) return;
+    pinBuf += n;
+    updatePinDots();
+    if (pinBuf.length === 4) verifyPin();
   }
-  function backspacePin(){pinBuf=pinBuf.slice(0,-1);updatePinDots();let e=document.getElementById('pinError');if(e)e.innerText='';}
-  function updatePinDots(){document.querySelectorAll('#pinDots .pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<pinBuf.length));}
-  function verifyPin(){
-    let owner=getOwner(),correct=owner.pin||CFG.PIN;
-    if(pinBuf===correct){cancelPin();openOwnerPanel();}
-    else{let e=document.getElementById('pinError');if(e)e.innerText='PIN salah';pinBuf='';setTimeout(updatePinDots,200);}
+  function backspacePin() {
+    pinBuf = pinBuf.slice(0, -1);
+    updatePinDots();
+    var e = document.getElementById('pinError');
+    if (e) e.innerText = '';
   }
-  function openOwnerPanel(){
-    renderOwnerOrders();let owner=getOwner();
-    let n=document.getElementById('st-normal');if(n)n.classList.toggle('active',!owner.overrideStatus||owner.overrideStatus==='normal');
-    let t=document.getElementById('st-tutup');if(t)t.classList.toggle('active',owner.overrideStatus==='tutup_cepat');
-    let l=document.getElementById('st-libur');if(l)l.classList.toggle('active',owner.overrideStatus==='libur');
-    let tj=document.getElementById('tutupJam');if(tj)tj.style.display=owner.overrideStatus==='tutup_cepat'?'block':'none';
-    if(owner.overrideHour&&tj)tj.value=owner.overrideHour;
+  function updatePinDots() {
+    document.querySelectorAll('#pinDots .pin-dot').forEach(function(d, i) {
+      d.classList.toggle('filled', i < pinBuf.length);
+    });
+  }
+  function verifyPin() {
+    var owner = getOwner();
+    var correct = owner.pin || CFG.PIN;
+    if (pinBuf === correct) { cancelPin(); openOwnerPanel(); }
+    else {
+      var e = document.getElementById('pinError');
+      if (e) e.innerText = 'PIN salah';
+      pinBuf = '';
+      setTimeout(updatePinDots, 200);
+    }
+  }
 
-    // AI Key status
-    let key=getAiKey();
-    let ks=document.getElementById('aiKeyStatus');
-    let aik=document.getElementById('aiApiKey');
-    if(aik)aik.value=key?'••••••••••••••••':'';
-    if(ks)ks.innerHTML=key?'<span style="color:var(--ok);">✅ AI Gemini Aktif</span>':'<span style="color:var(--parch-3);">⚪ Mode Manual (Offline)</span>';
+  function openOwnerPanel() {
+    renderOwnerOrders();
+    var owner = getOwner();
+    var n = document.getElementById('st-normal');
+    if (n) n.classList.toggle('active', !owner.overrideStatus || owner.overrideStatus === 'normal');
+    var t = document.getElementById('st-tutup');
+    if (t) t.classList.toggle('active', owner.overrideStatus === 'tutup_cepat');
+    var l = document.getElementById('st-libur');
+    if (l) l.classList.toggle('active', owner.overrideStatus === 'libur');
+    var tj = document.getElementById('tutupJam');
+    if (tj) tj.style.display = owner.overrideStatus === 'tutup_cepat' ? 'block' : 'none';
+    if (owner.overrideHour && tj) tj.value = owner.overrideHour;
+
+    var key = getAiKey();
+    var ks = document.getElementById('aiKeyStatus');
+    var aik = document.getElementById('aiApiKey');
+    if (aik) aik.value = key ? '••••••••••••••••' : '';
+    if (ks) ks.innerHTML = key ? '<span style="color:var(--ok);">✅ AI Aktif (OpenRouter)</span>' : '<span style="color:var(--parch-3);">⚪ Mode Manual (Offline)</span>';
 
     openOverlay('ownerOverlay');
   }
-  function hideOwnerPanel(){closeOverlay('ownerOverlay');}
-  function setOverride(mode){
-    let owner=getOwner();owner.overrideStatus=mode;
-    if(mode==='tutup_cepat'){
-      let jam=parseInt(document.getElementById('tutupJam')?.value||20);
-      owner.overrideHour=(jam>=13&&jam<=23)?jam:20;
-      let tj=document.getElementById('tutupJam');if(tj)tj.style.display='block';
-    }else{let tj=document.getElementById('tutupJam');if(tj)tj.style.display='none';}
-    saveOwner(owner);checkTime();openOwnerPanel();
-    toast(mode==='libur'?'Warung LIBUR':(mode==='tutup_cepat'?'Tutup jam '+owner.overrideHour+':00':'Status Normal'),'success');
-  }
-  function changePin(){
-    let val=document.getElementById('newPin')?.value;
-    if(!/^\d{4}$/.test(val)){toast('PIN harus 4 digit','error');return;}
-    let owner=getOwner();owner.pin=val;saveOwner(owner);
-    if(document.getElementById('newPin'))document.getElementById('newPin').value='';
-    toast('PIN berhasil diganti','success');
+  function hideOwnerPanel() { closeOverlay('ownerOverlay'); }
+
+  function setOverride(mode) {
+    var owner = getOwner();
+    owner.overrideStatus = mode;
+    if (mode === 'tutup_cepat') {
+      var jam = parseInt(document.getElementById('tutupJam') ? document.getElementById('tutupJam').value || '20' : '20');
+      owner.overrideHour = (jam >= 13 && jam <= 23) ? jam : 20;
+      var tj = document.getElementById('tutupJam');
+      if (tj) tj.style.display = 'block';
+    } else {
+      var tj = document.getElementById('tutupJam');
+      if (tj) tj.style.display = 'none';
+    }
+    saveOwner(owner);
+    checkTime();
+    openOwnerPanel();
+    toast(mode === 'libur' ? 'Warung LIBUR' : (mode === 'tutup_cepat' ? 'Tutup jam ' + owner.overrideHour + ':00' : 'Status Normal'), 'success');
   }
 
-  /* AI KEY MANAGEMENT */
-  function saveAiKey(){
-    let val=document.getElementById('aiApiKey')?.value?.trim();
-    if(!val){toast('Masukkan API key dulu','error');return;}
-    if(val.length<10){toast('API key terlalu pendek','error');return;}
+  function changePin() {
+    var val = document.getElementById('newPin') ? document.getElementById('newPin').value : '';
+    if (!/^\d{4}$/.test(val)) { toast('PIN harus 4 digit', 'error'); return; }
+    var owner = getOwner();
+    owner.pin = val;
+    saveOwner(owner);
+    if (document.getElementById('newPin')) document.getElementById('newPin').value = '';
+    toast('PIN berhasil diganti', 'success');
+  }
+
+  /* ============================
+     AI KEY MANAGEMENT
+     ============================ */
+  function saveAiKey() {
+    var val = document.getElementById('aiApiKey') ? document.getElementById('aiApiKey').value.trim() : '';
+    if (!val) { toast('Masukkan API key dulu', 'error'); return; }
+    if (val.length < 10) { toast('API key terlalu pendek', 'error'); return; }
     saveAiKeyStorage(val);
-    toast('API Key disimpan! AI Gemini aktif 🚀','success');
-    let ks=document.getElementById('aiKeyStatus');
-    if(ks)ks.innerHTML='<span style="color:var(--ok);">✅ AI Gemini Aktif</span>';
-    let aik=document.getElementById('aiApiKey');
-    if(aik)aik.value='••••••••••••••••';
+    toast('API Key disimpan! AI aktif 🚀', 'success');
+    var ks = document.getElementById('aiKeyStatus');
+    if (ks) ks.innerHTML = '<span style="color:var(--ok);">✅ AI Aktif (OpenRouter)</span>';
+    var aik = document.getElementById('aiApiKey');
+    if (aik) aik.value = '••••••••••••••••';
   }
-  function clearAiKey(){
+  function clearAiKey() {
     clearAiKeyStorage();
-    toast('API Key dihapus. Mode manual aktif.','warn');
-    let ks=document.getElementById('aiKeyStatus');
-    if(ks)ks.innerHTML='<span style="color:var(--parch-3);"> Mode Manual (Offline)</span>';
-    let aik=document.getElementById('aiApiKey');
-    if(aik)aik.value='';
+    toast('API Key dihapus. Mode manual aktif.', 'warn');
+    var ks = document.getElementById('aiKeyStatus');
+    if (ks) ks.innerHTML = '<span style="color:var(--parch-3);">⚪ Mode Manual (Offline)</span>';
+    var aik = document.getElementById('aiApiKey');
+    if (aik) aik.value = '';
   }
 
-  function renderOwnerOrders(){
-    let orders=getOrders();
-    let cs=document.getElementById('orderCount');if(cs)cs.innerText=orders.length;
-    let container=document.getElementById('ownerOrderList');if(!container)return;
-    if(!orders.length){container.innerHTML='<div style="font-size:12px;color:var(--parch-3);padding:10px 0;font-weight:300;">Belum ada order masuk</div>';return;}
-    container.innerHTML=orders.map(o=>'<div class="o-card"><div class="o-card-id">'+o.id+'</div><div class="o-card-meta">'+o.name+' · '+o.type+' · '+new Date(o.timestamp).toLocaleString('id-ID')+'</div><div class="o-card-items">'+o.items.map(i=>i.name+' ×'+i.qty).join(', ')+'</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;"><div class="o-card-total">Rp '+fmt(o.total)+'</div><div><button class="btn-sm-ok" onclick="WCT.confirmOrder(\''+o.id+'\')">✓ OK</button><button class="btn-sm-no" onclick="WCT.deleteOrder(\''+o.id+'\')">✕ Hapus</button></div></div></div>').join('');
+  /* ============================
+     OWNER ORDERS
+     ============================ */
+  function renderOwnerOrders() {
+    var orders = getOrders();
+    var cs = document.getElementById('orderCount');
+    if (cs) cs.innerText = orders.length;
+    var container = document.getElementById('ownerOrderList');
+    if (!container) return;
+    if (!orders.length) {
+      container.innerHTML = '<div style="font-size:12px;color:var(--parch-3);padding:10px 0;font-weight:300;">Belum ada order masuk</div>';
+      return;
+    }
+    container.innerHTML = orders.map(function(o) {
+      return '<div class="o-card"><div class="o-card-id">' + o.id + '</div><div class="o-card-meta">' + o.name + ' · ' + o.type + ' · ' + new Date(o.timestamp).toLocaleString('id-ID') + '</div><div class="o-card-items">' + o.items.map(function(i) { return i.name + ' ×' + i.qty; }).join(', ') + '</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;"><div class="o-card-total">Rp ' + fmt(o.total) + '</div><div><button class="btn-sm-ok" onclick="WCT.confirmOrder(\'' + o.id + '\')">✓ OK</button><button class="btn-sm-no" onclick="WCT.deleteOrder(\'' + o.id + '\')">✕ Hapus</button></div></div></div>';
+    }).join('');
   }
-  function confirmOrder(id){
-    let orders=getOrders();let o=orders.find(x=>x.id===id);
-    if(o&&o.status!=='confirmed'){o.status='confirmed';saveOrders(orders);renderOwnerOrders();toast('Order dikonfirmasi','success');}
+  function confirmOrder(id) {
+    var orders = getOrders();
+    var o = orders.find(function(x) { return x.id === id; });
+    if (o && o.status !== 'confirmed') {
+      o.status = 'confirmed';
+      saveOrders(orders);
+      renderOwnerOrders();
+      toast('Order dikonfirmasi', 'success');
+    }
   }
-  function deleteOrder(id){saveOrders(getOrders().filter(o=>o.id!==id));renderOwnerOrders();toast('Order dihapus','success');}
-  function clearAllOrders(){
-    if(confirm('Hapus semua order?')){saveOrders([]);renderOwnerOrders();toast('Semua order dihapus','success');}
+  function deleteOrder(id) {
+    saveOrders(getOrders().filter(function(o) { return o.id !== id; }));
+    renderOwnerOrders();
+    toast('Order dihapus', 'success');
+  }
+  function clearAllOrders() {
+    if (confirm('Hapus semua order?')) {
+      saveOrders([]);
+      renderOwnerOrders();
+      toast('Semua order dihapus', 'success');
+    }
   }
 
-  /* AI CHAT */
-  const GEMINI_MODEL='gemini-1.5-flash';
-  const GEMINI_URL=key=>'https://generativelanguage.googleapis.com/v1beta/models/'+GEMINI_MODEL+':generateContent?key='+key;
+  /* ============================
+     AI CHAT (OpenRouter)
+     ============================ */
+  var WARUNG_CONTEXT = [
+    "Kamu adalah Asisten Warung CT — warung makan sederhana yang menjual makanan & minuman dengan harga terjangkau.",
+    "",
+    "MENU UTAMA:",
+    "- Ayam Goreng Rp 10.000",
+    "- Pecel Lele Rp 10.000",
+    "- Dadar Rp 7.000",
+    "- Ati Ampela Rp 8.000",
+    "- Tempe Penyet Rp 6.000",
+    "- Nasgor Ori Rp 10.000",
+    "- Nasgor + Sosis Rp 13.000",
+    "- Nasgor + Dadar Rp 13.000",
+    "",
+    "TAMBAHAN:",
+    "- Telur Rp 3.000, Kepala Rp 3.000, Ati Ampela Rp 5.000, Sambal Rp 3.000, Nasi Putih Rp 3.000",
+    "",
+    "MINUMAN:",
+    "- Es Teh, Teh Hangat, Nutrisari, Kopi Hitam, Kopi White, Susu, Pop Ice (semua Rp 3.000)",
+    "- Es Jeruk, Milo, Good Day, Chocolatos (semua Rp 4.000)",
+    "",
+    "INFO WARUNG:",
+    "- Nama: Warung CT",
+    "- Tagline: The Real Temenan",
+    "- Jam buka: Delivery 15:00-21:00 | Pickup/Dine-in 13:00-23:00",
+    "- Ongkir: Rp 2.000 (≤1km), tambah Rp 1.000/km berikutnya. Maks jarak 3 km.",
+    "- Kontak WhatsApp: +6285730030112",
+    "",
+    "PERILAKU:",
+    "- Jawab dengan ramah, santai, gaya anak muda Indonesia (boleh pake bro, gan, bang)",
+    "- Sesuaikan rekomendasi dengan waktu: pagi/siang = nasgor/ayam, malam = pecel lele + kopi",
+    "- Yang pedas: Pecel Lele + Sambal ekstra",
+    "- Yang hemat: Tempe Penyet + Es Teh (Rp 9.000)",
+    "- Selalu ajak order via tombol Order via WhatsApp",
+    "- Jangan buat info palsu",
+    "- Jawaban dalam bahasa Indonesia",
+    "- Gunakan formatting yang rapi"
+  ].join('\n');
 
-  const WARUNG_CONTEXT='Kamu adalah Asisten Warung CT — warung makan sederhana yang menjual makanan & minuman dengan harga terjangkau. Berikut data akurat warung:\n\nMENU UTAMA:\n- Ayam Goreng Rp 10.000\n- Pecel Lele Rp 10.000\n- Dadar Rp 7.000\n- Ati Ampela Rp 8.000\n- Tempe Penyet Rp 6.000\n- Nasgor Ori Rp 10.000\n- Nasgor + Sosis Rp 13.000\n- Nasgor + Dadar Rp 13.000\n\nTAMBAHAN:\n- Telur Rp 3.000, Kepala Rp 3.000, Ati Ampela Rp 5.000, Sambal Rp 3.000, Nasi Putih Rp 3.000\n\nMINUMAN:\n- Es Teh, Teh Hangat, Nutrisari, Kopi Hitam, Kopi White, Susu, Pop Ice (semua Rp 3.000)\n- Es Jeruk, Milo, Good Day, Chocolatos (semua Rp 4.000)\n\nINFO WARUNG:\n- Nama: Warung CT\n- Tagline: "The Real Temenan"\n- Lokasi: Sekitar koordinat -7.166875, 112.326875\n- Jam buka: Delivery 15:00-21:00 | Pickup/Dine-in 13:00-23:00\n- Ongkir: Rp 2.000 (≤1km), tambah Rp 1.000/km berikutnya. Maks jarak 3 km.\n- Kontak WhatsApp: +6285730030112\n- Cara order: Isi nama → pilih tipe order → pilih menu → klik Order via WhatsApp\n\nPERILAKU:\n- Jawab dengan ramah, santai, gaya anak muda Indonesia (boleh pake "bro", "gan", "bang", tapi tetap sopan)\n- Kalau ditanya rekomendasi, sesuaikan dengan waktu: pagi/siang → nasgor/ayam, malam → pecel lele + kopi\n- Kalau ditanya yang pedas, rekomendasikan Pecel Lele + Sambal ekstra\n- Kalau ditanya yang hemat, rekomendasikan Tempe Penyet + Es Teh (total Rp 9.000)\n- Selalu ajak user untuk order via tombol "Order via WhatsApp" di bawah\n- Jangan buat info palsu. Kalau tidak tahu, bilang "Coba tanya langsung ke owner ya bro via WA"\n- Jawaban harus dalam bahasa Indonesia\n- Gunakan formatting yang rapi dan enak dibaca';
-
-  const RULE_REPLIES=[
-    {keys:['halo','hi','hello','hai'],reply:'Halo bro!  Mau order apa hari ini? 😊'},
-    {keys:['menu','makanan','ada apa','tersedia'],reply:'Kita ada:\n🍗 Ayam Goreng (10k)\n🐟 Pecel Lele (10k)\n🍳 Dadar (7k)\n Ati Ampela (8k)\n🌿 Tempe Penyet (6k)\n🍚 Nasgor Ori (10k)\n🍛 Nasgor + Sosis (13k)\n🍜 Nasgor + Dadar (13k)\n\n+ minuman mulai 3k. Cek menu atas ya!'},
-    {keys:['best seller','favorit','paling laris','rekomendasi','enak apa'],reply:'Best seller kita:\n🥇 Pecel Lele\n🥈 Ayam Goreng\n Nasgor Ori\n\nWajib coba bro! 🔥'},
-    {keys:['jam buka','buka jam','tutup jam','jam berapa'],reply:'🕐 Jam Buka:\n• Delivery: 15:00 - 21:00\n• Pickup/Dine-in: 13:00 - 23:00\n\nJangan telat ya!'},
-    {keys:['ongkir','delivery','antar','berapa ongkir','antar berapa'],reply:'🛵 Ongkir:\n• ≤1 km: Rp 2.000\n• >1 km: +Rp 1.000/km\n• Maks: 3 km\n\nKlik "Tandai Lokasi" dulu biar tau totalnya!'},
-    {keys:['hemat','murah','promo','murahan'],reply:'💰 Paket Hemat:\nTempe Penyet (6k) + Es Teh (3k) = **Rp 9.000**\nKenyang tanpa boncos! 💪'},
-    {keys:['pedas','sambal','pedasnya'],reply:'🌶️ Yang pedas nampol:\nPecel Lele + Sambal Extra!\nJangan lupa siapin air minum ya bro! 💧'},
-    {keys:['lokasi','alamat','dimana','letak'],reply:'📍 Lokasi Warung CT:\nSekitar koordinat -7.166875, 112.326875\n\nKlik "Tandai Lokasi" di atas buat cek jarak!'},
-    {keys:['wa','whatsapp','nomor','kontak','hubungi'],reply:'📱 Kontak Owner:\n+6285730030112\n\nAtau klik tombol "Order via WhatsApp" setelah pilih menu!'},
-    {keys:['terima kasih','thanks','makasih','thx','trims'],reply:'Sama-sama bro! 😊\nTunggu order-mu ya, dijamin enak! 🔥'},
-    {keys:['nasi goreng','nasgor','gorengan'],reply:'🍚 Nasi Goreng:\n• Ori: 10k\n• + Sosis: 13k\n• + Dadar: 13k\n\nMau yang mana bro?'},
-    {keys:['minuman','minum','es','teh','kopi'],reply:' Minuman:\n• Es Teh / Teh Hangat: 3k\n• Nutrisari: 3k\n• Kopi Hitam/White: 3k\n• Susu: 3k\n• Pop Ice: 3k\n• Es Jeruk: 4k\n• Milo: 4k\n• Good Day: 4k\n• Chocolatos: 4k'},
-    {keys:['ayam','goreng','ayam goreng'],reply:'🍗 Ayam Goreng: Rp 10.000\nDagingnya empuk, bumbu meresap!\nCocok sama sambal + lalapan 🔥'},
-    {keys:['lele','pecel','pecel lele'],reply:' Pecel Lele: Rp 10.000\nLele goreng krispi + sambal pecel\nBest seller kita! 🔥'},
-    {keys:['tutup','libur','besok','besok buka'],reply:'🏖️ Kalau hari ini libur:\nBuka lagi besok sesuai jam normal ya bro!\n• Delivery: 15:00-21:00\n• Pickup: 13:00-23:00'},
-    {keys:['sosis','tambahan sosis'],reply:'🌭 Tambah Sosis ke Nasgor: +Rp 3.000\nNasgor + Sosis jadi Rp 13.000\nMakin mantap! 😋'},
-    {keys:['dadar','telur dadar'],reply:'🍳 Dadar/Telur Dadar: Rp 7.000\nBisa juga jadi tambahan Nasgor (+6k)\nEnak banget!'},
-    {keys:['ati','ampela','ati ampela'],reply:'🍖 Ati Ampela:\n• Menu utama: 8k\n• Tambahan: 5k\n\nBuat pecinta jeroan nih! '},
-    {keys:['tempe','penyet','tempe penyet'],reply:'🌿 Tempe Penyet: Rp 6.000\nMurah tapi bikin kenyang!\nCocok buat yang hemat '},
+  var RULE_REPLIES = [
+    { keys: ['halo', 'hi', 'hello', 'hai', 'p', 'pagi', 'siang', 'sore', 'malam'], reply: 'Halo bro!  Mau order apa hari ini? 😊' },
+    { keys: ['menu', 'makanan', 'ada apa', 'tersedia'], reply: 'Kita ada:\n🍗 Ayam Goreng (10k)\n🐟 Pecel Lele (10k)\n🍳 Dadar (7k)\n🍖 Ati Ampela (8k)\n🌿 Tempe Penyet (6k)\n🍚 Nasgor Ori (10k)\n🍛 Nasgor + Sosis (13k)\n🍜 Nasgor + Dadar (13k)\n\n+ minuman mulai 3k. Cek menu atas ya!' },
+    { keys: ['best seller', 'favorit', 'paling laris', 'rekomendasi', 'enak apa'], reply: 'Best seller kita:\n🥇 Pecel Lele\n🥈 Ayam Goreng\n🥉 Nasgor Ori\n\nWajib coba bro! 🔥' },
+    { keys: ['jam buka', 'buka jam', 'tutup jam', 'jam berapa', 'buka'], reply: '🕐 Jam Buka:\n• Delivery: 15:00 - 21:00\n• Pickup/Dine-in: 13:00 - 23:00\n\nJangan telat ya!' },
+    { keys: ['ongkir', 'delivery', 'antar', 'berapa ongkir', 'antar berapa'], reply: '🛵 Ongkir:\n• ≤1 km: Rp 2.000\n• >1 km: +Rp 1.000/km\n• Maks: 3 km\n\nKlik "Tandai Lokasi" dulu biar tau totalnya!' },
+    { keys: ['hemat', 'murah', 'promo', 'murahan'], reply: '💰 Paket Hemat:\nTempe Penyet (6k) + Es Teh (3k) = Rp 9.000\nKenyang tanpa boncos! 💪' },
+    { keys: ['pedas', 'sambal', 'pedasnya'], reply: '️ Yang pedas nampol:\nPecel Lele + Sambal Extra!\nJangan lupa siapin air minum ya bro! 💧' },
+    { keys: ['lokasi', 'alamat', 'dimana', 'letak'], reply: '📍 Lokasi Warung CT:\nSekitar koordinat -7.166875, 112.326875\n\nKlik "Tandai Lokasi" di atas buat cek jarak!' },
+    { keys: ['wa', 'whatsapp', 'nomor', 'kontak', 'hubungi'], reply: '📱 Kontak Owner:\n+6285730030112\n\nAtau klik tombol "Order via WhatsApp" setelah pilih menu!' },
+    { keys: ['terima kasih', 'thanks', 'makasih', 'thx', 'trims', 'tq'], reply: 'Sama-sama bro! 😊\nTunggu order-mu ya, dijamin enak! 🔥' },
+    { keys: ['nasi goreng', 'nasgor', 'gorengan'], reply: ' Nasi Goreng:\n• Ori: 10k\n• + Sosis: 13k\n• + Dadar: 13k\n\nMau yang mana bro?' },
+    { keys: ['minuman', 'minum', 'es', 'teh', 'kopi'], reply: '🥤 Minuman:\n• Es Teh / Teh Hangat: 3k\n• Nutrisari: 3k\n• Kopi Hitam/White: 3k\n• Susu: 3k\n• Pop Ice: 3k\n• Es Jeruk: 4k\n• Milo: 4k\n• Good Day: 4k\n• Chocolatos: 4k' },
+    { keys: ['ayam', 'ayam goreng'], reply: '🍗 Ayam Goreng: Rp 10.000\nDagingnya empuk, bumbu meresap!\nCocok sama sambal + lalapan 🔥' },
+    { keys: ['lele', 'pecel', 'pecel lele'], reply: '🐟 Pecel Lele: Rp 10.000\nLele goreng krispi + sambal pecel\nBest seller kita! 🔥' },
+    { keys: ['tutup', 'libur', 'besok', 'besok buka'], reply: '🏖️ Kalau hari ini libur:\nBuka lagi besok sesuai jam normal ya bro!\n• Delivery: 15:00-21:00\n• Pickup: 13:00-23:00' },
+    { keys: ['sosis'], reply: '🌭 Tambah Sosis ke Nasgor: +Rp 3.000\nNasgor + Sosis jadi Rp 13.000\nMakin mantap! 😋' },
+    { keys: ['dadar', 'telur dadar'], reply: '🍳 Dadar/Telur Dadar: Rp 7.000\nBisa juga jadi tambahan Nasgor (+6k)\nEnak banget!' },
+    { keys: ['ati', 'ampela', 'ati ampela'], reply: '🍖 Ati Ampela:\n• Menu utama: 8k\n• Tambahan: 5k\n\nBuat pecinta jeroan nih! 🔥' },
+    { keys: ['tempe', 'penyet', 'tempe penyet'], reply: '🌿 Tempe Penyet: Rp 6.000\nMurah tapi bikin kenyang!\nCocok buat yang hemat 💪' }
   ];
 
-  function findRuleReply(text){
-    const t=text.toLowerCase();
-    for(let r of RULE_REPLIES){
-      if(r.keys.some(k=>t.includes(k)))return r.reply;
+  function findRuleReply(text) {
+    var t = text.toLowerCase();
+    for (var i = 0; i < RULE_REPLIES.length; i++) {
+      var r = RULE_REPLIES[i];
+      for (var j = 0; j < r.keys.length; j++) {
+        if (t.indexOf(r.keys[j]) !== -1) return r.reply;
+      }
     }
     return null;
   }
 
-  function addMsg(text,from){
-    const body=document.getElementById('aiBody');
-    const div=document.createElement('div');
-    div.className='ai-bubble '+from;
-    // Convert markdown-like bold to HTML
-    div.innerHTML=text.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  function addMsg(text, from) {
+    var body = document.getElementById('aiBody');
+    var div = document.createElement('div');
+    div.className = 'ai-bubble ' + from;
+    div.innerHTML = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
     body.appendChild(div);
-    body.scrollTop=body.scrollHeight;
+    body.scrollTop = body.scrollHeight;
   }
 
-  function addTyping(){
-    const body=document.getElementById('aiBody');
-    const div=document.createElement('div');
-    div.className='ai-bubble bot ai-typing';div.id='aiTyping';
-    div.innerHTML='<span></span><span></span><span></span>';
+  function addTyping() {
+    var body = document.getElementById('aiBody');
+    var div = document.createElement('div');
+    div.className = 'ai-bubble bot ai-typing';
+    div.id = 'aiTyping';
+    div.innerHTML = '<span></span><span></span><span></span>';
     body.appendChild(div);
-    body.scrollTop=body.scrollHeight;
+    body.scrollTop = body.scrollHeight;
   }
-  function removeTyping(){
-    const el=document.getElementById('aiTyping');
-    if(el)el.remove();
+  function removeTyping() {
+    var el = document.getElementById('aiTyping');
+    if (el) el.remove();
   }
 
-  // Simpan conversation history untuk context
-  let chatHistory = [];
+  var chatHistory = [];
 
-  async function sendChat(){
-    const inp=document.getElementById('aiInput');
-    const text=inp.value.trim();
-    if(!text)return;
-    
-    addMsg(text,'user');
-    inp.value='';
+  async function sendChat() {
+    var inp = document.getElementById('aiInput');
+    var text = inp.value.trim();
+    if (!text) return;
+
+    addMsg(text, 'user');
+    inp.value = '';
     addTyping();
-    
-    // Simpan ke history
-    chatHistory.push({ role: 'user', parts: [{ text }] });
-    
-    const GEMINI_API_KEY=getAiKey();
-    
-    // Mode Offline (Rule-Based) — tanpa API key
-    if(!GEMINI_API_KEY){
-      await new Promise(r=>setTimeout(r,500+Math.random()*500));
+
+    chatHistory.push({ role: 'user', content: text });
+
+    var API_KEY = getAiKey();
+
+    // Mode Offline (Rule-Based)
+    if (!API_KEY) {
+      await new Promise(function(r) { setTimeout(r, 500 + Math.random() * 500); });
       removeTyping();
-      
-      const reply=findRuleReply(text)||
-        `Hmm, aku belum ngerti bro \nCoba tanya tentang:\n• Menu makanan/minuman\n• Jam buka\n• Ongkir\n• Rekomendasi\n\nAtau langsung chat owner via WA aja! 📲\n+6285730030112`;
-      
-      addMsg(reply,'bot');
-      chatHistory.push({ role: 'model', parts: [{ text: reply }] });
+
+      var reply = findRuleReply(text) || 'Hmm, aku belum ngerti bro \nCoba tanya tentang:\n• Menu makanan/minuman\n• Jam buka\n• Ongkir\n• Rekomendasi\n\nAtau langsung chat owner via WA aja! 📲\n+6285730030112';
+      addMsg(reply, 'bot');
+      chatHistory.push({ role: 'assistant', content: reply });
       return;
     }
-    
-    // Mode Online (Gemini API)
-    try{
-      // Siapkan content dengan history
-      const contents = [
-        { role: 'user', parts: [{ text: WARUNG_CONTEXT }] },
-        { role: 'model', parts: [{ text: 'Baik, saya mengerti. Saya akan menjadi Asisten Warung CT yang ramah dan membantu.' }] },
-        ...chatHistory.slice(-10), // Ambil 10 pesan terakhir untuk context
-        { role: 'user', parts: [{ text: text }] }
+
+    // Mode Online (OpenRouter API)
+    try {
+      var messages = [
+        { role: 'system', content: WARUNG_CONTEXT },
+        ...chatHistory.slice(-10)
       ];
-      
-      const res=await fetch(GEMINI_URL(GEMINI_API_KEY),{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          contents: contents,
-          generationConfig:{temperature:0.7,maxOutputTokens:500,topP:0.8,topK:40},
-          safetySettings:[
-            {category:'HARM_CATEGORY_HARASSMENT',threshold:'BLOCK_NONE'},
-            {category:'HARM_CATEGORY_HATE_SPEECH',threshold:'BLOCK_NONE'},
-            {category:'HARM_CATEGORY_SEXUALLY_EXPLICIT',threshold:'BLOCK_NONE'},
-            {category:'HARM_CATEGORY_DANGEROUS_CONTENT',threshold:'BLOCK_NONE'}
-          ]
+
+      var res = await fetch(OR_API_URL, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + API_KEY,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': window.location.href,
+          'X-Title': 'Warung CT Assistant'
+        },
+        body: JSON.stringify({
+          model: OR_MODEL,
+          messages: messages,
+          temperature: 0.7,
+          max_tokens: 500
         })
       });
-      
-      if(!res.ok){
-        const errorData=await res.json().catch(()=>({}));
-        console.error('Gemini API Error:',res.status,errorData);
+
+      if (!res.ok) {
+        var errorData = await res.json().catch(function() { return {}; });
+        console.error('OpenRouter Error:', res.status, errorData);
         removeTyping();
-        
-        if(res.status===404) addMsg('⚠️ Model AI tidak ditemukan. Coba cek API key atau hubungi owner.','bot');
-        else if(res.status===403) addMsg('️ API key tidak valid atau tidak punya akses. Cek lagi ya bro!','bot');
-        else if(res.status===429) addMsg('⚠️ Quota API habis. Coba lagi nanti atau hubungi owner.','bot');
-        else addMsg(`⚠️ Error ${res.status}. Coba lagi atau hubungi owner via WA.`, 'bot');
+
+        if (res.status === 401) addMsg('⚠️ API key tidak valid. Cek lagi ya bro!', 'bot');
+        else if (res.status === 429) addMsg('⚠️ Quota API habis. Coba lagi nanti.', 'bot');
+        else if (res.status === 402) addMsg('⚠️ Perlu credits. Daftar gratis di openrouter.ai', 'bot');
+        else addMsg('⚠️ Error ' + res.status + '. Coba lagi atau hubungi owner.', 'bot');
         return;
       }
-      
-      const data=await res.json();
+
+      var data = await res.json();
       removeTyping();
-      
-      if(data.error){
-        addMsg(`⚠️ Error: ${data.error.message||'AI lagi error'}`,'bot');
-        console.error('Gemini Response Error:',data.error);
+
+      var reply = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+      if (!reply) {
+        addMsg('Hmm, AI bingung jawab. Coba tanya yang lain bro! 😅', 'bot');
         return;
       }
-      
-      const reply=data.candidates?.[0]?.content?.parts?.[0]?.text;
-      if(!reply){
-        addMsg('Hmm, AI bingung jawab. Coba tanya yang lain bro! 😅','bot');
-        return;
-      }
-      
-      addMsg(reply,'bot');
-      chatHistory.push({ role: 'model', parts: [{ text: reply }] });
-      
-    }catch(e){
+
+      addMsg(reply, 'bot');
+      chatHistory.push({ role: 'assistant', content: reply });
+
+    } catch (e) {
       removeTyping();
-      console.error('Gemini Fetch Error:',e);
-      addMsg('⚠️ Koneksi bermasalah. Coba lagi ya bro! Atau chat owner via WA ', 'bot');
+      console.error('OpenRouter Fetch Error:', e);
+      addMsg('⚠️ Koneksi bermasalah. Coba lagi ya bro!', 'bot');
     }
   }
 
-  function askAI(text){
-    document.getElementById('aiInput').value=text;
+  function askAI(text) {
+    var inp = document.getElementById('aiInput');
+    if (inp) inp.value = text;
     sendChat();
   }
 
-  function toggleChat(){
-    const chat=document.getElementById('aiChat');
-    const fab=document.getElementById('aiFab');
-    const isOpen=chat.classList.contains('show');
-    if(isOpen){
+  function toggleChat() {
+    var chat = document.getElementById('aiChat');
+    var fab = document.getElementById('aiFab');
+    var isOpen = chat.classList.contains('show');
+    if (isOpen) {
       chat.classList.remove('show');
-      fab.style.transform='scale(1)';
-    }else{
+      fab.style.transform = 'scale(1)';
+    } else {
       chat.classList.add('show');
-      fab.style.transform='scale(0)';
-      setTimeout(()=>document.getElementById('aiInput').focus(),300);
+      fab.style.transform = 'scale(0)';
+      setTimeout(function() {
+        var inp = document.getElementById('aiInput');
+        if (inp) inp.focus();
+      }, 300);
     }
   }
 
-  /* INIT */
-  function init(){
-    renderMenu('menuUtama',menuUtama);
-    renderMenu('menuTambahan',menuTambahan);
-    renderMenu('menuMinuman',menuMinuman);
+  /* ============================
+     INIT
+     ============================ */
+  function init() {
+    renderMenu('menuUtama', menuUtama);
+    renderMenu('menuTambahan', menuTambahan);
+    renderMenu('menuMinuman', menuMinuman);
 
-    let c=getPref();
-    if(c.name){S.name=c.name;let un=document.getElementById('userName');if(un)un.value=c.name;}
-    if(c.orderType)setOrderType(c.orderType);else setOrderType('delivery');
+    var c = getPref();
+    if (c.name) {
+      S.name = c.name;
+      var un = document.getElementById('userName');
+      if (un) un.value = c.name;
+    }
+    if (c.orderType) setOrderType(c.orderType);
+    else setOrderType('delivery');
 
-    let unInput=document.getElementById('userName');
-    if(unInput)unInput.addEventListener('input',e=>{
-      S.name=e.target.value.slice(0,40).trim();savePref();updateUI();
-    });
+    var unInput = document.getElementById('userName');
+    if (unInput) {
+      unInput.addEventListener('input', function(e) {
+        S.name = e.target.value.slice(0, 40).trim();
+        savePref();
+        updateUI();
+      });
+    }
 
     checkTime();
-    setInterval(()=>checkTime(),60000);
+    setInterval(checkTime, 60000);
     updateUI();
-    loadTrack(0,false);
+    loadTrack(0, false);
   }
 
-  window.WCT={
-    upd,setOrderType,getLocation,showConfirm,hideConfirm,doOrder,resetOrder,
-    toggleQR,copyLink,openPlayer,closePlayer,togglePlay,prevTrack,nextTrack,seekAudio,loadTrack,
-    enterPin,backspacePin,cancelPin,setOverride,changePin,confirmOrder,deleteOrder,clearAllOrders,hideOwnerPanel,
-    afterOrderMusic,openPlayerFromPrompt,openPlayerFromPromptTrack,closeMusicPrompt,
-    toggleChat,sendChat,askAI,saveAiKey,clearAiKey
+  /* ============================
+     EXPOSE TO WINDOW
+     ============================ */
+  window.WCT = {
+    upd: upd,
+    setOrderType: setOrderType,
+    getLocation: getLocation,
+    showConfirm: showConfirm,
+    hideConfirm: hideConfirm,
+    doOrder: doOrder,
+    resetOrder: resetOrder,
+    toggleQR: toggleQR,
+    copyLink: copyLink,
+    openPlayer: openPlayer,
+    closePlayer: closePlayer,
+    togglePlay: togglePlay,
+    prevTrack: prevTrack,
+    nextTrack: nextTrack,
+    seekAudio: seekAudio,
+    loadTrack: loadTrack,
+    enterPin: enterPin,
+    backspacePin: backspacePin,
+    cancelPin: cancelPin,
+    setOverride: setOverride,
+    changePin: changePin,
+    confirmOrder: confirmOrder,
+    deleteOrder: deleteOrder,
+    clearAllOrders: clearAllOrders,
+    hideOwnerPanel: hideOwnerPanel,
+    afterOrderMusic: afterOrderMusic,
+    openPlayerFromPrompt: openPlayerFromPrompt,
+    openPlayerFromPromptTrack: openPlayerFromPromptTrack,
+    closeMusicPrompt: closeMusicPrompt,
+    toggleChat: toggleChat,
+    sendChat: sendChat,
+    askAI: askAI,
+    saveAiKey: saveAiKey,
+    clearAiKey: clearAiKey
   };
+
   init();
 })();
 </script>
