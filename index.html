@@ -407,7 +407,7 @@ body{
       <div class="flbl" style="margin-top:4px;">🔑 API Key AI (OpenRouter)</div>
       <div style="font-size:10px;color:var(--parch-3);margin-bottom:6px;font-weight:300;">
         Masukkan API key untuk aktifkan AI chat. Kosongkan = mode manual.
-        <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--au);">Dapatkan OpenRouter key gratis</a>
+        <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--au);">Dapatkan OpenRouter key</a>
       </div>
       <input type="password" id="aiApiKey" placeholder="Paste API Key di sini…" class="input-sm">
       <div style="display:flex;gap:8px;margin-bottom:8px;">
@@ -464,18 +464,19 @@ body{
     <div class="ai-body" id="aiBody">
       <div class="ai-bubble bot">
         Halo! Aku <strong>Asisten Warung CT</strong> 🤖<br><br>
-        Mau tanya menu, rekomendasi, atau jam buka? Silakan tanya aja!<br><br>
-        <em style="color:var(--parch-3);font-size:11px;">Tips: Klik salah satu pertanyaan cepat di bawah 👇</em>
+        Arep pesen opo? Takon wae, aku siyap! 😄<br><br>
+        <em style="color:var(--parch-3);font-size:11px;">Klik pertanyaan cepat di bawah 👇</em>
         <div class="ai-chip-wrap">
           <span class="ai-chip" onclick="WCT.askAI('Menu apa aja yang best seller?')">Best seller?</span>
-          <span class="ai-chip" onclick="WCT.askAI('Rekomendasi buat makan malam')">Rekomendasi makan</span>
-          <span class="ai-chip" onclick="WCT.askAI('Jam bukanya kapan?')">Jam buka?</span>
-          <span class="ai-chip" onclick="WCT.askAI('Berapa ongkir ke lokasi saya?')">Cek ongkir</span>
+          <span class="ai-chip" onclick="WCT.askAI('Rekomendasine menu enak opo?')">Rekomendasi</span>
+          <span class="ai-chip" onclick="WCT.askAI('Jam bukane kapan?')">Jam buka?</span>
+          <span class="ai-chip" onclick="WCT.askAI('Ongkire piro?')">Cek ongkir</span>
+          <span class="ai-chip" onclick="WCT.askAI('Menu sing paling murah opo?')">Paling murah?</span>
         </div>
       </div>
     </div>
     <div class="ai-foot">
-      <input class="ai-inp" id="aiInput" placeholder="Tanya Asisten CT…" onkeydown="if(event.key==='Enter')WCT.sendChat()">
+      <input class="ai-inp" id="aiInput" placeholder="Takon Asisten CT…" onkeydown="if(event.key==='Enter')WCT.sendChat()">
       <button class="ai-send" onclick="WCT.sendChat()">➤</button>
     </div>
   </div>
@@ -495,7 +496,8 @@ body{
   };
 
   const OR_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-  const OR_MODEL = 'meta-llama/llama-3.3-70b-instruct:free';
+  // ✅ FIXED: pakai model berbayar, no rate limit
+  const OR_MODEL = 'google/gemini-flash-1.5';
 
   let S = {
     name: '', distKm: 0, shipping: 0, cart: {},
@@ -903,7 +905,7 @@ body{
     let ks = document.getElementById('aiKeyStatus');
     let aik = document.getElementById('aiApiKey');
     if (aik) aik.value = key ? '••••••••••••••••' : '';
-    if (ks) ks.innerHTML = key ? '<span style="color:var(--ok);">✅ AI Aktif (OpenRouter)</span>' : '<span style="color:var(--parch-3);">⚪ Mode Manual (Offline)</span>';
+    if (ks) ks.innerHTML = key ? '<span style="color:var(--ok);">✅ AI Aktif – Gemini Flash (OpenRouter)</span>' : '<span style="color:var(--parch-3);">⚪ Mode Manual (Offline)</span>';
     openOverlay('ownerOverlay');
   }
   function hideOwnerPanel() { closeOverlay('ownerOverlay'); }
@@ -932,7 +934,7 @@ body{
     saveAiKeyStorage(val);
     toast('API Key disimpan! AI aktif 🚀', 'success');
     let ks = document.getElementById('aiKeyStatus');
-    if (ks) ks.innerHTML = '<span style="color:var(--ok);">✅ AI Aktif (OpenRouter)</span>';
+    if (ks) ks.innerHTML = '<span style="color:var(--ok);">✅ AI Aktif – Gemini Flash (OpenRouter)</span>';
     let aik = document.getElementById('aiApiKey');
     if (aik) aik.value = '••••••••••••••••';
   }
@@ -962,39 +964,201 @@ body{
   }
 
   /* ============================
-     AI CHAT - IMPROVED VERSION
+     AI CHAT — OFFLINE PATTERNS
+     Bahasa Jawa + Indonesia campur
      ============================ */
-  const AI_RESPONSES = {
-    'halo|hi|hello|hai|p|pagi|siang|sore|malam': 'Halo bro! 👋 Mau order apa hari ini? 😊',
-    'menu|makanan|ada apa|tersedia|jual': 'Kita ada:\n🍗 Ayam Goreng (10k)\n🐟 Pecel Lele (10k)\n🍳 Dadar (7k)\n🍖 Ati Ampela (8k)\n🌿 Tempe Penyet (6k)\n🍚 Nasgor Ori (10k)\n🍛 Nasgor + Sosis (13k)\n🍜 Nasgor + Dadar (13k)\n\n+ minuman mulai 3k. Cek menu atas ya!',
-    'best seller|favorit|paling laris|rekomendasi|enak apa': 'Best seller kita:\n🥇 Pecel Lele\n🥈 Ayam Goreng\n🥉 Nasgor Ori\n\nWajib coba bro! 🔥',
-    'jam buka|buka jam|tutup jam|jam berapa|buka': '🕐 Jam Buka:\n• Delivery: 15:00 - 21:00\n• Pickup/Dine-in: 13:00 - 23:00\n\nJangan telat ya!',
-    'ongkir|delivery|antar|berapa ongkir|antar berapa|biaya antar': '🛵 Ongkir:\n• ≤1 km: Rp 2.000\n• >1 km: +Rp 1.000/km\n• Maks: 3 km\n\nKlik "Tandai Lokasi" dulu biar tau totalnya!',
-    'hemat|murah|promo|murahan|diskon': '💰 Paket Hemat:\nTempe Penyet (6k) + Es Teh (3k) = Rp 9.000\nKenyang tanpa boncos! 💪',
-    'pedas|sambal|pedasnya|cabe': '🌶️ Yang pedas nampol:\nPecel Lele + Sambal Extra!\nJangan lupa siapin air minum ya bro! 💧',
-    'lokasi|alamat|dimana|letak|tempat': '📍 Lokasi Warung CT:\nSekitar koordinat -7.166875, 112.326875\n\nKlik "Tandai Lokasi" di atas buat cek jarak!',
-    'wa|whatsapp|nomor|kontak|hubungi|telepon': '📱 Kontak Owner:\n+6285730030112\n\nAtau klik tombol "Order via WhatsApp" setelah pilih menu!',
-    'terima kasih|thanks|makasih|thx|trims|tq': 'Sama-sama bro! 😊\nTunggu order-mu ya, dijamin enak! 🔥',
-    'nasi goreng|nasgor|gorengan': '🍚 Nasi Goreng:\n• Ori: 10k\n• + Sosis: 13k\n• + Dadar: 13k\n\nMau yang mana bro?',
-    'minuman|minum|es|teh|kopi|jus': '🥤 Minuman:\n• Es Teh / Teh Hangat: 3k\n• Nutrisari: 3k\n• Kopi Hitam/White: 3k\n• Susu: 3k\n• Pop Ice: 3k\n• Es Jeruk: 4k\n• Milo: 4k\n• Good Day: 4k\n• Chocolatos: 4k',
-    'ayam|ayam goreng': '🍗 Ayam Goreng: Rp 10.000\nDagingnya empuk, bumbu meresap!\nCocok sama sambal + lalapan 🔥',
-    'lele|pecel|pecel lele': '🐟 Pecel Lele: Rp 10.000\nLele goreng krispi + sambal pecel\nBest seller kita! 🔥',
-    'tutup|libur|besok|besok buka|hari ini': '🏖️ Kalau hari ini libur:\nBuka lagi besok sesuai jam normal ya bro!\n• Delivery: 15:00-21:00\n• Pickup: 13:00-23:00',
-    'sosis': '🌭 Tambah Sosis ke Nasgor: +Rp 3.000\nNasgor + Sosis jadi Rp 13.000\nMakin mantap! 😋',
-    'dadar|telur dadar': '🍳 Dadar/Telur Dadar: Rp 7.000\nBisa juga jadi tambahan Nasgor (+6k)\nEnak banget!',
-    'ati|ampela|ati ampela': '🍖 Ati Ampela:\n• Menu utama: 8k\n• Tambahan: 5k\n\nBuat pecinta jeroan nih! 🔥',
-    'tempe|penyet|tempe penyet': '🌿 Tempe Penyet: Rp 6.000\nMurah tapi bikin kenyang!\nCocok buat yang hemat 💪'
-  };
+  const AI_RESPONSES = [
+    // SALAM & BASA BASI
+    {
+      pattern: /halo|hai|hi|hello|p+agi|siang|sore|malam|selamat|sugeng|monggo|ndak|nda[kh]/i,
+      answers: [
+        'Halo kang! 👋 Piye kabare? Arep pesen opo dino iki? 😄',
+        'Wah sugeng rawuh! 🙏 Ono sing iso dibantu? Langsung ae takon!',
+        'Halo-halo! Selamat datang neng Warung CT 🍽️ Arep mangan opo?',
+        'Monggo monggo, silakan! Warung CT siap melayani sampean 😊'
+      ]
+    },
+    // MENU UTAMA
+    {
+      pattern: /menu|makanan|masakan|ada opo|ana opo|jual opo|tersedia|daftar/i,
+      answers: [
+        'Iki menune Warung CT:\n\n🍗 Ayam Goreng – 10rb\n🐟 Pecel Lele – 10rb\n🍳 Dadar – 7rb\n🍖 Ati Ampela – 8rb\n🌿 Tempe Penyet – 6rb\n🍚 Nasgor Ori – 10rb\n🍛 Nasgor + Sosis – 13rb\n🍜 Nasgor + Dadar – 13rb\n\nTambahan: Telur 3rb · Kepala 3rb · Sambal 3rb · Nasi 3rb\n\nMilih sing mana bro? 😄',
+        'Menu lengkap Warung CT iki:\n\n🔥 Menu Utama:\nAyam Goreng (10k) · Pecel Lele (10k) · Dadar (7k) · Ati Ampela (8k) · Tempe Penyet (6k) · Nasgor Ori (10k) · Nasgor+Sosis (13k) · Nasgor+Dadar (13k)\n\n➕ Tambahan:\nTelur/Kepala/Sambal/Nasi masing-masing 3k, Ati Ampela 5k\n\nCek atas buat langsung milih ya!'
+      ]
+    },
+    // BEST SELLER & REKOMENDASI
+    {
+      pattern: /best.?seller|paling laris|favorit|rekomendasine|rekomendasi|enak opo|enak apa|seng enak|yang enak|populer/i,
+      answers: [
+        'Best seller Warung CT:\n\n🥇 Pecel Lele – Juara! Lele krispi + sambal mantep\n🥈 Ayam Goreng – Gurih kriuk poll\n🥉 Nasgor Ori – Simple tapi nagih\n\nKalau bingung milih, Pecel Lele + Es Teh = combo sempurna! 🔥',
+        'Sing paling rame dipesan iku:\n1️⃣ Pecel Lele (10rb) — jadi andalan!\n2️⃣ Ayam Goreng (10rb) — bumbu meresap\n3️⃣ Nasgor + Dadar (13rb) — kenyang banget\n\nJamin gak nyesel bro! 😋'
+      ]
+    },
+    // HARGA MURAH / HEMAT
+    {
+      pattern: /murah|hemat|ekonomis|budget|paling murah|sing murah|terjangkau|irit/i,
+      answers: [
+        'Sing paling murah?\n🌿 Tempe Penyet – cuma 6rb!\nTambah Nasi Putih 3rb = kenyang cuma 9rb 💪\n\nKalau minum tambah Es Teh 3rb, total 12rb wes komplit!',
+        'Paket hemat Warung CT:\n\n💰 Paket 9rb: Tempe Penyet + Nasi\n💰 Paket 12rb: Tempe Penyet + Nasi + Es Teh\n💰 Paket 13rb: Dadar + Nasi + Es Teh\n\nMurah tapi tetep kenyang bro! 😄'
+      ]
+    },
+    // JAM BUKA
+    {
+      pattern: /jam buka|bukane kapan|jam berapa|buka jam|tutup jam|jam operasional|buka sampe|sampai jam|waktune/i,
+      answers: [
+        'Jam buka Warung CT:\n\n🛵 Delivery: 15:00 – 21:00\n🚶 Pickup & Dine-in: 13:00 – 23:00\n\nJangan telat pesennya ya bro, nanti kehabisan! 😅',
+        'Warung CT buka:\n• Pesan antar mulai jam 3 sore sampek jam 9 malem\n• Ambil sendiri/makan di sini mulai jam 1 siang sampek jam 11 malem\n\nBuka tiap hari kecuali lagi libur. Cek status di atas ya!'
+      ]
+    },
+    // ONGKIR
+    {
+      pattern: /ongkir|ongkos kirim|biaya antar|delivery fee|biaya delivery|piro ongkire|berapa ongkir|antar berapa/i,
+      answers: [
+        'Ongkir Warung CT:\n\n📍 ≤ 1 km → Rp 2.000\n📍 1–2 km → Rp 3.000\n📍 2–3 km → Rp 4.000\n📍 > 3 km → ❌ Diluar jangkauan\n\nKlik "Tandai Lokasi" buat tau ongkir persisnya!',
+        'Ongkirnya murah bro:\n• 1 km pertama: 2rb\n• Lebih dari 1 km: +1rb per km\n• Maksimal jarak: 3 km\n\nTandai lokasimu dulu ya biar ketauan totalnya 📍'
+      ]
+    },
+    // LOKASI / ALAMAT
+    {
+      pattern: /lokasi|alamat|dimana|neng ngendi|letak|warunge neng endi|tempat|posisi/i,
+      answers: [
+        '📍 Warung CT ada di Pangkatrejo, Jawa Timur!\n\nKalau mau delivery, klik tombol "Tandai Lokasi" dulu biar sistem otomatis hitung jarak dan ongkirnya 🛵',
+        'Warunge neng Pangkatrejo, Jawa Timur bro! 📍\n\nArea delivery maksimal 3 km dari warung. Tandai lokasimu dulu ya!'
+      ]
+    },
+    // PECEL LELE
+    {
+      pattern: /pecel.?lele|lele|pece/i,
+      answers: [
+        '🐟 Pecel Lele – Rp 10.000\nLele goreng krispi + sambal pecel yang nendang!\nIni best seller-nya Warung CT 🔥\n\nMau tambah sambal extra? Tinggal pilih di menu tambahan!',
+        'Pecel Lele kita legendaris bro! 🐟\nHarganya 10rb, lele-nya fresh, digoreng crispy sampe kulit-kulitnya renyah\nSambalnya juga bikin nagih 🌶️'
+      ]
+    },
+    // AYAM GORENG
+    {
+      pattern: /ayam.?goreng|ayam|chicken/i,
+      answers: [
+        '🍗 Ayam Goreng – Rp 10.000\nDagingnya empuk, bumbu meresap poll!\nCocok banget sama nasi hangat + sambal 😋\n\nMau tambah kepala atau ati ampela? Ada di menu tambahan!',
+        'Ayam Goreng 10rb bro! 🍗\nDimasak pake bumbu rempah khas warung CT\nCrispy di luar, juicy di dalam — gak bakal nyesel!'
+      ]
+    },
+    // NASI GORENG
+    {
+      pattern: /nasi.?goreng|nasgor|nasigoreng/i,
+      answers: [
+        'Nasi Goreng Warung CT:\n\n🍚 Nasgor Ori – 10rb (klasik, mantap)\n🍛 Nasgor + Sosis – 13rb (lebih berisi)\n🍜 Nasgor + Dadar – 13rb (telur dadar tebal!)\n\nMau yang mana bro? Semuanya enak!',
+        'Ada 3 pilihan Nasgor nih:\n• Ori: 10rb — simpel tapi favorit\n• + Sosis: 13rb — buat yang suka sosis\n• + Dadar: 13rb — buat yang suka telur\n\nPilih sesuai mood! 😄'
+      ]
+    },
+    // TEMPE
+    {
+      pattern: /tempe|penyet/i,
+      answers: [
+        '🌿 Tempe Penyet – Rp 6.000\nMenu paling hemat di Warung CT!\nTempe digoreng lalu dipenyet, disajikan sama sambal\nKenyang + murah = perfect combo 💪',
+        'Tempe Penyet cuma 6rb bro! 🌿\nBuat yang lagi hemat atau mau tambah lauk\nEnak banget dimakan sama nasi anget!'
+      ]
+    },
+    // ATI AMPELA
+    {
+      pattern: /ati|ampela|jeroan/i,
+      answers: [
+        '🍖 Ati Ampela Warung CT:\n• Menu utama: Rp 8.000\n• Tambahan: Rp 5.000\n\nBuat pecinta jeroan wajib coba! Teksturnya kenyal-kenyal gurih 🔥',
+        'Ati Ampela 8rb bro! 🍖\nDimasak sampe bumbu meresap, teksturnya pas\nBisa juga jadi tambahan di menu lain (5rb aja!)'
+      ]
+    },
+    // DADAR / TELUR
+    {
+      pattern: /dadar|telur.?dadar|telor/i,
+      answers: [
+        '🍳 Dadar (Telur Dadar) – Rp 7.000\nTelur dadar tebal, gurih, pas buat teman nasi!\n\nBisa juga jadi tambahan Nasgor:\n• Tambahan Telur: 3rb\n• Nasgor + Dadar: 13rb (langsung kombo)',
+        'Dadar 7rb bro! 🍳\nTelur dadar pake resep rahasia CT, tebal dan gurih\nAtau pilih Nasgor + Dadar biar langsung kombo!'
+      ]
+    },
+    // MINUMAN
+    {
+      pattern: /minuman|minum|es teh|kopi|teh|nutrisari|susu|pop.?ice|es.?jeruk|milo|good.?day|chocolatos|minume/i,
+      answers: [
+        'Daftar minuman Warung CT:\n\n🧋 Es Teh – 3rb\n🍵 Teh Hangat – 3rb\n🍊 Nutrisari – 3rb\n☕ Kopi Hitam – 3rb\n🥤 Kopi White – 3rb\n🥛 Susu – 3rb\n🧃 Pop Ice – 3rb\n🍋 Es Jeruk – 4rb\n🍫 Milo – 4rb\n☀️ Good Day – 4rb\n🍫 Chocolatos – 4rb\n\nSegarr! Mau yang mana? 😄',
+        'Minuman tersedia:\n• 3rb: Es Teh, Teh Hangat, Nutrisari, Kopi Hitam, Kopi White, Susu, Pop Ice\n• 4rb: Es Jeruk, Milo, Good Day, Chocolatos\n\nCombo favorit: Pecel Lele + Es Teh = 13rb aja! 🔥'
+      ]
+    },
+    // SAMBAL / PEDAS
+    {
+      pattern: /pedas|sambal|sambel|cabe|cabai|pedes/i,
+      answers: [
+        '🌶️ Suka pedas? Wah cocok di Warung CT!\n\nBisa tambah Sambal extra cuma 3rb\nPaling nampol: Pecel Lele + Sambal double 🔥\n\nTapi awas bro, sambalnya beneran pedes ya! 😂',
+        'Pecinta pedas ketemu tempatnya nih! 🌶️\nSambal Warung CT terkenal nendang\nMau tambah sambal? Pilih di menu Tambahan ya!'
+      ]
+    },
+    // TUTUP / LIBUR
+    {
+      pattern: /tutup|libur|besok|buka lagi|kapan buka|closed/i,
+      answers: [
+        'Cek status buka/tutup di badge hijau/merah di atas halaman ya!\n\nKalau tutup:\n🛵 Delivery buka lagi jam 15:00\n🚶 Pickup buka lagi jam 13:00\n\nSabar ya bro, makanan enak butuh ditunggu! 😄',
+        'Status warung real-time bisa dilihat di bagian atas aplikasi!\nKalau merah berarti lagi tutup, hijau berarti buka 🟢\n\nBisa balik lagi nanti ya!'
+      ]
+    },
+    // CARA ORDER
+    {
+      pattern: /cara|gimana|piye|pesan|order|mesen|beli|kumaha/i,
+      answers: [
+        'Cara order di Warung CT:\n\n1️⃣ Isi nama kamu\n2️⃣ Pilih tipe: Diantar / Ambil / Di Sini\n3️⃣ Kalau diantar, tap "Tandai Lokasi"\n4️⃣ Pilih menu yang diinginkan\n5️⃣ Tap "Order via WhatsApp"\n6️⃣ Kirim pesan ke owner\n\nGampang kan? 😄',
+        'Gampang bro, tinggal:\n• Isi nama → pilih delivery/pickup/dinein\n• Kalau delivery: tap lokasi dulu\n• Pilih menu di bawah\n• Klik Order via WhatsApp → kirim!\n\nOtomatis deh ordernya ke dapur! 🍽️'
+      ]
+    },
+    // PEMBAYARAN
+    {
+      pattern: /bayar|payment|transfer|tunai|cash|duit|bayare|ongkos/i,
+      answers: [
+        '💵 Pembayaran di Warung CT:\n• Cash / tunai saat delivery tiba\n• Bisa juga transfer — konfirmasi sama owner via chat WA\n\nTidak ada biaya tambahan selain ongkir 😊',
+        'Bayarnya pas kurir datang ya bro (COD)! 💵\nBisa cash atau kalau mau transfer bisa konfirmasi langsung di chat WA setelah order'
+      ]
+    },
+    // ESTIMASI WAKTU
+    {
+      pattern: /berapa lama|lama|estimasi|tunggu|kapan datang|kapan nyampe|cepet/i,
+      answers: [
+        '⏱️ Estimasi waktu:\n• Dalam 1 km: ~15-20 menit\n• 1-3 km: ~20-35 menit\n\nTergantung kondisi dapur dan jarak ya bro!\nSambil nunggu bisa dengerin musik di Warung CT 🎵',
+        'Biasanya 15-30 menit bro, tergantung jarak dan ramai tidaknya!\nKalau mau tau lebih pasti, bisa chat langsung di WA setelah order 📱'
+      ]
+    },
+    // TERIMA KASIH
+    {
+      pattern: /terima kasih|makasih|matur nuwun|matur suwun|thanks|thx|tq|trims|suwun/i,
+      answers: [
+        'Sami-sami bro! 🙏 Matur nuwun wes mampir!\nSemoga makanane enak dan bikin betah! 😄',
+        'Iyo bro, sami-sami! 😊 Seneng bisa bantu!\nDitunggu orderane ya, dijamin mantep! 🔥',
+        'Matur nuwun yo! Kalau butuh apa-apa takon wae 😄'
+      ]
+    },
+    // PUJIAN / WARUNG BAGUS
+    {
+      pattern: /enak|mantep|mantap|keren|bagus|ok|oke|top|josss|jos|gak kecewa|ngga kecewa/i,
+      answers: [
+        'Makasih bro udah seneng! 😄 CT & Bojo bakal terus jaga kualitas biar makin mantep!\nJangan lupa balik lagi ya! 🔥',
+        'Wah seneng denger itu! 🙏 Warung CT emang prioritasin rasa dan keramahan\nDitunggu order berikutnya! 😊'
+      ]
+    },
+    // NGGAK NGERTI
+    {
+      pattern: /.*/,
+      answers: [
+        'Hmm, aku kurang paham maksude bro 🤔\n\nCoba tanya:\n• Menu & harga\n• Jam buka warung\n• Cara pesan\n• Ongkir\n• Rekomendasi menu\n\nAyo takon maneh, aku siap bantu! 😄',
+        'Waduh aku bingung nih bro 😅\nTapi aku bisa bantu info soal:\n✅ Menu & harga\n✅ Jam buka\n✅ Ongkir & delivery\n✅ Rekomendasi\n\nCoba tanya yang itu ya!',
+        'Maaf bro, aku durung mudeng 🙏\nIso takon babagan menu, jam buka, ongkir, utowo rekomendasi yo!'
+      ]
+    }
+  ];
 
   function getAIResponse(text) {
-    const lowerText = text.toLowerCase();
-    for (const [pattern, response] of Object.entries(AI_RESPONSES)) {
-      const regex = new RegExp(pattern, 'i');
-      if (regex.test(lowerText)) {
-        return response;
+    for (const item of AI_RESPONSES) {
+      if (item.pattern.test(text)) {
+        const arr = item.answers;
+        return arr[Math.floor(Math.random() * arr.length)];
       }
     }
-    return 'Hmm, aku belum ngerti bro 🤔\n\nCoba tanya tentang:\n• Menu makanan/minuman\n• Jam buka\n• Ongkir\n• Rekomendasi\n• Harga\n\nAtau langsung chat owner via WA aja! 📲\n+6285730030112';
+    // fallback (shouldn't reach here due to .* pattern)
+    return 'Iso takon babagan menu, jam buka, ongkir, utowo rekomendasi yo bro! 😄';
   }
 
   function addMsg(text, from) {
@@ -1021,6 +1185,54 @@ body{
 
   let chatHistory = [];
 
+  // ✅ System prompt lengkap dan informatif
+  const AI_SYSTEM_PROMPT = `Kamu adalah Asisten Warung CT yang ramah, helpful, dan gaul. 
+Jawab dengan bahasa Jawa campur Indonesia yang santai, seperti orang Jawa Timur ngobrol sehari-hari.
+Gunakan kata seperti: bro, kang, mas, rek, ojo, arep, piye, matur nuwun, dll secara natural.
+Jangan terlalu formal. Pakai emoji secukupnya biar ceria.
+
+INFORMASI WARUNG CT:
+Nama: Warung CT – The Real Temenan
+Lokasi: Pangkatrejo, Jawa Timur
+Tagline: Sejak Zaman Mojopahit
+
+JAM BUKA:
+- Delivery: 15:00–21:00
+- Pickup & Dine-in: 13:00–23:00
+
+MENU UTAMA:
+- Ayam Goreng: Rp 10.000
+- Pecel Lele: Rp 10.000 (BEST SELLER)
+- Dadar: Rp 7.000
+- Ati Ampela: Rp 8.000
+- Tempe Penyet: Rp 6.000 (paling murah)
+- Nasgor Ori: Rp 10.000
+- Nasgor + Sosis: Rp 13.000
+- Nasgor + Dadar: Rp 13.000
+
+MENU TAMBAHAN:
+- Telur: Rp 3.000
+- Kepala: Rp 3.000
+- Ati Ampela: Rp 5.000
+- Sambal: Rp 3.000
+- Nasi Putih: Rp 3.000
+
+MINUMAN (semua bisa es atau hangat):
+- Es Teh / Teh Hangat / Nutrisari / Kopi Hitam / Kopi White / Susu / Pop Ice: Rp 3.000
+- Es Jeruk / Milo / Good Day / Chocolatos: Rp 4.000
+
+ONGKIR:
+- ≤1 km: Rp 2.000
+- >1 km: Rp 2.000 + Rp 1.000/km
+- Maksimal radius: 3 km
+
+CARA ORDER: Pilih menu di aplikasi → tap Order via WhatsApp → pesan otomatis terkirim ke dapur. Sistem sudah otomatis, tidak perlu tanya cara order ke orang lain.
+
+PEMBAYARAN: Cash saat terima, atau bisa transfer setelah konfirmasi di chat.
+
+JANGAN sebut nomor WhatsApp owner. Order sudah otomatis via sistem aplikasi ini.
+Kalau ada pertanyaan di luar warung, jawab saja dengan ramah tapi tetap arahkan ke topik warung.`;
+
   async function sendChat() {
     const inp = document.getElementById('aiInput');
     const text = inp.value.trim();
@@ -1034,22 +1246,22 @@ body{
 
     const API_KEY = getAiKey();
 
-    // Mode Offline (Rule-Based) - PASTI JALAN
+    // ✅ Mode Offline — selalu jalan tanpa API key
     if (!API_KEY || API_KEY.trim() === '') {
-      await new Promise(r => setTimeout(r, 400 + Math.random() * 300));
+      await new Promise(r => setTimeout(r, 300 + Math.random() * 400));
       removeTyping();
-
       const reply = getAIResponse(text);
       addMsg(reply, 'bot');
       chatHistory.push({ role: 'assistant', content: reply });
       return;
     }
 
-    // Mode Online (OpenRouter API)
+    // ✅ Mode Online — Gemini Flash via OpenRouter
     try {
       const messages = [
-        { role: 'system', content: 'Kamu adalah Asisten Warung CT yang ramah dan helpful. Jawab dengan santai gaya anak muda Indonesia.' },
-        ...chatHistory.slice(-8)
+        { role: 'user', content: AI_SYSTEM_PROMPT + '\n\n[Mulai percakapan]' },
+        { role: 'assistant', content: 'Siap! Aku Asisten Warung CT, siap bantu!' },
+        ...chatHistory.slice(-10)
       ];
 
       const res = await fetch(OR_API_URL, {
@@ -1063,24 +1275,18 @@ body{
         body: JSON.stringify({
           model: OR_MODEL,
           messages: messages,
-          temperature: 0.7,
+          temperature: 0.75,
           max_tokens: 500
         })
       });
 
+      // ✅ FIXED: Semua error fallback ke offline, tidak tampilkan error ke user
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        console.error('OpenRouter Error:', res.status, errorData);
+        console.warn('OpenRouter error:', res.status);
         removeTyping();
-
-        let errorMsg = '';
-        if (res.status === 401) errorMsg = '⚠️ API key tidak valid. Cek di openrouter.ai/keys';
-        else if (res.status === 402) errorMsg = '⚠️ Perlu credits. Daftar gratis di openrouter.ai';
-        else if (res.status === 404) errorMsg = '⚠️ Model tidak ditemukan. Gunakan mode offline (hapus API key)';
-        else if (res.status === 429) errorMsg = '⚠️ Quota habis. Coba lagi nanti.';
-        else errorMsg = '⚠️ Error ' + res.status + '. Gunakan mode offline (hapus API key di Panel Owner).';
-
-        addMsg(errorMsg + '\n\n💡 **Tips:** Hapus API key di Panel Owner untuk pakai mode offline yang gratis dan stabil!', 'bot');
+        const reply = getAIResponse(text);
+        addMsg(reply, 'bot');
+        chatHistory.push({ role: 'assistant', content: reply });
         return;
       }
 
@@ -1089,7 +1295,9 @@ body{
 
       const reply = data.choices?.[0]?.message?.content;
       if (!reply) {
-        addMsg('Hmm, AI bingung jawab. Coba tanya yang lain bro! 😅', 'bot');
+        const fallback = getAIResponse(text);
+        addMsg(fallback, 'bot');
+        chatHistory.push({ role: 'assistant', content: fallback });
         return;
       }
 
@@ -1097,11 +1305,12 @@ body{
       chatHistory.push({ role: 'assistant', content: reply });
 
     } catch (e) {
+      // ✅ Network error → fallback offline, no error message shown
+      console.warn('Chat fetch error:', e);
       removeTyping();
-      console.error('Fetch Error:', e);
-      // Fallback ke offline mode
       const reply = getAIResponse(text);
-      addMsg('⚠️ Koneksi bermasalah. Pakai mode offline:\n\n' + reply, 'bot');
+      addMsg(reply, 'bot');
+      chatHistory.push({ role: 'assistant', content: reply });
     }
   }
 
