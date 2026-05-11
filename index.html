@@ -423,7 +423,7 @@ body{
   font-size:11px;font-weight:500;color:var(--no);cursor:pointer;transition:all 0.15s;
 }
 
-/* QR — FIXED: padding + white bg so finder patterns aren't clipped */
+/* QR */
 #qrcode{display:inline-block;margin:14px auto;border-radius:10px;overflow:hidden;border:3px solid var(--card-2);box-shadow:0 4px 24px rgba(0,0,0,0.4);padding:10px;background:#ffffff;}
 .qr-url{font-size:11px;color:var(--parch-2);background:var(--card-2);padding:9px 13px;border-radius:9px;word-break:break-all;margin-bottom:8px;border:1px solid var(--wire);}
 
@@ -833,7 +833,7 @@ body{
   const CFG={
     WARUNG_LAT:-7.166875, WARUNG_LON:112.326875,
     MAX_KM:3, WA:'+6285730030112', PIN:'0000',
-    SHARE_URL:'https://tukulkacang.github.io/warungct/' // ← ganti dengan URL asli
+    SHARE_URL:'https://tukulkacang.github.io/warungct/'
   };
 
   let S={
@@ -1097,6 +1097,76 @@ body{
   }
   function hideConfirm(){closeOverlay('confirmModal');}
 
+  /* ── FORMAT PESAN WA ── */
+  function buildWAMessage(orderId, grand, notes){
+    const now = new Date();
+    const tgl = now.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    const jam = now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    const tipeLabel = {delivery:'🛵 Diantar',pickup:'🚶 Ambil Sendiri',dinein:'🍽️ Makan di Tempat'};
+
+    // Kumpulkan item per kategori
+    const itemsUtama  = menuUtama.filter(m=>(S.cart[m.id]||0)>0);
+    const itemsTambah = menuTambahan.filter(m=>(S.cart[m.id]||0)>0);
+    const itemsMinum  = menuMinuman.filter(m=>(S.cart[m.id]||0)>0);
+
+    const renderItem = m => `   ${m.icon} ${escWA(m.name)} ×${S.cart[m.id]}  →  Rp ${fmt(m.price*S.cart[m.id])}`;
+
+    let lines = [];
+
+    lines.push(`╔══════════════════════╗`);
+    lines.push(`║   🍽️  *WARUNG CT*  🍽️   ║`);
+    lines.push(`║   _The Real Temenan_  ║`);
+    lines.push(`╚══════════════════════╝`);
+    lines.push(``);
+    lines.push(`🆔 *No. Order:* \`${orderId}\``);
+    lines.push(`📅 ${tgl}`);
+    lines.push(`🕐 ${jam} WIB`);
+    lines.push(`──────────────────────`);
+    lines.push(`👤 *Nama:* ${escWA(S.name)}`);
+    lines.push(`📦 *Tipe:* ${tipeLabel[S.orderType]}`);
+
+    if(S.orderType==='delivery'){
+      lines.push(`📍 *Lokasi:* https://maps.google.com/?q=${S.userLat},${S.userLon}`);
+      lines.push(`📏 *Jarak:* ${S.distKm} km`);
+    }
+
+    lines.push(`──────────────────────`);
+    lines.push(`🛒 *PESANAN*`);
+
+    if(itemsUtama.length){
+      lines.push(`  ┌─ *Menu Utama* ─────`);
+      itemsUtama.forEach(m=>lines.push(renderItem(m)));
+    }
+    if(itemsTambah.length){
+      lines.push(`  ├─ *Tambahan* ───────`);
+      itemsTambah.forEach(m=>lines.push(renderItem(m)));
+    }
+    if(itemsMinum.length){
+      lines.push(`  ├─ *Minuman* ────────`);
+      itemsMinum.forEach(m=>lines.push(renderItem(m)));
+    }
+    lines.push(`  └─────────────────────`);
+
+    if(S.orderType==='delivery'&&S.shipping>0){
+      lines.push(`🛵 *Ongkir:* Rp ${fmt(S.shipping)}`);
+    }
+
+    lines.push(`──────────────────────`);
+    lines.push(`💰 *TOTAL: Rp ${fmt(grand)}*`);
+    lines.push(`──────────────────────`);
+
+    if(notes && notes.trim()){
+      lines.push(`📝 *Catatan:*`);
+      lines.push(`   ${escWA(notes.trim())}`);
+      lines.push(`──────────────────────`);
+    }
+
+    lines.push(`Terima kasih sudah order! 🙏`);
+    lines.push(`Pesanan akan segera diproses 🔥`);
+
+    return lines.join('\n');
+  }
+
   let _cd=false;
   function doOrder(){
     if(_cd){toast('Tunggu sebentar','warn');return;}
@@ -1104,15 +1174,8 @@ body{
     let{grand}=calcTotals(),
         notes=document.getElementById('orderNotes')?.value||'',
         orderId=genId();
-    let tl={delivery:'Diantar',pickup:'Ambil Sendiri',dinein:'Makan di Tempat'};
-    let msg=`*ORDER WARUNG CT*\nID: ${orderId}\nNama: ${escWA(S.name)}\nTipe: ${tl[S.orderType]}\n`;
-    if(S.orderType==='delivery')
-      msg+=`Lokasi: https://maps.google.com/?q=${S.userLat},${S.userLon}\nJarak: ${S.distKm} km\n`;
-    msg+=`PESANAN:\n`;
-    allMenu.forEach(m=>{let q=S.cart[m.id]||0;if(q>0)msg+=`- ${escWA(m.name)} x${q} = Rp ${fmt(m.price*q)}\n`;});
-    if(S.orderType==='delivery')msg+=`Ongkir: Rp ${fmt(S.shipping)}\n`;
-    msg+=`TOTAL: Rp ${fmt(grand)}\n`;
-    if(notes)msg+=`Catatan: ${escWA(notes)}\n`;
+
+    let msg = buildWAMessage(orderId, grand, notes);
 
     let orders=getOrders();
     orders.unshift({
@@ -1172,13 +1235,6 @@ body{
       },100);
     }else closeOverlay('qrOverlay');
   }
-  function copyLink(e){
-    navigator.clipboard.writeText(CFG.SHARE_URL).then(()=>{
-      let b=e.target;b.textContent='✅ Disalin!';
-      setTimeout(()=>b.textContent='Salin Link',2000);
-    });
-  }
-
   function copyLink(e){
     navigator.clipboard.writeText(CFG.SHARE_URL).then(()=>{
       let b=e.target;b.textContent='✅ Disalin!';
