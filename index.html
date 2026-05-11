@@ -1481,9 +1481,6 @@ PANDUAN TUGASMU – ikuti urutan ini:
     appendAIMsg('user', msg);
     aiChatHistory.push({ role:'user', content: msg });
 
-    let key = getAIKey();
-    let key = true; // proxy handles auth
-
     aiThinking = true;
     if(sendBtn) sendBtn.disabled = true;
     showTyping(true);
