@@ -3,394 +3,417 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Warung CT – The Real Temenan + AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<title>Warung CT – The Real Temenan</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --ink:#0a0806; --bg:#100d09; --card:#161210; --card-2:#1d1812; --card-3:#231e16;
-  --au:#25D366; --au-hi:#34F27C; --au-lo:#128C7E; --au-glow:rgba(37,211,102,0.12); --au-ring:rgba(37,211,102,0.22); --au-line:rgba(37,211,102,0.40);
-  --parch:#f0e4cc; --parch-2:#a08660; --parch-3:#5e4c34; --parch-4:rgba(240,228,204,0.05);
-  --wire:rgba(255,255,255,0.06); --wire-2:rgba(255,255,255,0.10);
-  --ok:#4db870; --ok-bg:rgba(77,184,112,0.07); --no:#d95b4a; --no-bg:rgba(217,91,74,0.07);
-  --r:18px; --r-sm:12px; --r-xs:8px;
+  --wa:#25D366;--wa-dark:#128C7E;--wa-light:#DCF8C6;--wa-bg:#ECE5DD;
+  --wa-header:#075E54;--wa-bubble:#ffffff;--wa-green-soft:#e7f8ee;
+  --text:#111b21;--text-2:#54656f;--text-3:#8696a0;
+  --border:#e9edef;--border-2:#d1d7db;
+  --red:#dc3545;--red-bg:#fff0f0;
+  --r:12px;--r-sm:8px;--r-xs:6px;
 }
 html{scroll-behavior:smooth;}
-body{
-  background:var(--bg); color:var(--parch); font-family:'DM Sans',sans-serif; font-weight:400;
-  padding-bottom:220px;
-  background-image: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(37,211,102,0.04) 0%, transparent 60%);
-}
-.app{max-width:430px;margin:0 auto;background:var(--bg);min-height:100vh;position:relative;overflow:hidden;}
+body{background:var(--wa-bg);font-family:'Nunito',sans-serif;font-weight:400;color:var(--text);padding-bottom:200px;}
+.app{max-width:430px;margin:0 auto;background:var(--wa-bg);min-height:100vh;position:relative;}
 
-.hdr{background:var(--ink); position:relative;overflow:hidden;}
-.hdr-glow{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%); width:260px;height:80px; background:radial-gradient(ellipse, rgba(37,211,102,0.15) 0%, transparent 70%); pointer-events:none;}
-.hdr-rule-top{height:1px; background:linear-gradient(90deg, transparent 0%, var(--au-line) 30%, var(--au-hi) 50%, var(--au-line) 70%, transparent 100%);}
-.hdr-rule-btm{height:1px; background:linear-gradient(90deg, transparent 0%, var(--au-ring) 40%, var(--au-ring) 60%, transparent 100%);}
-.hdr-inner{padding:22px 24px 20px;text-align:center;position:relative;z-index:1;}
-.hdr-pre{font-family:'DM Sans',sans-serif;font-size:7.5px;font-weight:500; letter-spacing:6px;text-transform:uppercase;color:var(--parch-3); margin-bottom:18px;}
-.hdr-orn{display:flex;align-items:center;justify-content:center;gap:10px; margin-bottom:12px;}
-.hdr-orn::before,.hdr-orn::after{content:'';flex:1;max-width:56px;height:1px;}
-.hdr-orn::before{background:linear-gradient(90deg, transparent, var(--au-lo));}
-.hdr-orn::after{background:linear-gradient(90deg, var(--au-lo), transparent);}
-.orn-lozenge{width:6px;height:6px;border:1px solid var(--au); transform:rotate(45deg);flex-shrink:0; background:linear-gradient(135deg, var(--au) 0%, var(--au-hi) 100%);}
-.hdr-logo{font-family:'Playfair Display',serif; font-size:42px;font-weight:900; color:var(--parch); letter-spacing:6px; line-height:1; cursor:pointer;}
-.hdr-logo em{font-style:normal; color:var(--au); text-shadow:0 0 40px rgba(52,242,124,0.2);}
-.hdr-tag{font-family:'Cormorant',serif; font-style:italic;font-size:15px;font-weight:300; color:var(--parch-3);letter-spacing:2px;margin-top:10px;}
-.btn-qr{position:absolute;top:20px;right:18px;z-index:2; background:var(--parch-4); border:1px solid var(--wire-2);border-radius:10px; padding:9px 11px;cursor:pointer; color:var(--parch-3);font-size:15px; transition:all 0.2s;}
-.btn-qr:hover{background:var(--au-glow);color:var(--au);border-color:var(--au-ring);}
-.hdr-badge{display:inline-flex;align-items:center;gap:7px; margin-top:18px; border:1px solid var(--wire-2);border-radius:100px; padding:5px 18px; font-size:8px;font-weight:500;letter-spacing:3.5px; color:var(--parch-3);background:var(--parch-4); transition:all 0.3s;}
-.hdr-badge.open{color:var(--ok);border-color:rgba(77,184,112,0.22);background:rgba(77,184,112,0.04);}
-.hdr-badge.closed{color:var(--no);border-color:rgba(217,91,74,0.22);background:rgba(217,91,74,0.04);}
-.badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
-.badge-dot.pulse{animation:pulse 2.4s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.35;transform:scale(0.8);}}
-.closed-notice{display:none; background:rgba(217,91,74,0.04); border-bottom:1px solid rgba(217,91,74,0.15); padding:16px 24px;text-align:center;}
-.closed-notice.show{display:block;}
-.closed-notice-ttl{font-family:'Playfair Display',serif;font-size:11px;font-weight:600; letter-spacing:2.5px;text-transform:uppercase;color:var(--no);}
-.closed-notice-sub{font-size:12px;color:var(--parch-2);margin-top:4px;font-weight:300;}
+/* HEADER */
+.hdr{background:var(--wa-header);padding:0;}
+.hdr-top{display:flex;align-items:center;gap:12px;padding:12px 16px 10px;}
+.hdr-avatar{width:42px;height:42px;border-radius:50%;background:var(--wa);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.hdr-info{flex:1;}
+.hdr-name{font-size:17px;font-weight:800;color:#fff;letter-spacing:0.2px;}
+.hdr-status{font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px;display:flex;align-items:center;gap:5px;}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;}
+.status-dot.pulse{animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.hdr-actions{display:flex;gap:4px;}
+.hdr-btn{width:36px;height:36px;border-radius:50%;background:transparent;border:none;color:rgba(255,255,255,0.85);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s;}
+.hdr-btn:hover{background:rgba(255,255,255,0.12);}
 
-.sec{padding:32px 20px 8px;}
-.step-row{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
-.step-badge{font-family:'Playfair Display',serif;font-size:10px;font-weight:700; background:linear-gradient(135deg, var(--au) 0%, var(--au-hi) 100%); color:var(--ink);width:30px;height:30px;border-radius:9px; display:flex;align-items:center;justify-content:center;flex-shrink:0; box-shadow:0 2px 14px rgba(37,211,102,0.28); letter-spacing:0;}
-.step-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:600; letter-spacing:2.5px;text-transform:uppercase;color:var(--parch);}
-.field{width:100%;background:var(--card);border:1px solid var(--wire);border-radius:var(--r); padding:15px 18px;font-family:'DM Sans';font-size:14px;font-weight:400;color:var(--parch); outline:none;transition:all 0.2s;margin-bottom:12px; appearance:none;}
-.field::placeholder{color:var(--parch-3);}
-.field:focus{border-color:var(--au-ring);background:var(--card-2);box-shadow:0 0 0 3px var(--au-glow);}
-.ot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
-.ot-btn{background:var(--card);border:1px solid var(--wire);border-radius:var(--r); padding:14px 8px 12px;text-align:center;cursor:pointer;transition:all 0.18s; font-family:'DM Sans';font-size:9px;font-weight:500;color:var(--parch-3); letter-spacing:1.5px;text-transform:uppercase;}
-.ot-btn .oi{font-size:20px;display:block;margin-bottom:7px;filter:saturate(0.7);}
-.ot-btn:hover{border-color:var(--au-ring);background:var(--card-2);}
-.ot-btn.active{border-color:var(--au);background:var(--au-glow);color:var(--au-hi); box-shadow:0 0 22px var(--au-glow), inset 0 1px 0 rgba(52,242,124,0.1);}
-.ot-btn.active .oi{filter:none;}
-.btn-loc{width:100%;border:1px solid var(--au-ring);border-radius:var(--r); padding:15px;cursor:pointer;transition:all 0.22s;margin-top:2px; font-family:'DM Sans';font-size:12px;font-weight:500;letter-spacing:2.5px; text-transform:uppercase; background:transparent;color:var(--au); display:flex;align-items:center;justify-content:center;gap:8px;}
-.btn-loc:hover{background:var(--au-glow);box-shadow:0 0 20px var(--au-glow);}
-.btn-loc.success{color:var(--ok);border-color:rgba(77,184,112,0.3);background:rgba(77,184,112,0.04);}
-.btn-loc.error{color:var(--no);border-color:rgba(217,91,74,0.3);background:rgba(217,91,74,0.04);}
-.loc-pill{display:none;margin-top:10px; background:var(--card);border:1px solid var(--au-ring);border-radius:var(--r); padding:14px 18px;align-items:center;justify-content:space-between;}
-.loc-pill.show{display:flex;}
-.loc-pill.warn{border-color:rgba(217,91,74,0.3);background:var(--no-bg);}
-.loc-micro{font-size:7.5px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--parch-3);margin-bottom:4px;}
-.loc-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700; color:var(--au);text-shadow:0 0 24px rgba(37,211,102,0.25);}
+/* NOTICE BANNER */
+.notice{background:#fff3cd;border-bottom:2px solid #ffc107;padding:10px 16px;display:none;}
+.notice.show{display:block;}
+.notice-ttl{font-size:13px;font-weight:700;color:#856404;}
+.notice-sub{font-size:12px;color:#856404;margin-top:2px;}
 
-.divider{display:flex;align-items:center;gap:14px; padding:24px 20px 14px;}
-.divider-ln{flex:1;height:1px;background:var(--wire);}
-.divider-txt{font-family:'Cormorant',serif;font-style:italic;font-size:14px;font-weight:300; letter-spacing:1.5px;color:var(--parch-3);white-space:nowrap;}
-.divider-gem{width:4px;height:4px;background:var(--au-lo);transform:rotate(45deg);flex-shrink:0;}
+/* CHAT BUBBLE WELCOME */
+.welcome-wrap{padding:12px 16px 4px;}
+.bubble-in{background:#fff;border-radius:0 12px 12px 12px;padding:12px 14px;max-width:85%;box-shadow:0 1px 2px rgba(0,0,0,0.1);position:relative;margin-bottom:4px;}
+.bubble-in::before{content:'';position:absolute;top:0;left:-8px;border:8px solid transparent;border-top:0;border-right-color:#fff;border-left:0;}
+.bubble-name{font-size:11px;font-weight:700;color:var(--wa-dark);margin-bottom:4px;}
+.bubble-text{font-size:14px;line-height:1.5;color:var(--text);}
+.bubble-time{font-size:10px;color:var(--text-3);text-align:right;margin-top:4px;}
+.social-proof{display:inline-flex;align-items:center;gap:6px;background:var(--wa-green-soft);border:1px solid rgba(37,211,102,0.3);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--wa-dark);margin-top:6px;}
+.sp-dot{width:6px;height:6px;border-radius:50%;background:var(--wa);animation:pulse 2s infinite;}
 
-.menu-wrap{padding:0 20px 4px;}
-.menu-list{display:flex;flex-direction:column;gap:5px;}
-.menu-item{background:var(--card);border:1px solid var(--wire);border-radius:var(--r-sm); padding:12px 14px;display:flex;justify-content:space-between;align-items:center; transition:all 0.16s;}
-.menu-item:hover{background:var(--card-2);border-color:var(--wire-2);}
-.menu-item.sel{background:var(--card-2);border-color:var(--au-ring); box-shadow:0 0 0 1px var(--au-glow), 0 4px 18px rgba(0,0,0,0.25);}
+/* SECTION */
+.sec{padding:10px 16px 4px;}
+.sec-label{display:flex;align-items:center;gap:8px;padding:6px 16px;margin-bottom:4px;}
+.sec-label-txt{font-size:11px;font-weight:700;color:var(--text-2);letter-spacing:1.5px;text-transform:uppercase;}
+.sec-label-line{flex:1;height:1px;background:var(--border-2);}
+
+/* MENU CARDS */
+.menu-list{display:flex;flex-direction:column;gap:6px;}
+.menu-item{background:#fff;border-radius:var(--r);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:2px solid transparent;transition:all 0.15s;cursor:pointer;}
+.menu-item.sel{border-color:var(--wa);background:var(--wa-green-soft);}
 .m-left{display:flex;align-items:center;gap:11px;}
-.m-icon{font-size:20px;width:40px;height:40px;border-radius:10px; background:linear-gradient(145deg, rgba(200,145,58,0.16), rgba(200,145,58,0.07)); border:1px solid rgba(37,211,102,0.18); display:flex;align-items:center;justify-content:center;flex-shrink:0; transition:all 0.18s;}
-.menu-item.sel .m-icon{background:linear-gradient(145deg, rgba(37,211,102,0.28), rgba(200,145,58,0.12)); border-color:var(--au-ring);}
-.m-name{font-weight:400;font-size:13.5px;color:var(--parch);}
-.m-price{font-family:'Cormorant',serif;font-size:12.5px;color:var(--au); margin-top:2px;font-weight:400;letter-spacing:0.3px;}
-.qty-wrap{display:flex;align-items:center;gap:2px; background:var(--card-3);border:1px solid var(--wire);border-radius:10px;padding:3px; transition:border-color 0.18s;}
-.menu-item.sel .qty-wrap{border-color:var(--au-ring);}
-.q-btn{width:30px;height:30px;background:none;border:none; font-size:17px;font-weight:400;cursor:pointer;color:var(--parch-3); border-radius:7px;transition:all 0.13s; display:flex;align-items:center;justify-content:center; line-height:1;}
-.q-btn.minus:hover{background:var(--no-bg);color:var(--no);}
-.q-btn.plus{color:var(--au);}
-.q-btn.plus:hover{background:var(--au-glow);color:var(--au-hi);}
-.q-num{min-width:26px;text-align:center; font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--parch);}
+.m-icon{font-size:28px;width:44px;height:44px;border-radius:10px;background:var(--wa-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.menu-item.sel .m-icon{background:rgba(37,211,102,0.15);}
+.m-name{font-size:14px;font-weight:700;color:var(--text);}
+.m-price{font-size:13px;font-weight:600;color:var(--wa-dark);margin-top:2px;}
+.qty-wrap{display:flex;align-items:center;gap:2px;background:var(--wa-bg);border-radius:10px;padding:3px;}
+.menu-item.sel .qty-wrap{background:rgba(37,211,102,0.15);}
+.q-btn{width:32px;height:32px;background:#fff;border:1.5px solid var(--border-2);font-size:18px;font-weight:700;cursor:pointer;color:var(--text-2);border-radius:8px;transition:all 0.12s;display:flex;align-items:center;justify-content:center;line-height:1;}
+.q-btn.plus{color:#fff;background:var(--wa);border-color:var(--wa);}
+.q-btn.plus:hover{background:var(--wa-dark);border-color:var(--wa-dark);}
+.q-btn.minus:hover{background:var(--red-bg);color:var(--red);border-color:var(--red);}
+.q-num{min-width:28px;text-align:center;font-size:15px;font-weight:800;color:var(--text);}
 
-.btm{position:fixed;bottom:0;left:0;right:0;max-width:430px;margin:0 auto; background:var(--ink); border-top:1px solid var(--au-ring); padding:16px 20px max(24px, env(safe-area-inset-bottom)); z-index:50; backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); box-shadow:0 -30px 70px rgba(0,0,0,0.55);}
-.btm::before{content:'';position:absolute;top:-1px;left:8%;right:8%;height:1px; background:linear-gradient(90deg, transparent, var(--au-hi), transparent);}
-.btm-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2px;}
-.btm-lbl{font-size:7.5px;font-weight:500;letter-spacing:3.5px;text-transform:uppercase;color:var(--parch-3);}
-.btm-total{font-family:'Playfair Display',serif;font-size:30px;font-weight:700; color:var(--au);line-height:1;text-shadow:0 0 24px rgba(37,211,102,0.25);}
-.btm-meta{font-size:11px;color:var(--parch-3);margin-bottom:12px;font-weight:300;}
-.btn-order{width:100%; background:linear-gradient(135deg, var(--au) 0%, var(--au-hi) 100%); border:none;border-radius:var(--r);padding:16px; font-family:'DM Sans';font-size:12px;font-weight:500;letter-spacing:3px;text-transform:uppercase; color:var(--ink);cursor:pointer;transition:all 0.22s; box-shadow:0 4px 22px rgba(37,211,102,0.28); position:relative;overflow:hidden;}
-.btn-order::after{content:'';position:absolute;inset:0; background:linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 55%); pointer-events:none;}
-.btn-order:hover:not(:disabled){box-shadow:0 6px 32px rgba(37,211,102,0.44);transform:translateY(-1px);}
-.btn-order:disabled{background:var(--card-2);color:var(--parch-3); cursor:default;box-shadow:none;transform:none;}
-.btn-hint{font-size:11px;color:var(--parch-3);margin-top:8px;text-align:center;min-height:14px;font-weight:300;}
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:10px;padding:14px 16px 6px;}
+.divider-line{flex:1;height:1px;background:var(--border-2);}
+.divider-txt{font-size:12px;font-weight:700;color:var(--text-2);background:var(--wa-bg);padding:0 8px;white-space:nowrap;}
 
-.overlay{position:fixed;inset:0; background:rgba(4,3,2,0.85); backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px); z-index:200;display:flex;align-items:flex-end;justify-content:center; opacity:0;visibility:hidden;transition:opacity 0.22s, visibility 0.22s;}
+/* BOTTOM BAR */
+.btm{position:fixed;bottom:0;left:0;right:0;max-width:430px;margin:0 auto;background:#fff;border-top:1px solid var(--border);padding:12px 16px max(16px, env(safe-area-inset-bottom));z-index:50;box-shadow:0 -4px 20px rgba(0,0,0,0.08);}
+.btm-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.btm-count{font-size:13px;color:var(--text-2);font-weight:600;}
+.btm-total{font-size:20px;font-weight:900;color:var(--wa-dark);}
+.btn-order{width:100%;background:var(--wa);border:none;border-radius:var(--r);padding:16px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:0.3px;}
+.btn-order:hover:not(:disabled){background:var(--wa-dark);}
+.btn-order:disabled{background:var(--border-2);color:var(--text-3);cursor:default;}
+.btn-hint{font-size:12px;color:var(--text-3);text-align:center;margin-top:6px;min-height:16px;font-weight:600;}
+
+/* OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;visibility:hidden;transition:opacity 0.2s,visibility 0.2s;}
 .overlay-center{align-items:center;padding:20px;}
 .overlay.show{opacity:1;visibility:visible;}
-.sheet{background:var(--card);border-radius:24px 24px 0 0; border-top:1px solid var(--wire-2); padding:28px 22px max(48px, env(safe-area-inset-bottom)); width:100%;max-width:430px;max-height:92vh;overflow-y:auto; animation:slideUp 0.28s cubic-bezier(0.22,1,0.36,1); position:relative;}
-.sheet::before{content:'';position:absolute;top:0;left:18%;right:18%;height:1px; background:linear-gradient(90deg, transparent, var(--au-lo), transparent);}
-.sheet-center{border-radius:24px;max-width:360px;width:100%; padding:34px 24px 28px; animation:zoomIn 0.26s cubic-bezier(0.22,1,0.36,1);}
+.sheet{background:#fff;border-radius:20px 20px 0 0;padding:20px 18px max(32px, env(safe-area-inset-bottom));width:100%;max-width:430px;max-height:92vh;overflow-y:auto;animation:slideUp 0.25s cubic-bezier(0.22,1,0.36,1);}
+.sheet-center{border-radius:20px;max-width:360px;width:100%;padding:28px 20px 24px;animation:zoomIn 0.22s cubic-bezier(0.22,1,0.36,1);}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-@keyframes zoomIn{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
-.drag{width:34px;height:3px;background:var(--wire-2);border-radius:2px;margin:0 auto 24px;}
-.sttl{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;letter-spacing:0.5px;margin-bottom:16px;color:var(--parch);}
-.cfm-row{display:flex;justify-content:space-between;align-items:center; padding:10px 0;border-bottom:1px solid var(--wire); font-size:13px;color:var(--parch);font-weight:300;}
-.cfm-row:last-child{border:none;}
-.cfm-total{display:flex;justify-content:space-between;align-items:center; padding:14px 0;border-top:1px solid var(--au-ring);margin-top:8px;}
-.cfm-total-lbl{font-size:12px;color:var(--parch-2);font-weight:400;}
-.cfm-total-val{font-family:'Playfair Display',serif;font-size:23px;font-weight:700;color:var(--au);}
-.notes-field{width:100%;background:var(--card-2);border:1px solid var(--wire);border-radius:var(--r-sm); padding:13px 16px;font-family:'DM Sans';font-size:13px;color:var(--parch); resize:none;height:80px;outline:none;margin-top:4px;margin-bottom:16px; transition:border-color 0.2s;font-weight:300;}
-.notes-field::placeholder{color:var(--parch-3);}
-.notes-field:focus{border-color:var(--au-ring);}
-.flbl{font-size:8px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--parch-3);margin-bottom:6px;}
-.btn-primary{width:100%; background:linear-gradient(135deg, var(--au) 0%, var(--au-hi) 100%); border:none;border-radius:var(--r-sm);padding:15px; font-family:'DM Sans';font-size:12px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase; color:var(--ink);cursor:pointer;transition:all 0.2s; margin-bottom:10px;display:block; box-shadow:0 4px 18px rgba(37,211,102,0.24);}
-.btn-primary:hover{box-shadow:0 6px 26px rgba(37,211,102,0.38);transform:translateY(-1px);}
-.btn-ghost{width:100%;background:transparent;border:1px solid var(--wire-2); border-radius:var(--r-sm);padding:13px; font-family:'DM Sans';font-size:13px;font-weight:300;color:var(--parch-2); cursor:pointer;transition:all 0.2s;display:block;}
-.btn-ghost:hover{border-color:var(--au-ring);color:var(--parch);}
-.btn-sm-ok{background:var(--ok-bg);border:1px solid rgba(77,184,112,0.22); border-radius:var(--r-xs);padding:8px 14px;font-size:11px;font-weight:500; color:var(--ok);cursor:pointer;transition:all 0.15s;}
-.btn-sm-no{background:var(--no-bg);border:1px solid rgba(217,91,74,0.22); border-radius:var(--r-xs);padding:8px 14px;margin-left:6px; font-size:11px;font-weight:500;color:var(--no);cursor:pointer;transition:all 0.15s;}
-#qrcode{display:inline-block;margin:14px auto;border-radius:10px;overflow:hidden;border:3px solid var(--card-2);box-shadow:0 4px 24px rgba(0,0,0,0.4);padding:10px;background:#ffffff;}
-.qr-url{font-size:11px;color:var(--parch-2);background:var(--card-2);padding:9px 13px;border-radius:9px;word-break:break-all;margin-bottom:8px;border:1px solid var(--wire);}
-.sent-icon-wrap{width:72px;height:72px;border-radius:50%; background:radial-gradient(circle, rgba(37,211,102,0.18) 0%, var(--au-glow) 60%, transparent 100%); border:1px solid var(--au-ring); display:flex;align-items:center;justify-content:center; font-size:32px;margin:0 auto 14px;}
-.sent-id{background:var(--au-glow);border:1px solid var(--au-ring); border-radius:10px;padding:9px 20px; font-family:'Playfair Display',serif;font-size:16px;color:var(--au); letter-spacing:3px;display:inline-block;margin:10px 0 22px;}
-.music-overlay{z-index:250;}
-.music-sheet{background:var(--ink);border-radius:24px 24px 0 0; border-top:1px solid var(--au-ring); padding:28px 22px max(48px, env(safe-area-inset-bottom)); width:100%;max-width:430px; animation:slideUp 0.3s cubic-bezier(0.22,1,0.36,1); text-align:center;position:relative;}
-.music-sheet::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1px; background:linear-gradient(90deg, transparent, var(--au-hi), transparent);}
-.music-ring{width:88px;height:88px;border-radius:50%; background:radial-gradient(circle, rgba(37,211,102,0.18) 0%, rgba(37,211,102,0.04) 60%, transparent 100%); border:1px solid var(--au-ring); display:flex;align-items:center;justify-content:center; margin:0 auto 14px;font-size:36px; animation:breathe 2.5s ease-in-out infinite;}
-@keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(200,145,58,0.22);}50%{box-shadow:0 0 0 16px rgba(200,145,58,0);}}
-.music-ttl{font-family:'Playfair Display',serif;font-size:21px;font-weight:700; letter-spacing:1.5px;color:var(--au);text-shadow:0 0 22px rgba(37,211,102,0.25);margin-bottom:6px;}
-.music-sub{font-family:'Cormorant',serif;font-style:italic;font-size:15px;font-weight:300; color:var(--parch-2);margin-bottom:20px;letter-spacing:0.5px;}
-.music-list{display:flex;flex-direction:column;gap:5px; background:var(--card);border:1px solid var(--au-ring); border-radius:var(--r-sm);padding:10px 12px;margin-bottom:18px; text-align:left;}
-.music-row{display:flex;align-items:center;gap:10px; padding:8px;border-bottom:1px solid var(--wire); cursor:pointer;transition:all 0.15s;border-radius:8px;}
-.music-row:last-child{border-bottom:none;}
-.music-row:hover{background:rgba(37,211,102,0.06);}
-.music-row-ic{font-size:17px;width:28px;text-align:center;}
-.music-row-nm{font-family:'Playfair Display',serif;font-size:11px;font-weight:600;letter-spacing:1.5px; color:var(--parch);flex:1;}
-.music-row-cta{font-size:10px;color:var(--au);font-weight:500; background:var(--au-glow);border:1px solid var(--au-ring); border-radius:5px;padding:3px 8px;}
-.owner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 6px;}
-.owner-grid button{background:var(--card-2);border:1px solid var(--wire);border-radius:var(--r-sm); padding:12px 6px;font-family:'DM Sans';font-size:11px;font-weight:400; color:var(--parch-2);cursor:pointer;transition:all 0.18s;}
-.owner-grid button.active{background:var(--au-glow);border-color:var(--au-ring);color:var(--au);}
-.input-sm{background:var(--card-2);border:1px solid var(--wire);border-radius:var(--r-sm); padding:12px 16px;font-family:'DM Sans';font-size:13px;color:var(--parch); outline:none;width:100%;margin-bottom:8px;transition:border-color 0.2s;font-weight:300;}
-.input-sm::placeholder{color:var(--parch-3);}
-.input-sm:focus{border-color:var(--au-ring);}
-.o-card{background:var(--card-2);border:1px solid var(--wire);border-radius:var(--r-sm); padding:13px 15px;margin-bottom:8px;}
-.o-card-id{font-family:'Playfair Display',serif;font-size:12px;color:var(--au);letter-spacing:2px;}
-.o-card-meta{font-size:11px;color:var(--parch-3);margin:3px 0 6px;font-weight:300;}
-.o-card-items{font-size:12px;color:var(--parch-2);margin-bottom:9px;font-weight:300;}
-.o-card-total{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--parch);}
-.pin-dots{display:flex;justify-content:center;gap:14px;margin:22px 0 8px;}
-.pin-dot{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--wire-2);background:transparent;transition:all 0.15s;}
-.pin-dot.filled{background:var(--au);border-color:var(--au);box-shadow:0 0 12px rgba(200,145,58,0.4);}
-.pin-err{font-size:12px;color:var(--no);min-height:18px;margin-bottom:10px;text-align:center;}
-.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
-.pin-key{background:var(--card-2);border:1px solid var(--wire);border-radius:var(--r-sm); padding:16px;font-family:'Playfair Display',serif;font-size:21px;font-weight:600; cursor:pointer;color:var(--parch);transition:all 0.14s;user-select:none;text-align:center;}
-.pin-key:active{background:var(--au-glow);border-color:var(--au-ring);color:var(--au);}
-.pin-zero{grid-column:2;}
-.player-sheet{background:var(--ink);border-radius:24px 24px 0 0; border-top:1px solid var(--au-ring); padding:28px 22px max(48px, env(safe-area-inset-bottom)); width:100%;max-width:430px; animation:slideUp 0.28s cubic-bezier(0.22,1,0.36,1); text-align:center;}
-.pl-art{font-size:62px;margin-bottom:8px;display:block;}
-.pl-ttl{font-family:'Playfair Display',serif;font-size:25px;font-weight:700;letter-spacing:3px; color:var(--au);text-shadow:0 0 22px rgba(37,211,102,0.28);}
-.pl-artist{font-family:'Cormorant',serif;font-style:italic;font-size:14px;font-weight:300; color:var(--parch-3);letter-spacing:2px;margin-bottom:22px;}
-.progress-bar{background:var(--card-3);border-radius:100px;height:3px;cursor:pointer;margin:12px 0;}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--au),var(--au-hi));border-radius:100px;pointer-events:none;}
-.time-row{display:flex;justify-content:space-between;font-size:10px;color:var(--parch-3);font-weight:300;}
-.pl-ctrls{display:flex;justify-content:center;align-items:center;gap:22px;margin:22px 0;}
-.ctrl-btn{background:var(--card);border:1px solid var(--wire-2);border-radius:50%; width:46px;height:46px;display:flex;align-items:center;justify-content:center; cursor:pointer;font-size:15px;transition:all 0.15s;color:var(--parch-2);}
-.ctrl-btn:hover{background:var(--card-2);color:var(--parch);}
-.ctrl-play{background:linear-gradient(135deg, var(--au), var(--au-hi)); border:none;width:62px;height:62px;border-radius:50%; display:flex;align-items:center;justify-content:center; cursor:pointer;font-size:21px;transition:all 0.2s; box-shadow:0 4px 22px rgba(37,211,102,0.34);}
-.ctrl-play:hover{box-shadow:0 6px 30px rgba(37,211,102,0.5);transform:scale(1.04);}
-.tracklist{margin-top:18px;text-align:left;}
-.track-item{display:flex;align-items:center;gap:12px;padding:10px 12px; border-radius:10px;cursor:pointer;transition:background 0.14s;}
-.track-item:hover{background:rgba(255,255,255,0.03);}
-.track-item.active{background:rgba(37,211,102,0.08);}
-.t-num{font-family:'Cormorant',serif;font-size:11px;color:var(--parch-3);width:18px;text-align:center;}
-.t-ic{font-size:17px;}
-.t-info{flex:1;}
-.t-nm{font-weight:400;font-size:13px;color:var(--parch);}
-.t-nm.on{color:var(--au);}
-.t-artist{font-size:11px;color:var(--parch-3);font-weight:300;}
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-10px); background:var(--card-2);color:var(--parch); border:1px solid var(--wire-2);border-radius:100px; padding:10px 22px;font-size:12px;font-weight:400;z-index:1000; opacity:0;visibility:hidden;transition:all 0.22s; white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
-.toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
-.toast.success{background:#172b1f;border-color:rgba(77,184,112,0.3);color:var(--ok);}
-.toast.error{background:#2b1714;border-color:rgba(217,91,74,0.3);color:var(--no);}
-.toast.warn{background:#251a08;border-color:var(--au-ring);color:var(--au);}
+@keyframes zoomIn{from{transform:scale(0.92);opacity:0}to{transform:scale(1);opacity:1}}
+.drag{width:36px;height:4px;background:var(--border-2);border-radius:2px;margin:0 auto 18px;}
+.sttl{font-size:17px;font-weight:800;color:var(--text);margin-bottom:14px;}
 
-.ai-fab{position:fixed;bottom:90px;right:14px;z-index:60; width:52px;height:52px;border-radius:50%; background:linear-gradient(135deg, var(--au) 0%, var(--au-hi) 100%); border:none;cursor:pointer; display:flex;align-items:center;justify-content:center; font-size:22px;box-shadow:0 4px 20px rgba(37,211,102,0.35); transition:all 0.25s cubic-bezier(0.22,1,0.36,1); color:var(--ink);}
-.ai-fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(37,211,102,0.5);}
-.ai-chat{position:fixed;bottom:150px;right:14px;z-index:60; width:calc(100% - 28px);max-width:360px;height:460px; background:var(--card);border:1px solid var(--wire-2); border-radius:var(--r);display:flex;flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,0.6); opacity:0;visibility:hidden;transform:translateY(20px) scale(0.96); transition:all 0.28s cubic-bezier(0.22,1,0.36,1);}
+/* CONFIRM MODAL */
+.cfm-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);}
+.cfm-row:last-child{border:none;}
+.cfm-row-name{font-weight:600;}
+.cfm-row-price{font-weight:700;color:var(--wa-dark);}
+.cfm-total{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:2px solid var(--wa);margin-top:6px;}
+.cfm-total-lbl{font-size:13px;color:var(--text-2);font-weight:600;}
+.cfm-total-val{font-size:22px;font-weight:900;color:var(--wa-dark);}
+
+/* ORDER TYPE in modal */
+.ot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0;}
+.ot-btn{background:var(--wa-bg);border:2px solid var(--border);border-radius:var(--r-sm);padding:10px 6px 8px;text-align:center;cursor:pointer;transition:all 0.15s;font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;color:var(--text-2);letter-spacing:0.3px;}
+.ot-btn .oi{font-size:22px;display:block;margin-bottom:5px;}
+.ot-btn.active{border-color:var(--wa);background:var(--wa-green-soft);color:var(--wa-dark);}
+
+/* GPS in modal */
+.btn-loc{width:100%;border:2px solid var(--wa);border-radius:var(--r-sm);padding:13px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;background:var(--wa-green-soft);color:var(--wa-dark);display:flex;align-items:center;justify-content:center;gap:8px;margin:6px 0;transition:all 0.2s;}
+.btn-loc:hover{background:rgba(37,211,102,0.2);}
+.btn-loc.success{color:#155724;border-color:#28a745;background:#d4edda;}
+.btn-loc.error{color:var(--red);border-color:var(--red);background:var(--red-bg);}
+.loc-pill{display:none;background:var(--wa-green-soft);border:1.5px solid rgba(37,211,102,0.4);border-radius:var(--r-sm);padding:10px 14px;margin:6px 0;align-items:center;justify-content:space-between;}
+.loc-pill.show{display:flex;}
+.loc-pill.warn{border-color:rgba(220,53,69,0.4);background:var(--red-bg);}
+.loc-micro{font-size:10px;font-weight:700;color:var(--text-3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px;}
+.loc-val{font-size:22px;font-weight:900;color:var(--wa-dark);}
+.gps-info{font-size:11px;color:var(--text-2);background:var(--wa-bg);border-radius:var(--r-xs);padding:8px 10px;margin:6px 0;line-height:1.5;font-weight:600;}
+
+/* NAME FIELD in modal */
+.flbl{font-size:11px;font-weight:700;color:var(--text-2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;margin-top:14px;}
+.field{width:100%;background:var(--wa-bg);border:2px solid var(--border);border-radius:var(--r-sm);padding:13px 14px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:var(--text);outline:none;transition:all 0.2s;}
+.field:focus{border-color:var(--wa);background:#fff;}
+.notes-field{width:100%;background:var(--wa-bg);border:2px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;font-family:'Nunito',sans-serif;font-size:13px;color:var(--text);resize:none;height:72px;outline:none;margin-bottom:14px;transition:border-color 0.2s;font-weight:600;}
+.notes-field:focus{border-color:var(--wa);}
+
+/* BUTTONS */
+.btn-primary{width:100%;background:var(--wa);border:none;border-radius:var(--r-sm);padding:15px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;color:#fff;cursor:pointer;transition:all 0.2s;margin-bottom:8px;display:block;letter-spacing:0.3px;}
+.btn-primary:hover{background:var(--wa-dark);}
+.btn-secondary{width:100%;background:#fff;border:2px solid var(--wa);border-radius:var(--r-sm);padding:13px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--wa-dark);cursor:pointer;transition:all 0.2s;margin-bottom:8px;display:block;}
+.btn-secondary:hover{background:var(--wa-green-soft);}
+.btn-ghost{width:100%;background:transparent;border:2px solid var(--border);border-radius:var(--r-sm);padding:12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--text-2);cursor:pointer;transition:all 0.2s;display:block;}
+.btn-ghost:hover{border-color:var(--border-2);color:var(--text);}
+
+/* SUCCESS SCREEN */
+.sent-icon{width:72px;height:72px;border-radius:50%;background:var(--wa-green-soft);border:2px solid var(--wa);display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 12px;}
+.sent-id{background:var(--wa-green-soft);border:2px solid rgba(37,211,102,0.3);border-radius:var(--r-sm);padding:8px 18px;font-size:16px;font-weight:800;color:var(--wa-dark);display:inline-block;margin:8px 0 18px;letter-spacing:2px;}
+
+/* MUSIC */
+.music-sheet{background:#fff;border-radius:20px 20px 0 0;border-top:3px solid var(--wa);padding:20px 18px max(32px, env(safe-area-inset-bottom));width:100%;max-width:430px;animation:slideUp 0.25s cubic-bezier(0.22,1,0.36,1);text-align:center;}
+.music-icon{width:72px;height:72px;border-radius:50%;background:var(--wa-green-soft);border:2px solid var(--wa);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 10px;}
+.music-ttl{font-size:18px;font-weight:800;color:var(--wa-dark);margin-bottom:4px;}
+.music-sub{font-size:13px;color:var(--text-2);margin-bottom:16px;line-height:1.5;}
+.music-list{background:var(--wa-bg);border-radius:var(--r-sm);padding:8px;margin-bottom:14px;text-align:left;}
+.music-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-xs);cursor:pointer;transition:background 0.12s;}
+.music-row:hover{background:rgba(37,211,102,0.1);}
+.music-row-ic{font-size:18px;}
+.music-row-nm{font-size:13px;font-weight:700;color:var(--text);flex:1;}
+.music-row-cta{font-size:11px;font-weight:700;color:var(--wa-dark);background:var(--wa-green-soft);border:1px solid rgba(37,211,102,0.3);border-radius:var(--r-xs);padding:3px 8px;}
+
+/* PLAYER */
+.player-sheet{background:#fff;border-radius:20px 20px 0 0;border-top:3px solid var(--wa);padding:20px 18px max(32px, env(safe-area-inset-bottom));width:100%;max-width:430px;animation:slideUp 0.25s cubic-bezier(0.22,1,0.36,1);text-align:center;}
+.pl-art{font-size:60px;display:block;margin-bottom:6px;}
+.pl-ttl{font-size:22px;font-weight:900;color:var(--wa-dark);}
+.pl-artist{font-size:13px;color:var(--text-2);margin-bottom:16px;font-weight:600;}
+.progress-bar{background:var(--wa-bg);border-radius:100px;height:5px;cursor:pointer;margin:10px 0;}
+.progress-fill{height:100%;background:var(--wa);border-radius:100px;pointer-events:none;transition:width 0.5s linear;}
+.time-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);font-weight:600;}
+.pl-ctrls{display:flex;justify-content:center;align-items:center;gap:20px;margin:18px 0;}
+.ctrl-btn{width:46px;height:46px;background:var(--wa-bg);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all 0.15s;}
+.ctrl-btn:hover{background:var(--border-2);}
+.ctrl-play{width:64px;height:64px;border-radius:50%;background:var(--wa);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:24px;transition:all 0.2s;box-shadow:0 4px 16px rgba(37,211,102,0.4);}
+.ctrl-play:hover{background:var(--wa-dark);}
+.tracklist{margin-top:14px;text-align:left;}
+.track-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--r-xs);cursor:pointer;transition:background 0.12s;}
+.track-item:hover{background:var(--wa-bg);}
+.track-item.active{background:var(--wa-green-soft);}
+.t-num{font-size:11px;color:var(--text-3);width:18px;text-align:center;font-weight:700;}
+.t-ic{font-size:16px;}
+.t-info{flex:1;}
+.t-nm{font-size:13px;font-weight:700;color:var(--text);}
+.t-nm.on{color:var(--wa-dark);}
+.t-artist{font-size:11px;color:var(--text-3);}
+
+/* QR */
+.qr-url{font-size:11px;color:var(--text-2);background:var(--wa-bg);padding:8px 12px;border-radius:var(--r-xs);word-break:break-all;margin-bottom:10px;border:1px solid var(--border);}
+#qrcode{display:inline-block;margin:10px auto;border-radius:var(--r-sm);overflow:hidden;border:3px solid var(--border);padding:8px;background:#fff;}
+
+/* OWNER PANEL */
+.owner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0 14px;}
+.owner-grid button{background:var(--wa-bg);border:2px solid var(--border);border-radius:var(--r-sm);padding:10px 6px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:var(--text-2);cursor:pointer;transition:all 0.15s;}
+.owner-grid button.active{background:var(--wa-green-soft);border-color:var(--wa);color:var(--wa-dark);}
+.input-sm{background:var(--wa-bg);border:2px solid var(--border);border-radius:var(--r-sm);padding:11px 14px;font-family:'Nunito',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;margin-bottom:8px;transition:border-color 0.2s;font-weight:600;}
+.input-sm:focus{border-color:var(--wa);}
+.o-card{background:var(--wa-bg);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:8px;}
+.o-card-id{font-size:12px;font-weight:800;color:var(--wa-dark);letter-spacing:1.5px;}
+.o-card-meta{font-size:11px;color:var(--text-3);margin:3px 0 5px;font-weight:600;}
+.o-card-items{font-size:12px;color:var(--text-2);margin-bottom:8px;font-weight:600;}
+.o-card-total{font-size:15px;font-weight:800;color:var(--text);}
+.btn-sm-ok{background:#d4edda;border:1.5px solid #28a745;border-radius:var(--r-xs);padding:7px 12px;font-size:11px;font-weight:700;color:#155724;cursor:pointer;}
+.btn-sm-no{background:var(--red-bg);border:1.5px solid var(--red);border-radius:var(--r-xs);padding:7px 12px;margin-left:6px;font-size:11px;font-weight:700;color:var(--red);cursor:pointer;}
+
+/* PIN */
+.pin-dots{display:flex;justify-content:center;gap:14px;margin:18px 0 6px;}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border-2);background:transparent;transition:all 0.15s;}
+.pin-dot.filled{background:var(--wa);border-color:var(--wa);}
+.pin-err{font-size:12px;color:var(--red);min-height:18px;margin-bottom:8px;text-align:center;font-weight:700;}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
+.pin-key{background:var(--wa-bg);border:2px solid var(--border);border-radius:var(--r-sm);padding:16px;font-size:22px;font-weight:800;cursor:pointer;color:var(--text);transition:all 0.12s;user-select:none;text-align:center;}
+.pin-key:active{background:var(--wa-green-soft);border-color:var(--wa);}
+.pin-zero{grid-column:2;}
+
+/* AI CHAT */
+.ai-fab{position:fixed;bottom:88px;right:14px;z-index:60;width:54px;height:54px;border-radius:50%;background:var(--wa);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 18px rgba(37,211,102,0.45);transition:all 0.22s;}
+.ai-fab:hover{background:var(--wa-dark);transform:scale(1.06);}
+.ai-chat{position:fixed;bottom:155px;right:14px;z-index:60;width:calc(100% - 28px);max-width:350px;height:440px;background:#fff;border:1.5px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.18);opacity:0;visibility:hidden;transform:translateY(16px) scale(0.97);transition:all 0.25s cubic-bezier(0.22,1,0.36,1);}
 .ai-chat.show{opacity:1;visibility:visible;transform:translateY(0) scale(1);}
-.ai-head{padding:14px 16px;border-bottom:1px solid var(--wire); display:flex;align-items:center;justify-content:space-between;}
-.ai-head-l{display:flex;align-items:center;gap:10px;}
-.ai-ava{width:32px;height:32px;border-radius:50%; background:linear-gradient(135deg, var(--au), var(--au-hi)); display:flex;align-items:center;justify-content:center;font-size:15px;}
-.ai-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:600;color:var(--parch);}
-.ai-status{font-size:9px;color:var(--ok);letter-spacing:1px;}
-.ai-close{background:none;border:none;color:var(--parch-3);font-size:18px;cursor:pointer;padding:4px;}
-.ai-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
-.ai-bubble{max-width:85%;padding:10px 13px;border-radius:14px;font-size:12.5px;line-height:1.5;font-weight:300; animation:msgIn 0.25s ease;}
-@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.ai-bubble.user{align-self:flex-end;background:var(--au-glow);color:var(--au-hi);border:1px solid var(--au-ring);}
-.ai-bubble.bot{align-self:flex-start;background:var(--card-2);color:var(--parch);border:1px solid var(--wire);}
-.ai-bubble.bot strong{color:var(--au);}
-.ai-foot{padding:10px 12px;border-top:1px solid var(--wire);display:flex;gap:8px;}
-.ai-inp{flex:1;background:var(--card-2);border:1px solid var(--wire);border-radius:100px; padding:10px 16px;font-family:'DM Sans';font-size:12px;color:var(--parch);outline:none;}
-.ai-inp:focus{border-color:var(--au-ring);}
-.ai-send{width:38px;height:38px;border-radius:50%;border:none; background:linear-gradient(135deg, var(--au), var(--au-hi)); color:var(--ink);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.ai-typing{display:flex;gap:4px;padding:8px 12px;}
-.ai-typing span{width:6px;height:6px;background:var(--parch-3);border-radius:50%;animation:typing 1.4s infinite;}
+.ai-head{padding:12px 14px;background:var(--wa-header);border-radius:var(--r) var(--r) 0 0;display:flex;align-items:center;justify-content:space-between;}
+.ai-head-l{display:flex;align-items:center;gap:9px;}
+.ai-ava{width:34px;height:34px;border-radius:50%;background:var(--wa);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.ai-name{font-size:14px;font-weight:800;color:#fff;}
+.ai-status{font-size:10px;color:rgba(255,255,255,0.75);}
+.ai-close{background:none;border:none;color:rgba(255,255,255,0.8);font-size:18px;cursor:pointer;padding:4px;}
+.ai-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--wa-bg);}
+.ai-bubble{max-width:85%;padding:9px 12px;font-size:13px;line-height:1.5;font-weight:600;animation:msgIn 0.2s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ai-bubble.user{align-self:flex-end;background:var(--wa-light);border-radius:12px 0 12px 12px;color:var(--text);}
+.ai-bubble.bot{align-self:flex-start;background:#fff;border-radius:0 12px 12px 12px;color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,0.08);}
+.ai-bubble.bot strong{color:var(--wa-dark);}
+.ai-foot{padding:8px 10px;border-top:1px solid var(--border);display:flex;gap:6px;background:#fff;}
+.ai-inp{flex:1;background:var(--wa-bg);border:1.5px solid var(--border);border-radius:100px;padding:9px 14px;font-family:'Nunito',sans-serif;font-size:13px;color:var(--text);outline:none;font-weight:600;}
+.ai-inp:focus{border-color:var(--wa);}
+.ai-send{width:38px;height:38px;border-radius:50%;border:none;background:var(--wa);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.ai-typing{display:flex;gap:4px;padding:8px 12px;align-items:center;}
+.ai-typing span{width:7px;height:7px;background:var(--border-2);border-radius:50%;animation:typing 1.2s infinite;}
 .ai-typing span:nth-child(2){animation-delay:0.2s;}
 .ai-typing span:nth-child(3){animation-delay:0.4s;}
 @keyframes typing{0%,80%,100%{transform:scale(0.6);opacity:0.4;}40%{transform:scale(1);opacity:1;}}
-.ai-chip-wrap{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;}
-.ai-chip{background:var(--card-3);border:1px solid var(--wire);border-radius:100px; padding:5px 12px;font-size:10.5px;color:var(--parch-2);cursor:pointer;transition:all 0.15s;}
-.ai-chip:hover{border-color:var(--au-ring);color:var(--au);background:var(--au-glow);}
+.ai-chip-wrap{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;}
+.ai-chip{background:var(--wa-green-soft);border:1.5px solid rgba(37,211,102,0.3);border-radius:100px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--wa-dark);cursor:pointer;transition:all 0.12s;}
+.ai-chip:hover{background:rgba(37,211,102,0.2);}
+
+/* MENU EDITOR */
+.menu-editor{margin-top:10px;}
+.me-cat{margin-bottom:12px;}
+.me-cat-ttl{font-size:11px;font-weight:800;color:var(--wa-dark);margin-bottom:6px;text-transform:uppercase;letter-spacing:1.5px;}
+.me-row{display:flex;gap:5px;align-items:center;margin-bottom:5px;}
+.me-row input{background:var(--wa-bg);border:1.5px solid var(--border);border-radius:var(--r-xs);padding:7px 9px;font-family:'Nunito',sans-serif;font-size:12px;color:var(--text);outline:none;font-weight:600;}
+.me-row input:focus{border-color:var(--wa);}
+.me-row .me-name{flex:1;}
+.me-row .me-price{width:68px;text-align:center;}
+.me-row .me-icon{width:42px;text-align:center;}
+.me-row .me-del{background:var(--red-bg);border:1.5px solid var(--red);border-radius:var(--r-xs);width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--red);font-size:13px;}
+.me-add{width:100%;background:var(--wa-green-soft);border:2px dashed rgba(37,211,102,0.4);border-radius:var(--r-xs);padding:7px;font-size:12px;font-weight:700;color:var(--wa-dark);cursor:pointer;margin-bottom:8px;font-family:'Nunito',sans-serif;}
+.me-actions{display:flex;gap:8px;margin-top:10px;}
+
+/* REPEAT ORDER */
+.btn-repeat{width:100%;background:transparent;border:2px dashed var(--border-2);border-radius:var(--r-sm);padding:9px;font-size:12px;font-weight:700;color:var(--text-2);cursor:pointer;margin-bottom:8px;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Nunito',sans-serif;}
+.btn-repeat:hover{background:var(--wa-green-soft);border-color:var(--wa);color:var(--wa-dark);}
+
+/* TOAST */
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-10px);background:#333;color:#fff;border-radius:100px;padding:9px 20px;font-size:13px;font-weight:700;z-index:1000;opacity:0;visibility:hidden;transition:all 0.2s;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.2);}
+.toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+.toast.success{background:#155724;}
+.toast.error{background:#721c24;}
+.toast.warn{background:#856404;}
+
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--wire-2);border-radius:2px;}
-
-/* === Social Proof & Repeat Order === */
-.social-proof{font-size:10px;color:var(--parch-2);text-align:center;margin:10px auto 0;padding:5px 12px;background:rgba(37,211,102,0.08);border-radius:8px;border:1px solid var(--au-ring);display:inline-flex;align-items:center;gap:6px;width:fit-content;max-width:90%;}
-.social-proof strong{color:var(--au-hi);}
-.social-proof .live-dot{width:4px;height:4px;background:var(--ok);border-radius:50%;animation:pulse 2s infinite;}
-.btn-repeat{width:100%;background:transparent;border:1px dashed var(--au-ring);border-radius:var(--r);padding:10px;font-size:11px;color:var(--parch-3);cursor:pointer;margin-bottom:8px;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
-.btn-repeat:hover{background:var(--au-glow);color:var(--au);}
-
-/* === CMS Menu Editor === */
-.menu-editor{margin-top:12px;}
-.me-cat{margin-bottom:14px;}
-.me-cat-ttl{font-family:'Playfair Display',serif;font-size:11px;font-weight:600;letter-spacing:2px;color:var(--au);margin-bottom:6px;text-transform:uppercase;}
-.me-row{display:flex;gap:6px;align-items:center;margin-bottom:6px;}
-.me-row input{background:var(--card-3);border:1px solid var(--wire);border-radius:8px;padding:8px 10px;font-family:'DM Sans';font-size:12px;color:var(--parch);outline:none;}
-.me-row input:focus{border-color:var(--au-ring);}
-.me-row .me-name{flex:1;}
-.me-row .me-price{width:70px;text-align:center;}
-.me-row .me-icon{width:44px;text-align:center;}
-.me-row .me-del{background:var(--no-bg);border:1px solid rgba(217,91,74,0.22);border-radius:6px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--no);font-size:12px;}
-.me-add{width:100%;background:var(--au-glow);border:1px dashed var(--au-ring);border-radius:8px;padding:8px;font-size:11px;color:var(--au);cursor:pointer;margin-bottom:10px;transition:all 0.15s;}
-.me-add:hover{background:rgba(37,211,102,0.12);}
-.me-actions{display:flex;gap:8px;margin-top:12px;}
-
+::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:2px;}
 </style>
-<meta name="theme-color" content="#0a0806">
+<meta name="theme-color" content="#075E54">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Warung CT">
-<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiV2FydW5nIENUIiwic2hvcnRfbmFtZSI6IldhcnVuZyBDVCIsInN0YXJ0X3VybCI6Ii4iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMTAwZDA5IiwidGhlbWVfY29sb3IiOiIjMGEwODA2Iiwib3JpZW50YXRpb24iOiJwb3J0cmFpdCIsImljb25zIjpbeyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWwsJTNDc3ZnJTIweG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyUyMHZpZXdCb3g9JzAlMjAwJTIwMTkyJTIwMTkyJyUzRSUzQ3JlY3QlMjBmaWxsPSclMjMyNUQzNjYnJTIwd2lkdGg9JzE5MiclMjBoZWlnaHQ9JzE5MiclMjByeD0nMjQnLyUzRSUzQ3RleHQlMjB4PSc5NiclMjB5PScxMjAnJTIwZm9udC1zaXplPScxMDAnJTIwdGV4dC1hbmNob3I9J21pZGRsZSclM0UlRjAlOUYlOEQlQkUlM0MvdGV4dCUzRSUzQy9zdmclM0UiLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
 <base target="_blank" rel="noopener noreferrer">
 </head>
 <body>
 <div class="app">
+
+  <!-- HEADER -->
   <header class="hdr">
-    <div class="hdr-rule-top"></div>
-    <div class="hdr-inner">
-      <button class="btn-qr" onclick="WCT.toggleQR(true)">⬛</button>
-      <div class="hdr-pre">Sejak Zaman Mojopahit</div>
-      <div class="hdr-orn"><div class="orn-lozenge"></div></div>
-      <div class="hdr-logo" id="hdrLogo">WARUNG <em>CT</em></div>
-      <div class="hdr-tag">The Real Temenan</div>
-      <div id="statusBadge" class="hdr-badge open">
-        <div class="badge-dot pulse"></div>
-        <span id="statusText">BUKA SEKARANG</span>
-      </div>
-      <div class="social-proof"><span class="live-dot"></span> Hari ini sudah <strong id="webCounter">34+</strong> order via website</div>
-    </div>
-    <div class="hdr-glow"></div>
-    <div class="hdr-rule-btm"></div>
-  </header>
-
-  <div class="closed-notice" id="closedNotice">
-    <div class="closed-notice-ttl" id="closedTitle"></div>
-    <div class="closed-notice-sub" id="closedSub"></div>
-  </div>
-
-  <main>
-    <div class="sec">
-      <div class="step-row">
-        <div class="step-badge">01</div>
-        <div class="step-title">Info Pengiriman</div>
-      </div>
-      <input id="userName" class="field" placeholder="Nama pemesan…" maxlength="40">
-      <div class="ot-grid">
-        <button class="ot-btn active" onclick="WCT.setOrderType('delivery')" id="ot-delivery"><span class="oi">🛵</span>Diantar</button>
-        <button class="ot-btn" onclick="WCT.setOrderType('pickup')" id="ot-pickup"><span class="oi">🚶</span>Ambil</button>
-        <button class="ot-btn" onclick="WCT.setOrderType('dinein')" id="ot-dinein"><span class="oi">🍽️</span>Di Sini</button>
-      </div>
-      <div id="gpsSection">
-        <button id="btnLocation" class="btn-loc" onclick="WCT.getLocation()">
-          <span>📍</span><span>Tandai Lokasi</span>
-        </button>
-        <div id="locPill" class="loc-pill">
-          <div><div class="loc-micro">Jarak</div><div class="loc-val" id="locDist">0 km</div></div>
-          <div id="locExtra" style="text-align:right;font-size:13px;"></div>
+    <div class="hdr-top">
+      <div class="hdr-avatar">🍽️</div>
+      <div class="hdr-info">
+        <div class="hdr-name">Warung CT</div>
+        <div class="hdr-status">
+          <span class="status-dot pulse" id="statusDot"></span>
+          <span id="statusText">Buka Sekarang</span>
         </div>
       </div>
-    </div>
-
-    <div class="sec" style="padding-bottom:0;">
-      <div class="step-row">
-        <div class="step-badge">02</div>
-        <div class="step-title">Pilih Menu</div>
+      <div class="hdr-actions">
+        <button class="hdr-btn" onclick="WCT.toggleQR(true)" title="Share QR">⬛</button>
       </div>
     </div>
+  </header>
 
-    <div class="menu-wrap"><div id="menuUtama" class="menu-list"></div></div>
+  <!-- CLOSED NOTICE -->
+  <div class="notice" id="closedNotice">
+    <div class="notice-ttl" id="closedTitle"></div>
+    <div class="notice-sub" id="closedSub"></div>
+  </div>
 
-    <div class="divider">
-      <div class="divider-ln"></div><div class="divider-gem"></div>
-      <div class="divider-txt">Tambahan</div>
-      <div class="divider-gem"></div><div class="divider-ln"></div>
+  <!-- WELCOME BUBBLE -->
+  <div class="welcome-wrap">
+    <div class="bubble-in">
+      <div class="bubble-name">Warung CT 🍽️</div>
+      <div class="bubble-text">Halo! Selamat datang di <strong>Warung CT</strong> 👋<br>Pilih menu yang kamu mau, terus tap tombol hijau di bawah buat order. Gampang banget! 😄</div>
+      <div class="bubble-time">The Real Temenan · Sejak Zaman Mojopahit</div>
     </div>
-    <div class="menu-wrap"><div id="menuTambahan" class="menu-list"></div></div>
-
-    <div class="divider">
-      <div class="divider-ln"></div><div class="divider-gem"></div>
-      <div class="divider-txt">Minuman</div>
-      <div class="divider-gem"></div><div class="divider-ln"></div>
+    <div>
+      <span class="social-proof"><span class="sp-dot"></span> Hari ini sudah <strong id="webCounter">&nbsp;34+&nbsp;</strong> order</span>
     </div>
-    <div class="menu-wrap"><div id="menuMinuman" class="menu-list"></div></div>
-  </main>
+  </div>
 
+  <!-- MENU UTAMA -->
+  <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-txt">Menu Utama</div><div class="sec-label-line"></div></div>
+  <div class="sec"><div id="menuUtama" class="menu-list"></div></div>
+
+  <!-- TAMBAHAN -->
+  <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-txt">Tambahan</div><div class="sec-label-line"></div></div>
+  <div class="sec"><div id="menuTambahan" class="menu-list"></div></div>
+
+  <!-- MINUMAN -->
+  <div class="sec-label"><div class="sec-label-line"></div><div class="sec-label-txt">Minuman</div><div class="sec-label-line"></div></div>
+  <div class="sec"><div id="menuMinuman" class="menu-list"></div></div>
+
+  <!-- BOTTOM BAR -->
   <div class="btm">
-    <div class="btm-top">
-      <div>
-        <div class="btm-lbl">Total Bayar</div>
-        <div class="btm-total">Rp <span id="grandTotal">0</span></div>
-      </div>
+    <div class="btm-info">
+      <div class="btm-count"><span id="itemCount">0 item</span> dipilih</div>
+      <div class="btm-total">Rp <span id="grandTotal">0</span></div>
     </div>
-    <div class="btm-meta">Ongkir: <span id="ongkirVal">Rp 0</span> · <span id="itemCount">0 item</span></div>
-    <button class="btn-repeat" onclick="WCT.showLastOrder()">🔁 Pesan Lagi Seperti Terakhir</button>
-    <button id="btnPesan" class="btn-order" disabled onclick="WCT.showConfirm()">Order via WhatsApp</button>
+    <button class="btn-repeat" onclick="WCT.showLastOrder()">🔁 Pesan lagi seperti terakhir</button>
+    <button id="btnPesan" class="btn-order" disabled onclick="WCT.showConfirm()">
+      🛒 Konfirmasi Order
+    </button>
     <div id="btnHint" class="btn-hint"></div>
   </div>
 
+  <!-- MODAL KONFIRMASI (all-in-one) -->
   <div id="confirmModal" class="overlay">
     <div class="sheet">
       <div class="drag"></div>
-      <div class="sttl">Konfirmasi Order</div>
-      <div id="confirmMeta" style="font-size:11px;color:var(--parch-3);margin-bottom:14px;letter-spacing:0.5px;font-weight:300;"></div>
+      <div class="sttl">Konfirmasi Pesanan 🛒</div>
+
+      <!-- Items -->
       <div id="confirmItems"></div>
       <div class="cfm-total">
         <div class="cfm-total-lbl">Total Bayar</div>
-        <div class="cfm-total-val" id="confirmTotal"></div>
+        <div class="cfm-total-val" id="confirmTotal">Rp 0</div>
       </div>
+
+      <!-- Nama -->
+      <div class="flbl">Nama Kamu</div>
+      <input id="modalName" class="field" placeholder="Tulis nama kamu di sini…" maxlength="40" oninput="WCT.onModalName(this.value)">
+
+      <!-- Tipe Order -->
+      <div class="flbl" style="margin-top:12px;">Mau Gimana?</div>
+      <div class="ot-grid">
+        <button class="ot-btn" onclick="WCT.setOrderType('delivery')" id="ot-delivery"><span class="oi">🛵</span>Antar ke Rumah</button>
+        <button class="ot-btn active" onclick="WCT.setOrderType('pickup')" id="ot-pickup"><span class="oi">🚶</span>Ambil Sendiri</button>
+        <button class="ot-btn" onclick="WCT.setOrderType('dinein')" id="ot-dinein"><span class="oi">🍽️</span>Makan di Sini</button>
+      </div>
+
+      <!-- GPS — hanya muncul kalau delivery -->
+      <div id="modalGpsSection" style="display:none;">
+        <div class="gps-info">📍 Kita perlu tahu lokasimu buat hitung ongkir. Tenang, aman kok!</div>
+        <button id="btnLocation" class="btn-loc" onclick="WCT.getLocation()">
+          <span>📍</span><span>Tandai Lokasiku</span>
+        </button>
+        <div id="locPill" class="loc-pill">
+          <div><div class="loc-micro">Jarak</div><div class="loc-val" id="locDist">0 km</div></div>
+          <div id="locExtra" style="text-align:right;font-size:13px;font-weight:700;"></div>
+        </div>
+      </div>
+
+      <!-- Catatan -->
       <div class="flbl">Catatan (opsional)</div>
-      <textarea id="orderNotes" class="notes-field" placeholder="Misal: yang pecel lele tolong tandai…"></textarea>
-      <button class="btn-primary" onclick="WCT.doOrder()">Kirim Order</button>
+      <textarea id="orderNotes" class="notes-field" placeholder="Contoh: sambalnya banyak ya, jangan pake bawang…"></textarea>
+
+      <button class="btn-primary" onclick="WCT.doOrder()">✅ Kirim Order via WhatsApp</button>
       <button class="btn-ghost" onclick="WCT.hideConfirm()">Batal</button>
     </div>
   </div>
 
+  <!-- QR OVERLAY -->
   <div id="qrOverlay" class="overlay">
     <div class="sheet" style="text-align:center;">
       <div class="drag"></div>
-      <div class="sttl" style="text-align:center;">Share Warung CT</div>
+      <div class="sttl" style="text-align:center;">Share Warung CT 📲</div>
       <div id="qrUrlDisplay" class="qr-url"></div>
       <div id="qrcode"></div>
-      <div style="font-size:11px;color:var(--parch-3);margin:-6px 0 12px;font-weight:300;">Tekan lama gambar QR untuk simpan 📲</div>
+      <div style="font-size:11px;color:var(--text-3);margin:-4px 0 12px;font-weight:600;">Tekan lama gambar QR untuk simpan</div>
       <button class="btn-primary" onclick="WCT.copyLink(event)">Salin Link</button>
       <button class="btn-ghost" onclick="WCT.toggleQR(false)">Tutup</button>
     </div>
   </div>
 
+  <!-- ORDER SENT -->
   <div id="orderSentOverlay" class="overlay overlay-center">
     <div class="sheet sheet-center" style="text-align:center;position:relative;">
-      <button onclick="WCT.resetOrder()" style="position:absolute;top:14px;right:14px;background:var(--card-2);border:1px solid var(--wire-2);border-radius:50%;width:32px;height:32px;color:var(--parch-3);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
-      <div class="sent-icon-wrap">✅</div>
+      <button onclick="WCT.resetOrder()" style="position:absolute;top:12px;right:12px;background:var(--wa-bg);border:1.5px solid var(--border);border-radius:50%;width:30px;height:30px;color:var(--text-2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+      <div class="sent-icon">✅</div>
       <div class="sttl" style="text-align:center;">Order Terkirim!</div>
-      <div style="font-size:12px;color:var(--parch-3);margin-bottom:4px;font-weight:300;">Nomor ordermu:</div>
+      <div style="font-size:12px;color:var(--text-2);margin-bottom:4px;font-weight:600;">Nomor ordermu:</div>
       <div class="sent-id" id="sentOrderId"></div>
-      <button class="btn-primary" onclick="WCT.afterOrderMusic()">🎵 Bonus Musik</button>
+      <button class="btn-primary" onclick="WCT.afterOrderMusic()">🎵 Dengerin Musik Sambil Nunggu</button>
       <button class="btn-ghost" onclick="WCT.resetOrder()">Pesan Lagi</button>
     </div>
   </div>
 
-  <div id="musicPromptOverlay" class="overlay music-overlay">
+  <!-- MUSIC PROMPT -->
+  <div id="musicPromptOverlay" class="overlay" style="z-index:250;">
     <div class="music-sheet">
       <div class="drag"></div>
-      <div class="music-ring">🎵</div>
+      <div class="music-icon">🎵</div>
       <div class="music-ttl">Sambil Nunggu Order</div>
       <div class="music-sub">Dengerin musik pilihan CT &amp; Bojo<br>biar makin betah nunggu ☕</div>
       <div class="music-list" id="musicTrackList"></div>
@@ -399,6 +422,7 @@ body{
     </div>
   </div>
 
+  <!-- PLAYER -->
   <div id="playerOverlay" class="overlay">
     <div class="player-sheet">
       <div class="drag"></div>
@@ -415,57 +439,54 @@ body{
         <div class="ctrl-btn" onclick="WCT.nextTrack()">⏭</div>
       </div>
       <div class="tracklist" id="tracklistEl"></div>
-      <button class="btn-ghost" style="margin-top:16px;" onclick="WCT.closePlayer()">Tutup</button>
+      <button class="btn-ghost" style="margin-top:14px;" onclick="WCT.closePlayer()">Tutup</button>
     </div>
   </div>
 
+  <!-- OWNER PANEL -->
   <div id="ownerOverlay" class="overlay">
     <div class="sheet">
       <div class="drag"></div>
-      <div class="sttl">Panel Owner</div>
-      <div class="flbl">Status Warung</div>
+      <div class="sttl">Panel Owner 🔑</div>
+      <div class="flbl" style="margin-top:0;">Status Warung</div>
       <div class="owner-grid">
         <button id="st-normal" onclick="WCT.setOverride('normal')">🟢 Normal</button>
         <button id="st-tutup" onclick="WCT.setOverride('tutup_cepat')">🔴 Tutup Cepat</button>
         <button id="st-libur" onclick="WCT.setOverride('libur')">🏖️ Libur</button>
       </div>
       <input type="number" id="tutupJam" placeholder="Jam tutup (misal: 20)" class="input-sm" style="display:none;">
-      <div class="flbl" style="margin-top:16px;">Ganti PIN</div>
+      <div class="flbl">Ganti PIN</div>
       <input type="password" id="newPin" maxlength="4" placeholder="PIN baru (4 digit)" class="input-sm">
-      <button class="btn-primary" style="margin-bottom:18px;" onclick="WCT.changePin()">Simpan PIN Baru</button>
+      <button class="btn-primary" style="margin-bottom:14px;" onclick="WCT.changePin()">Simpan PIN Baru</button>
 
-      <div class="flbl" style="margin-top:4px;">🔑 API Key AI (OpenRouter)</div>
-      <div style="font-size:10px;color:var(--parch-3);margin-bottom:6px;font-weight:300;">
-        Masukkan API key untuk aktifkan AI chat. Kosongkan = mode manual.
-        <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--au);">Dapatkan OpenRouter key</a>
-      </div>
+      <div class="flbl">API Key AI (OpenRouter)</div>
+      <div style="font-size:11px;color:var(--text-2);margin-bottom:6px;font-weight:600;">Masukkan API key untuk aktifkan AI chat. <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--wa-dark);">Dapatkan di sini</a></div>
       <input type="password" id="aiApiKey" placeholder="Paste API Key di sini…" class="input-sm">
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <div style="display:flex;gap:8px;margin-bottom:6px;">
         <button class="btn-primary" style="flex:1;margin-bottom:0;" onclick="WCT.saveAiKey()">💾 Simpan Key</button>
         <button class="btn-ghost" style="flex:1;" onclick="WCT.clearAiKey()">🗑️ Hapus Key</button>
       </div>
-      <div id="aiKeyStatus" style="font-size:10px;color:var(--parch-3);margin-bottom:12px;font-weight:300;"></div>
+      <div id="aiKeyStatus" style="font-size:11px;color:var(--text-3);margin-bottom:12px;font-weight:600;"></div>
 
       <div class="flbl">Order Masuk (<span id="orderCount">0</span>)</div>
       <div id="ownerOrderList"></div>
 
-      <div class="flbl" style="margin-top:20px;">📝 Kelola Menu</div>
-      <div style="font-size:10px;color:var(--parch-3);margin-bottom:8px;font-weight:300;">Edit harga, nama, icon, atau tambah/hapus menu langsung di bawah. Klik Simpan untuk terapkan.</div>
+      <div class="flbl" style="margin-top:16px;">📝 Kelola Menu</div>
       <div id="menuEditor" class="menu-editor"></div>
       <div class="me-actions">
         <button class="btn-primary" style="flex:1;margin-bottom:0;" onclick="WCT.saveMenusFromEditor()">💾 Simpan Menu</button>
         <button class="btn-ghost" style="flex:1;" onclick="WCT.resetMenus()">🔄 Reset Default</button>
       </div>
-
-      <button class="btn-ghost" style="border-color:rgba(217,91,74,0.2);color:var(--no);margin-top:12px;" onclick="WCT.clearAllOrders()">Hapus Semua Order</button>
+      <button class="btn-ghost" style="border-color:var(--red);color:var(--red);margin-top:10px;" onclick="WCT.clearAllOrders()">Hapus Semua Order</button>
       <button class="btn-ghost" style="margin-top:8px;" onclick="WCT.hideOwnerPanel()">Tutup</button>
     </div>
   </div>
 
+  <!-- PIN -->
   <div id="pinOverlay" class="overlay">
     <div class="sheet" style="text-align:center;">
       <div class="drag"></div>
-      <div class="sttl" style="text-align:center;">Masukkan PIN</div>
+      <div class="sttl" style="text-align:center;">Masukkan PIN 🔑</div>
       <div class="pin-dots" id="pinDots">
         <div class="pin-dot"></div><div class="pin-dot"></div>
         <div class="pin-dot"></div><div class="pin-dot"></div>
@@ -484,10 +505,11 @@ body{
         <div class="pin-key pin-zero" onclick="WCT.enterPin(0)">0</div>
         <div class="pin-key" onclick="WCT.backspacePin()">⌫</div>
       </div>
-      <button class="btn-ghost" style="margin-top:14px;" onclick="WCT.cancelPin()">Batal</button>
+      <button class="btn-ghost" style="margin-top:12px;" onclick="WCT.cancelPin()">Batal</button>
     </div>
   </div>
 
+  <!-- AI CHAT -->
   <button class="ai-fab" id="aiFab" onclick="WCT.toggleChat()">💬</button>
   <div class="ai-chat" id="aiChat">
     <div class="ai-head">
@@ -504,13 +526,11 @@ body{
       <div class="ai-bubble bot">
         Halo! Aku <strong>Asisten Warung CT</strong> 🤖<br><br>
         Arep pesen opo? Takon wae, aku siyap! 😄<br><br>
-        <em style="color:var(--parch-3);font-size:11px;">Klik pertanyaan cepat di bawah 👇</em>
         <div class="ai-chip-wrap">
           <span class="ai-chip" onclick="WCT.askAI('Menu apa aja yang best seller?')">Best seller?</span>
           <span class="ai-chip" onclick="WCT.askAI('Rekomendasine menu enak opo?')">Rekomendasi</span>
           <span class="ai-chip" onclick="WCT.askAI('Jam bukane kapan?')">Jam buka?</span>
           <span class="ai-chip" onclick="WCT.askAI('Ongkire piro?')">Cek ongkir</span>
-          <span class="ai-chip" onclick="WCT.askAI('Menu sing paling murah opo?')">Paling murah?</span>
         </div>
       </div>
     </div>
@@ -526,26 +546,25 @@ body{
 <script>
 (function(){
   const CFG = {
-    WARUNG_LAT: -7.166875,
-    WARUNG_LON: 112.326875,
-    MAX_KM: 3,
-    WA: '+6285730030112',
-    PIN: '0000',
-    SHARE_URL: 'https://tukulkacang.github.io/warungct/'
+    WARUNG_LAT:-7.166875,
+    WARUNG_LON:112.326875,
+    MAX_KM:3,
+    WA:'+6285730030112',
+    PIN:'0000',
+    SHARE_URL:'https://tukulkacang.github.io/warungct/'
   };
 
-  const OR_API_URL = 'https://warung-ct-ai.sejak7hari.workers.dev/';
-  // ✅ FIXED: pakai model berbayar, no rate limit
-  const OR_MODEL = 'google/gemini-2.0-flash-001';
+  const OR_API_URL='https://warung-ct-ai.sejak7hari.workers.dev/';
+  const OR_MODEL='google/gemini-2.0-flash-001';
 
-  let S = {
-    name: '', distKm: 0, shipping: 0, cart: {},
-    isClosed: false, locOk: false, locOver: false,
-    userLat: null, userLon: null, orderType: 'delivery'
+  let S={
+    name:'',distKm:0,shipping:0,cart:{},
+    isClosed:false,locOk:false,locOver:false,
+    userLat:null,userLon:null,orderType:'pickup'
   };
 
-  const DEFAULT_MENU = {
-    utama: [
+  const DEFAULT_MENU={
+    utama:[
       {id:'u1',name:'Ayam Goreng',price:10000,icon:'🍗'},
       {id:'u2',name:'Pecel Lele',price:10000,icon:'🐟'},
       {id:'u3',name:'Dadar',price:7000,icon:'🍳'},
@@ -555,14 +574,14 @@ body{
       {id:'u7',name:'Nasgor + Sosis',price:13000,icon:'🍛'},
       {id:'u8',name:'Nasgor + Dadar',price:13000,icon:'🍜'}
     ],
-    tambahan: [
+    tambahan:[
       {id:'t1',name:'Telur',price:3000,icon:'🥚'},
       {id:'t2',name:'Kepala',price:3000,icon:'🍗'},
       {id:'t3',name:'Ati Ampela',price:5000,icon:'🍖'},
       {id:'t4',name:'Sambal',price:3000,icon:'🌶️'},
       {id:'t5',name:'Nasi Putih',price:3000,icon:'🍚'}
     ],
-    minuman: [
+    minuman:[
       {id:'m1',name:'Es Teh',price:3000,icon:'🧋'},
       {id:'m2',name:'Teh Hangat',price:3000,icon:'🍵'},
       {id:'m3',name:'Nutrisari',price:3000,icon:'🍊'},
@@ -577,47 +596,40 @@ body{
     ]
   };
 
-  let menuUtama = [], menuTambahan = [], menuMinuman = [], allMenu = [];
+  let menuUtama=[],menuTambahan=[],menuMinuman=[],allMenu=[];
 
-  function loadMenus() {
-    try {
-      const saved = JSON.parse(localStorage.getItem('wct_menu'));
-      if (saved && saved.utama && saved.tambahan && saved.minuman) {
-        menuUtama = saved.utama;
-        menuTambahan = saved.tambahan;
-        menuMinuman = saved.minuman;
+  function loadMenus(){
+    try{
+      const saved=JSON.parse(localStorage.getItem('wct_menu'));
+      if(saved&&saved.utama&&saved.tambahan&&saved.minuman){
+        menuUtama=saved.utama;menuTambahan=saved.tambahan;menuMinuman=saved.minuman;
       } else {
-        menuUtama = JSON.parse(JSON.stringify(DEFAULT_MENU.utama));
-        menuTambahan = JSON.parse(JSON.stringify(DEFAULT_MENU.tambahan));
-        menuMinuman = JSON.parse(JSON.stringify(DEFAULT_MENU.minuman));
+        menuUtama=JSON.parse(JSON.stringify(DEFAULT_MENU.utama));
+        menuTambahan=JSON.parse(JSON.stringify(DEFAULT_MENU.tambahan));
+        menuMinuman=JSON.parse(JSON.stringify(DEFAULT_MENU.minuman));
       }
-    } catch {
-      menuUtama = JSON.parse(JSON.stringify(DEFAULT_MENU.utama));
-      menuTambahan = JSON.parse(JSON.stringify(DEFAULT_MENU.tambahan));
-      menuMinuman = JSON.parse(JSON.stringify(DEFAULT_MENU.minuman));
+    } catch{
+      menuUtama=JSON.parse(JSON.stringify(DEFAULT_MENU.utama));
+      menuTambahan=JSON.parse(JSON.stringify(DEFAULT_MENU.tambahan));
+      menuMinuman=JSON.parse(JSON.stringify(DEFAULT_MENU.minuman));
     }
-    allMenu = [...menuUtama, ...menuTambahan, ...menuMinuman];
+    allMenu=[...menuUtama,...menuTambahan,...menuMinuman];
   }
 
-  function saveMenus() {
-    localStorage.setItem('wct_menu', JSON.stringify({ utama: menuUtama, tambahan: menuTambahan, minuman: menuMinuman }));
-    allMenu = [...menuUtama, ...menuTambahan, ...menuMinuman];
+  function saveMenus(){
+    localStorage.setItem('wct_menu',JSON.stringify({utama:menuUtama,tambahan:menuTambahan,minuman:menuMinuman}));
+    allMenu=[...menuUtama,...menuTambahan,...menuMinuman];
   }
 
-  function resetMenus() {
-    if (confirm('Reset menu ke default? Semua perubahan akan hilang.')) {
-      localStorage.removeItem('wct_menu');
-      loadMenus();
-      renderMenu('menuUtama', menuUtama);
-      renderMenu('menuTambahan', menuTambahan);
-      renderMenu('menuMinuman', menuMinuman);
-      clearCartDOM();
-      renderMenuEditor();
-      toast('Menu direset ke default', 'success');
+  function resetMenus(){
+    if(confirm('Reset menu ke default?')){
+      localStorage.removeItem('wct_menu');loadMenus();
+      renderMenu('menuUtama',menuUtama);renderMenu('menuTambahan',menuTambahan);renderMenu('menuMinuman',menuMinuman);
+      clearCartDOM();renderMenuEditor();toast('Menu direset ke default','success');
     }
   }
 
-  const playlist = [
+  const playlist=[
     {title:'KOPLO',artist:'CT & BOJO',icon:'🎺',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20K1.mp3'},
     {title:'INDIA',artist:'CT & BOJO',icon:'🎶',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20%20I1.mp3'},
     {title:'CAMPURSARI',artist:'CT & BOJO',icon:'🎻',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20C1.mp3'},
@@ -627,952 +639,581 @@ body{
     {title:'POP',artist:'CT & BOJO',icon:'🎤',url:'https://github.com/tukulkacang/warungct-music/raw/refs/heads/main/songs/WARUNG%20CT%20M1.mp3'}
   ];
 
-  const fmt = n => n.toLocaleString('id-ID');
-  const escWA = t => t.replace(/[*_`]/g, '\\$&');
-  const genId = () => 'CT' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,5).toUpperCase();
+  const fmt=n=>n.toLocaleString('id-ID');
+  const escWA=t=>t.replace(/[*_`]/g,'\\$&');
+  const genId=()=>'CT'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,5).toUpperCase();
 
-  function toast(msg, type) {
-    let el = document.getElementById('toast'); if (!el) return;
-    el.textContent = msg; el.className = 'toast ' + (type || '');
-    requestAnimationFrame(() => el.classList.add('show'));
-    setTimeout(() => el.classList.remove('show'), 3000);
+  function toast(msg,type){
+    let el=document.getElementById('toast');if(!el)return;
+    el.textContent=msg;el.className='toast '+(type||'');
+    requestAnimationFrame(()=>el.classList.add('show'));
+    setTimeout(()=>el.classList.remove('show'),3000);
   }
 
-  let _retFocus = null;
-  function openOverlay(id) {
-    let m = document.getElementById(id); if (!m) return;
-    _retFocus = document.activeElement;
-    m.classList.add('show'); document.body.style.overflow = 'hidden';
-  }
-  function closeOverlay(id) {
-    let m = document.getElementById(id); if (m) m.classList.remove('show');
-    document.body.style.overflow = '';
-    if (_retFocus) { _retFocus.focus(); _retFocus = null; }
-  }
+  let _retFocus=null;
+  function openOverlay(id){let m=document.getElementById(id);if(!m)return;_retFocus=document.activeElement;m.classList.add('show');document.body.style.overflow='hidden';}
+  function closeOverlay(id){let m=document.getElementById(id);if(m)m.classList.remove('show');document.body.style.overflow='';if(_retFocus){_retFocus.focus();_retFocus=null;}}
 
-  const getPref = () => { try { return JSON.parse(localStorage.getItem('wct_pref')) || {}; } catch { return {}; } };
-  const savePref = () => { try { localStorage.setItem('wct_pref', JSON.stringify({ name: S.name, orderType: S.orderType })); } catch {} };
-  const getOwner = () => { try { return JSON.parse(localStorage.getItem('wct_owner')) || {}; } catch { return {}; } };
-  const saveOwner = d => localStorage.setItem('wct_owner', JSON.stringify(d));
-  const getOrders = () => { try { return JSON.parse(localStorage.getItem('wct_orders')) || []; } catch { return []; } };
-  const saveOrders = l => localStorage.setItem('wct_orders', JSON.stringify(l));
-  const getAiKey = () => { try { return localStorage.getItem('wct_ai_key') || ''; } catch { return ''; } };
-  const saveAiKeyStorage = k => { try { localStorage.setItem('wct_ai_key', k); } catch {} };
-  const clearAiKeyStorage = () => { try { localStorage.removeItem('wct_ai_key'); } catch {} };
+  const getPref=()=>{try{return JSON.parse(localStorage.getItem('wct_pref'))||{};}catch{return{};}};
+  const savePref=()=>{try{localStorage.setItem('wct_pref',JSON.stringify({name:S.name,orderType:S.orderType}));}catch{}};
+  const getOwner=()=>{try{return JSON.parse(localStorage.getItem('wct_owner'))||{};}catch{return{};}};
+  const saveOwner=d=>localStorage.setItem('wct_owner',JSON.stringify(d));
+  const getOrders=()=>{try{return JSON.parse(localStorage.getItem('wct_orders'))||[];}catch{return[];}};
+  const saveOrders=l=>localStorage.setItem('wct_orders',JSON.stringify(l));
+  const getAiKey=()=>{try{return localStorage.getItem('wct_ai_key')||'';}catch{return'';}};
+  const saveAiKeyStorage=k=>{try{localStorage.setItem('wct_ai_key',k);}catch{}};
+  const clearAiKeyStorage=()=>{try{localStorage.removeItem('wct_ai_key');}catch{}};
 
-  function clearCartDOM() {
-    allMenu.forEach(m => {
-      S.cart[m.id] = 0;
-      let el = document.getElementById('qty-' + m.id); if (el) el.innerText = '0';
-      let mi = document.getElementById('mi-' + m.id); if (mi) mi.classList.remove('sel');
+  function clearCartDOM(){
+    allMenu.forEach(m=>{
+      S.cart[m.id]=0;
+      let el=document.getElementById('qty-'+m.id);if(el)el.innerText='0';
+      let mi=document.getElementById('mi-'+m.id);if(mi)mi.classList.remove('sel');
     });
     updateUI();
   }
 
-  function renderMenu(cid, items) {
-    let wrap = document.getElementById(cid); if (!wrap) return; wrap.innerHTML = '';
-    items.forEach(m => {
-      let d = document.createElement('div');
-      d.className = 'menu-item'; d.id = 'mi-' + m.id;
-      d.innerHTML = '<div class="m-left"><div class="m-icon">' + m.icon + '</div><div><div class="m-name">' + m.name + '</div><div class="m-price">Rp ' + fmt(m.price) + '</div></div></div><div class="qty-wrap"><button class="q-btn minus" onclick="WCT.upd(\'' + m.id + '\',-1)">−</button><span class="q-num" id="qty-' + m.id + '">0</span><button class="q-btn plus" onclick="WCT.upd(\'' + m.id + '\',1)">+</button></div>';
+  function renderMenu(cid,items){
+    let wrap=document.getElementById(cid);if(!wrap)return;wrap.innerHTML='';
+    items.forEach(m=>{
+      let d=document.createElement('div');
+      d.className='menu-item';d.id='mi-'+m.id;
+      d.innerHTML='<div class="m-left"><div class="m-icon">'+m.icon+'</div><div><div class="m-name">'+m.name+'</div><div class="m-price">Rp '+fmt(m.price)+'</div></div></div><div class="qty-wrap"><button class="q-btn minus" onclick="WCT.upd(\''+m.id+'\',-1)">−</button><span class="q-num" id="qty-'+m.id+'">0</span><button class="q-btn plus" onclick="WCT.upd(\''+m.id+'\',1)">+</button></div>';
       wrap.appendChild(d);
     });
   }
 
-  function upd(id, delta) {
-    S.cart[id] = Math.max(0, (S.cart[id] || 0) + delta);
-    let el = document.getElementById('qty-' + id); if (el) el.innerText = S.cart[id];
-    let mi = document.getElementById('mi-' + id); if (mi) mi.classList.toggle('sel', S.cart[id] > 0);
+  function upd(id,delta){
+    S.cart[id]=Math.max(0,(S.cart[id]||0)+delta);
+    let el=document.getElementById('qty-'+id);if(el)el.innerText=S.cart[id];
+    let mi=document.getElementById('mi-'+id);if(mi)mi.classList.toggle('sel',S.cart[id]>0);
     updateUI();
   }
 
-  function calcTotals() {
-    let itemTotal = 0, count = 0;
-    allMenu.forEach(m => { let q = S.cart[m.id] || 0; itemTotal += q * m.price; count += q; });
-    return { itemTotal, count, grand: itemTotal + (count > 0 ? S.shipping : 0) };
+  function calcTotals(){
+    let itemTotal=0,count=0;
+    allMenu.forEach(m=>{let q=S.cart[m.id]||0;itemTotal+=q*m.price;count+=q;});
+    return{itemTotal,count,grand:itemTotal+(count>0?S.shipping:0)};
   }
 
-  function updateUI() {
-    let { count, grand } = calcTotals();
-    let gt = document.getElementById('grandTotal'); if (gt) gt.innerText = fmt(grand);
-    let ov = document.getElementById('ongkirVal'); if (ov) ov.innerText = 'Rp ' + fmt(S.shipping);
-    let ic = document.getElementById('itemCount'); if (ic) ic.innerText = count + ' item';
-    let btn = document.getElementById('btnPesan'), hint = document.getElementById('btnHint');
-    let msg = '', can = false;
-    if (S.isClosed) msg = '❌ Warung tutup';
-    else if (S.locOver) msg = '❌ Jarak >' + CFG.MAX_KM + ' km';
-    else if (!S.name.trim()) msg = '👤 Isi nama dulu';
-    else if (S.orderType === 'delivery' && !S.locOk) msg = '📍 Klik lokasi dulu';
-    else if (count === 0) msg = '🛒 Pilih menu dulu';
-    else can = true;
-    if (hint) hint.innerText = msg; if (btn) btn.disabled = !can;
+  function updateUI(){
+    let{count,grand}=calcTotals();
+    let gt=document.getElementById('grandTotal');if(gt)gt.innerText=fmt(grand);
+    let ic=document.getElementById('itemCount');if(ic)ic.innerText=count;
+    let btn=document.getElementById('btnPesan'),hint=document.getElementById('btnHint');
+    let msg='',can=false;
+    if(S.isClosed)msg='❌ Warung sedang tutup';
+    else if(count===0)msg='👆 Pilih menu dulu ya';
+    else can=true;
+    if(hint)hint.innerText=msg;if(btn)btn.disabled=!can;
+    let ct=document.getElementById('confirmTotal');
+    if(ct)ct.innerText='Rp '+fmt(grand);
   }
 
-  function setOrderType(t) {
-    S.orderType = t; savePref();
-    ['delivery', 'pickup', 'dinein'].forEach(tt => {
-      let el = document.getElementById('ot-' + tt); if (el) el.classList.toggle('active', tt === t);
+  function onModalName(val){
+    S.name=val.trim();savePref();
+  }
+
+  function setOrderType(t){
+    S.orderType=t;savePref();
+    ['delivery','pickup','dinein'].forEach(tt=>{
+      let el=document.getElementById('ot-'+tt);if(el)el.classList.toggle('active',tt===t);
     });
-    let gps = document.getElementById('gpsSection');
-    if (gps) {
-      if (t === 'delivery') { gps.style.display = ''; }
-      else { gps.style.display = 'none'; S.locOk = false; S.locOver = false; S.distKm = 0; S.shipping = 0; }
-    }
-    checkTime(); updateUI();
-  }
-
-  function haversine(lat1, lon1, lat2, lon2) {
-    let R = 6371, dLat = (lat2 - lat1) * Math.PI / 180, dLon = (lon2 - lon1) * Math.PI / 180;
-    let a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  }
-
-  function getLocation() {
-    let btn = document.getElementById('btnLocation'); if (!btn) return;
-    btn.innerHTML = '<span>⏳</span><span>Mencari…</span>'; btn.style.pointerEvents = 'none';
-    if (!navigator.geolocation) {
-      toast('GPS tidak didukung', 'error');
-      btn.innerHTML = '<span>📍</span><span>Tandai Lokasi</span>'; btn.style.pointerEvents = ''; return;
-    }
-    navigator.geolocation.getCurrentPosition(pos => {
-      let d = haversine(CFG.WARUNG_LAT, CFG.WARUNG_LON, pos.coords.latitude, pos.coords.longitude);
-      S.distKm = parseFloat(d.toFixed(1));
-      S.userLat = pos.coords.latitude; S.userLon = pos.coords.longitude;
-      let lp = document.getElementById('locPill'), ld = document.getElementById('locDist'), le = document.getElementById('locExtra');
-      if (ld) ld.innerText = S.distKm + ' km'; if (lp) lp.classList.add('show');
-      if (S.distKm > CFG.MAX_KM) {
-        S.locOk = false; S.locOver = true; S.shipping = 0;
-        btn.innerHTML = '<span>❌</span><span>Terlalu Jauh</span>'; btn.className = 'btn-loc error';
-        if (lp) lp.classList.add('warn');
-        if (ld) ld.style.color = 'var(--no)';
-        if (le) le.innerHTML = '<span style="color:var(--no);font-size:12px;font-weight:500;">Maks ' + CFG.MAX_KM + ' km</span>';
+    let gps=document.getElementById('modalGpsSection');
+    if(gps){
+      if(t==='delivery'){
+        gps.style.display='';
       } else {
-        S.locOk = true; S.locOver = false;
-        S.shipping = S.distKm <= 1 ? 2000 : 2000 + Math.ceil(S.distKm - 1) * 1000;
-        btn.innerHTML = '<span>✅</span><span>Lokasi OK</span>'; btn.className = 'btn-loc success';
-        if (lp) lp.classList.remove('warn');
-        if (ld) ld.style.color = 'var(--au)';
-        if (le) le.innerHTML = '<span style="color:var(--au);font-family:\'Playfair Display\',serif;font-size:16px;font-weight:700;">Rp ' + fmt(S.shipping) + '</span>';
-        toast('Ongkir Rp ' + fmt(S.shipping), 'success');
+        gps.style.display='none';
+        S.locOk=false;S.locOver=false;S.distKm=0;S.shipping=0;
+        let lp=document.getElementById('locPill');if(lp)lp.classList.remove('show');
+        let bl=document.getElementById('btnLocation');
+        if(bl){bl.innerHTML='<span>📍</span><span>Tandai Lokasiku</span>';bl.className='btn-loc';}
       }
-      btn.style.pointerEvents = ''; updateUI();
-    }, () => {
-      toast('Gagal ambil lokasi', 'error');
-      btn.innerHTML = '<span>📍</span><span>Tandai Lokasi</span>'; btn.style.pointerEvents = '';
-    }, { enableHighAccuracy: true, timeout: 10000 });
-  }
-
-  function countdownText(h) {
-    let now = new Date(), t = new Date();
-    t.setHours(h, 0, 0, 0); if (now >= t) t.setDate(t.getDate() + 1);
-    let diff = t - now, hh = Math.floor(diff / 3600000), mm = Math.floor((diff % 3600000) / 60000);
-    return 'Buka lagi dalam ' + hh + ' jam ' + mm + ' menit';
-  }
-
-  function checkTime() {
-    let now = new Date(), h = now.getHours(), owner = getOwner();
-    let closed = false, reason = '';
-    if (owner.overrideStatus === 'libur') { closed = true; reason = 'libur'; }
-    else if (owner.overrideStatus === 'tutup_cepat') {
-      let ch = owner.overrideHour || 20; if (h >= ch) { closed = true; reason = 'tutup_cepat'; }
-    }
-    if (!closed) {
-      let cd = (h < 15 || h >= 21), cw = (h < 13 || h >= 23);
-      closed = S.orderType === 'delivery' ? cd : cw;
-      if (closed) reason = 'jam';
-    }
-    S.isClosed = closed;
-    let badge = document.getElementById('statusBadge'), txt = document.getElementById('statusText');
-    let cn = document.getElementById('closedNotice'), ct = document.getElementById('closedTitle'), cs = document.getElementById('closedSub');
-    if (badge) badge.className = 'hdr-badge'; if (cn) cn.classList.remove('show');
-    if (reason === 'libur') {
-      if (badge) badge.classList.add('closed'); if (txt) txt.innerText = 'WARUNG LIBUR';
-      if (ct) ct.innerText = 'WARUNG LIBUR HARI INI';
-      if (cs) cs.innerText = 'Owner sedang istirahat. Silakan kembali besok ya 😊';
-      if (cn) cn.classList.add('show');
-    } else if (reason === 'tutup_cepat') {
-      if (badge) badge.classList.add('closed'); if (txt) txt.innerText = 'TUTUP CEPAT';
-      if (ct) ct.innerText = 'WARUNG SUDAH TUTUP';
-      if (cs) cs.innerText = 'Hari ini tutup lebih cepat. Buka normal besok.';
-      if (cn) cn.classList.add('show');
-    } else if (closed) {
-      if (badge) badge.classList.add('closed');
-      let oh = S.orderType === 'delivery' ? 15 : 13;
-      let ibo = S.orderType === 'delivery' ? h < 15 : h < 13;
-      if (txt) txt.innerText = ibo ? 'BELUM BUKA' : 'SUDAH TUTUP';
-      if (ct) ct.innerText = 'WARUNG TUTUP';
-      if (cs) cs.innerText = countdownText(oh);
-      if (cn) cn.classList.add('show');
-    } else {
-      if (badge) badge.classList.add('open');
-      if (txt) txt.innerText = S.orderType === 'delivery' ? 'BUKA 15:00–21:00' : 'BUKA 13:00–23:00';
     }
     updateUI();
   }
 
-  function showConfirm() {
-    let { count, grand } = calcTotals();
-    if (count === 0 || (S.orderType === 'delivery' && !S.locOk) || !S.name.trim() || S.isClosed || S.locOver) return;
-    let html = '';
-    allMenu.forEach(m => {
-      let q = S.cart[m.id] || 0;
-      if (q > 0) html += '<div class="cfm-row"><span>' + m.icon + ' ' + m.name + ' ×' + q + '</span><span style="font-family:\'Playfair Display\',serif;">Rp ' + fmt(m.price * q) + '</span></div>';
+  function haversine(lat1,lon1,lat2,lon2){
+    let R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
+    let a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+    return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  }
+
+  function getLocation(){
+    let btn=document.getElementById('btnLocation');if(!btn)return;
+    btn.innerHTML='<span>⏳</span><span>Mencari lokasimu…</span>';btn.style.pointerEvents='none';
+    if(!navigator.geolocation){
+      toast('GPS tidak didukung di HP ini','error');
+      btn.innerHTML='<span>📍</span><span>Tandai Lokasiku</span>';btn.style.pointerEvents='';return;
+    }
+    navigator.geolocation.getCurrentPosition(pos=>{
+      let d=haversine(CFG.WARUNG_LAT,CFG.WARUNG_LON,pos.coords.latitude,pos.coords.longitude);
+      S.distKm=parseFloat(d.toFixed(1));
+      S.userLat=pos.coords.latitude;S.userLon=pos.coords.longitude;
+      let lp=document.getElementById('locPill'),ld=document.getElementById('locDist'),le=document.getElementById('locExtra');
+      if(ld)ld.innerText=S.distKm+' km';if(lp)lp.classList.add('show');
+      if(S.distKm>CFG.MAX_KM){
+        S.locOk=false;S.locOver=true;S.shipping=0;
+        btn.innerHTML='<span>❌</span><span>Terlalu jauh (maks '+CFG.MAX_KM+' km)</span>';btn.className='btn-loc error';
+        if(lp)lp.classList.add('warn');
+        if(ld)ld.style.color='var(--red)';
+        if(le)le.innerHTML='<span style="color:var(--red);font-size:12px;font-weight:700;">Diluar jangkauan</span>';
+      } else {
+        S.locOk=true;S.locOver=false;
+        S.shipping=S.distKm<=1?2000:2000+Math.ceil(S.distKm-1)*1000;
+        btn.innerHTML='<span>✅</span><span>Lokasi ketemu!</span>';btn.className='btn-loc success';
+        if(lp)lp.classList.remove('warn');
+        if(ld)ld.style.color='var(--wa-dark)';
+        if(le)le.innerHTML='<span style="color:var(--wa-dark);font-size:16px;font-weight:800;">Ongkir Rp '+fmt(S.shipping)+'</span>';
+        toast('Ongkir Rp '+fmt(S.shipping),'success');
+      }
+      btn.style.pointerEvents='';updateUI();
+    },()=>{
+      toast('Gagal ambil lokasi. Coba lagi ya!','error');
+      btn.innerHTML='<span>📍</span><span>Tandai Lokasiku</span>';btn.style.pointerEvents='';
+    },{enableHighAccuracy:true,timeout:10000});
+  }
+
+  function countdownText(h){
+    let now=new Date(),t=new Date();
+    t.setHours(h,0,0,0);if(now>=t)t.setDate(t.getDate()+1);
+    let diff=t-now,hh=Math.floor(diff/3600000),mm=Math.floor((diff%3600000)/60000);
+    return'Buka lagi dalam '+hh+' jam '+mm+' menit';
+  }
+
+  function checkTime(){
+    let now=new Date(),h=now.getHours(),owner=getOwner();
+    let closed=false,reason='';
+    if(owner.overrideStatus==='libur'){closed=true;reason='libur';}
+    else if(owner.overrideStatus==='tutup_cepat'){
+      let ch=owner.overrideHour||20;if(h>=ch){closed=true;reason='tutup_cepat';}
+    }
+    if(!closed){
+      let cd=(h<15||h>=21),cw=(h<13||h>=23);
+      closed=S.orderType==='delivery'?cd:cw;
+      if(closed)reason='jam';
+    }
+    S.isClosed=closed;
+    let dot=document.getElementById('statusDot'),txt=document.getElementById('statusText');
+    let cn=document.getElementById('closedNotice'),ct=document.getElementById('closedTitle'),cs=document.getElementById('closedSub');
+    if(cn)cn.classList.remove('show');
+    if(reason==='libur'){
+      if(dot){dot.style.background='#dc3545';dot.classList.remove('pulse');}
+      if(txt)txt.innerText='Warung Libur';
+      if(ct)ct.innerText='WARUNG LIBUR HARI INI';
+      if(cs)cs.innerText='Owner sedang istirahat. Balik lagi besok ya 😊';
+      if(cn)cn.classList.add('show');
+    } else if(reason==='tutup_cepat'){
+      if(dot){dot.style.background='#dc3545';dot.classList.remove('pulse');}
+      if(txt)txt.innerText='Sudah Tutup';
+      if(ct)ct.innerText='WARUNG SUDAH TUTUP';
+      if(cs)cs.innerText='Hari ini tutup lebih cepat. Buka normal besok.';
+      if(cn)cn.classList.add('show');
+    } else if(closed){
+      if(dot){dot.style.background='#ffc107';dot.classList.remove('pulse');}
+      let oh=S.orderType==='delivery'?15:13;
+      let ibo=S.orderType==='delivery'?h<15:h<13;
+      if(txt)txt.innerText=ibo?'Belum Buka':'Sudah Tutup';
+      if(ct)ct.innerText='WARUNG TUTUP';
+      if(cs)cs.innerText=countdownText(oh);
+      if(cn)cn.classList.add('show');
+    } else {
+      if(dot){dot.style.background='#4ade80';dot.classList.add('pulse');}
+      if(txt)txt.innerText='Buka Sekarang';
+    }
+    updateUI();
+  }
+
+  function showConfirm(){
+    let{count}=calcTotals();
+    if(count===0||S.isClosed)return;
+    let html='';
+    allMenu.forEach(m=>{
+      let q=S.cart[m.id]||0;
+      if(q>0)html+='<div class="cfm-row"><span class="cfm-row-name">'+m.icon+' '+m.name+' ×'+q+'</span><span class="cfm-row-price">Rp '+fmt(m.price*q)+'</span></div>';
     });
-    if (S.shipping > 0) html += '<div class="cfm-row"><span>🛵 Ongkir (' + S.distKm + ' km)</span><span style="font-family:\'Playfair Display\',serif;">Rp ' + fmt(S.shipping) + '</span></div>';
-    let meta = document.getElementById('confirmMeta');
-    if (meta) meta.innerText = S.name + ' · ' + (S.orderType === 'delivery' ? 'Diantar' : S.orderType === 'pickup' ? 'Ambil Sendiri' : 'Makan di Tempat') + ' · ' + count + ' item';
-    let id = document.getElementById('confirmItems'); if (id) id.innerHTML = html;
-    let tv = document.getElementById('confirmTotal'); if (tv) tv.innerText = 'Rp ' + fmt(grand);
+    let id=document.getElementById('confirmItems');if(id)id.innerHTML=html;
+
+    // Sync nama dari pref
+    let c=getPref();
+    let mn=document.getElementById('modalName');
+    if(mn&&c.name)mn.value=c.name;
+    S.name=c.name||'';
+
+    // Sync tipe order
+    setOrderType(S.orderType);
+    updateUI();
     openOverlay('confirmModal');
   }
-  function hideConfirm() { closeOverlay('confirmModal'); }
 
-  let _cd = false;
-  function doOrder() {
-    if (_cd) { toast('Tunggu sebentar', 'warn'); return; }
-    if (!S.name.trim()) { toast('Isi nama dulu', 'error'); return; }
-    _cd = true; setTimeout(() => _cd = false, 8000);
-    let { grand } = calcTotals(),
-        notes = document.getElementById('orderNotes')?.value || '',
-        orderId = genId();
-    let tl = { delivery: 'Diantar', pickup: 'Ambil Sendiri', dinein: 'Makan di Tempat' };
-    let msg = '*ORDER WARUNG CT*\nID: ' + orderId + '\nNama: ' + escWA(S.name) + '\nTipe: ' + tl[S.orderType] + '\n';
-    if (S.orderType === 'delivery')
-      msg += 'Lokasi: https://maps.google.com/?q=' + S.userLat + ',' + S.userLon + '\nJarak: ' + S.distKm + ' km\n';
-    msg += '\nPESANAN:\n';
-    allMenu.forEach(m => { let q = S.cart[m.id] || 0; if (q > 0) msg += '- ' + escWA(m.name) + ' x' + q + ' = Rp ' + fmt(m.price * q) + '\n'; });
-    if (S.orderType === 'delivery') msg += 'Ongkir: Rp ' + fmt(S.shipping) + '\n';
-    msg += 'TOTAL: Rp ' + fmt(grand) + '\n';
-    if (notes) msg += 'Catatan: ' + escWA(notes) + '\n';
+  function hideConfirm(){closeOverlay('confirmModal');}
 
-    let orders = getOrders();
+  let _cd=false;
+  function doOrder(){
+    if(_cd){toast('Tunggu sebentar','warn');return;}
+    let mn=document.getElementById('modalName');
+    S.name=(mn?mn.value:'').trim();
+    if(!S.name){toast('Tulis nama kamu dulu ya 😊','error');if(mn)mn.focus();return;}
+    if(S.orderType==='delivery'&&!S.locOk){toast('Tandai lokasi dulu ya 📍','error');return;}
+    if(S.orderType==='delivery'&&S.locOver){toast('Maaf, lokasimu terlalu jauh','error');return;}
+    _cd=true;setTimeout(()=>_cd=false,8000);
+    let{grand}=calcTotals();
+    let notes=document.getElementById('orderNotes')?.value||'';
+    let orderId=genId();
+    let tl={delivery:'Antar ke Rumah',pickup:'Ambil Sendiri',dinein:'Makan di Tempat'};
+    let msg='*ORDER WARUNG CT*\nID: '+orderId+'\nNama: '+escWA(S.name)+'\nTipe: '+tl[S.orderType]+'\n';
+    if(S.orderType==='delivery')
+      msg+='Lokasi: https://maps.google.com/?q='+S.userLat+','+S.userLon+'\nJarak: '+S.distKm+' km\n';
+    msg+='\nPESANAN:\n';
+    allMenu.forEach(m=>{let q=S.cart[m.id]||0;if(q>0)msg+='- '+escWA(m.name)+' x'+q+' = Rp '+fmt(m.price*q)+'\n';});
+    if(S.orderType==='delivery')msg+='Ongkir: Rp '+fmt(S.shipping)+'\n';
+    msg+='TOTAL: Rp '+fmt(grand)+'\n';
+    if(notes)msg+='Catatan: '+escWA(notes)+'\n';
+
+    let orders=getOrders();
     orders.unshift({
-      id: orderId, name: S.name, type: S.orderType, dist: S.distKm,
-      items: allMenu.filter(m => S.cart[m.id] > 0).map(m => ({ name: m.name, qty: S.cart[m.id], price: m.price })),
-      total: grand, notes, status: 'pending', timestamp: Date.now()
+      id:orderId,name:S.name,type:S.orderType,dist:S.distKm,
+      items:allMenu.filter(m=>S.cart[m.id]>0).map(m=>({name:m.name,qty:S.cart[m.id],price:m.price})),
+      total:grand,notes,status:'pending',timestamp:Date.now()
     });
     saveOrders(orders);
+    savePref();
     clearCartDOM();
     hideConfirm();
 
-    let waWin = window.open('https://wa.me/' + CFG.WA + '?text=' + encodeURIComponent(msg), '_blank');
-    if (!waWin) toast('Izinkan popup WA', 'error');
+    let waWin=window.open('https://wa.me/'+CFG.WA+'?text='+encodeURIComponent(msg),'_blank');
+    if(!waWin)toast('Izinkan popup WA','error');
 
-    let sid = document.getElementById('sentOrderId'); if (sid) sid.innerText = orderId;
-    setTimeout(() => openOverlay('orderSentOverlay'), 600);
+    // Update counter
+    let base=parseInt(localStorage.getItem('wct_counter')||'34');
+    base+=1;localStorage.setItem('wct_counter',base);
+    let ce=document.getElementById('webCounter');if(ce)ce.innerText=' '+base+'+ ';
+
+    let sid=document.getElementById('sentOrderId');if(sid)sid.innerText=orderId;
+    setTimeout(()=>openOverlay('orderSentOverlay'),600);
   }
 
-  function resetOrder() { closeOverlay('orderSentOverlay'); }
+  function resetOrder(){closeOverlay('orderSentOverlay');}
 
-  function afterOrderMusic() {
+  function afterOrderMusic(){
     closeOverlay('orderSentOverlay');
     renderMusicPrompt();
-    setTimeout(() => openOverlay('musicPromptOverlay'), 300);
+    setTimeout(()=>openOverlay('musicPromptOverlay'),300);
   }
-  function renderMusicPrompt() {
-    let el = document.getElementById('musicTrackList'); if (!el) return;
-    el.innerHTML = playlist.map((t, i) => '<div class="music-row" onclick="WCT.openPlayerFromPromptTrack(' + i + ')"><div class="music-row-ic">' + t.icon + '</div><div class="music-row-nm">' + t.title + '</div><div class="music-row-cta">▶ Play</div></div>').join('');
+  function renderMusicPrompt(){
+    let el=document.getElementById('musicTrackList');if(!el)return;
+    el.innerHTML=playlist.map((t,i)=>'<div class="music-row" onclick="WCT.openPlayerFromPromptTrack('+i+')"><div class="music-row-ic">'+t.icon+'</div><div class="music-row-nm">'+t.title+'</div><div class="music-row-cta">▶ Play</div></div>').join('');
   }
-  function openPlayerFromPrompt() {
-    closeOverlay('musicPromptOverlay');
-    setTimeout(() => { openOverlay('playerOverlay'); if (!audio.src) loadTrack(0, true); }, 300);
-  }
-  function openPlayerFromPromptTrack(idx) {
-    closeOverlay('musicPromptOverlay');
-    setTimeout(() => { openOverlay('playerOverlay'); loadTrack(idx, true); }, 300);
-  }
-  function closeMusicPrompt() {
-    closeOverlay('musicPromptOverlay'); toast('Order berhasil dikirim! 🎉', 'success');
-  }
+  function openPlayerFromPrompt(){closeOverlay('musicPromptOverlay');setTimeout(()=>{openOverlay('playerOverlay');if(!audio.src)loadTrack(0,true);},300);}
+  function openPlayerFromPromptTrack(idx){closeOverlay('musicPromptOverlay');setTimeout(()=>{openOverlay('playerOverlay');loadTrack(idx,true);},300);}
+  function closeMusicPrompt(){closeOverlay('musicPromptOverlay');toast('Order berhasil! 🎉','success');}
 
-  function toggleQR(show) {
-    if (show) {
+  function toggleQR(show){
+    if(show){
       openOverlay('qrOverlay');
-      let url = CFG.SHARE_URL;
-      let ud = document.getElementById('qrUrlDisplay'); if (ud) ud.innerText = url;
-      setTimeout(() => {
-        let qd = document.getElementById('qrcode');
-        if (qd && typeof QRCode !== 'undefined') { qd.innerHTML = ''; new QRCode(qd, { text: url, width: 175, height: 175 }); }
-      }, 100);
+      let url=CFG.SHARE_URL;
+      let ud=document.getElementById('qrUrlDisplay');if(ud)ud.innerText=url;
+      setTimeout(()=>{
+        let qd=document.getElementById('qrcode');
+        if(qd&&typeof QRCode!=='undefined'){qd.innerHTML='';new QRCode(qd,{text:url,width:160,height:160});}
+      },100);
     } else closeOverlay('qrOverlay');
   }
-  function copyLink(e) {
-    navigator.clipboard.writeText(CFG.SHARE_URL).then(() => {
-      let b = e.currentTarget; b.textContent = '✅ Disalin!';
-      setTimeout(() => b.textContent = 'Salin Link', 2000);
-    }).catch(() => toast('Gagal menyalin link', 'error'));
+  function copyLink(e){
+    navigator.clipboard.writeText(CFG.SHARE_URL).then(()=>{
+      let b=e.currentTarget;b.textContent='✅ Tersalin!';
+      setTimeout(()=>b.textContent='Salin Link',2000);
+    }).catch(()=>toast('Gagal menyalin link','error'));
   }
 
-  let audio = new Audio(), curTrack = 0, isPlaying = false;
+  let audio=new Audio(),curTrack=0,isPlaying=false;
 
-  function renderTracklist() {
-    let el = document.getElementById('tracklistEl'); if (!el) return;
-    el.innerHTML = playlist.map((t, i) => '<div class="track-item ' + (i === curTrack ? 'active' : '') + '" onclick="WCT.loadTrack(' + i + ',true)"><div class="t-num">' + (i === curTrack ? '▶' : i + 1) + '</div><div class="t-ic">' + t.icon + '</div><div class="t-info"><div class="t-nm ' + (i === curTrack ? 'on' : '') + '">' + t.title + '</div><div class="t-artist">' + t.artist + '</div></div></div>').join('');
+  function renderTracklist(){
+    let el=document.getElementById('tracklistEl');if(!el)return;
+    el.innerHTML=playlist.map((t,i)=>'<div class="track-item '+(i===curTrack?'active':'')+'" onclick="WCT.loadTrack('+i+',true)"><div class="t-num">'+(i===curTrack?'▶':i+1)+'</div><div class="t-ic">'+t.icon+'</div><div class="t-info"><div class="t-nm '+(i===curTrack?'on':'')+'">'+t.title+'</div><div class="t-artist">'+t.artist+'</div></div></div>').join('');
   }
-  function loadTrack(idx, autoplay) {
-    curTrack = idx; let t = playlist[idx];
-    if (audio) audio.src = t.url;
-    let te = document.getElementById('playerTitle'); if (te) te.innerText = t.title;
-    let ae = document.getElementById('playerArtist'); if (ae) ae.innerText = t.artist;
-    let al = document.getElementById('playerAlbum'); if (al) al.innerText = t.icon;
-    let pf = document.getElementById('progressFill'); if (pf) pf.style.width = '0%';
+  function loadTrack(idx,autoplay){
+    curTrack=idx;let t=playlist[idx];
+    if(audio)audio.src=t.url;
+    let te=document.getElementById('playerTitle');if(te)te.innerText=t.title;
+    let ae=document.getElementById('playerArtist');if(ae)ae.innerText=t.artist;
+    let al=document.getElementById('playerAlbum');if(al)al.innerText=t.icon;
+    let pf=document.getElementById('progressFill');if(pf)pf.style.width='0%';
     renderTracklist();
-    if (autoplay && audio) audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    if(autoplay&&audio)audio.play().then(()=>setPlaying(true)).catch(()=>setPlaying(false));
   }
-  function setPlaying(v) {
-    isPlaying = v;
-    let b = document.getElementById('playBtn'); if (b) b.innerText = v ? '⏸' : '▶';
+  function setPlaying(v){
+    isPlaying=v;
+    let b=document.getElementById('playBtn');if(b)b.innerText=v?'⏸':'▶';
     renderTracklist();
   }
-  function togglePlay() {
-    if (!audio.src) loadTrack(0, true);
-    else if (isPlaying) { audio.pause(); setPlaying(false); }
-    else audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+  function togglePlay(){
+    if(!audio.src)loadTrack(0,true);
+    else if(isPlaying){audio.pause();setPlaying(false);}
+    else audio.play().then(()=>setPlaying(true)).catch(()=>setPlaying(false));
   }
-  function prevTrack() { loadTrack((curTrack - 1 + playlist.length) % playlist.length, isPlaying); }
-  function nextTrack() { loadTrack((curTrack + 1) % playlist.length, isPlaying); }
-  function seekAudio(e) {
-    if (!audio.duration) return;
-    let bar = document.getElementById('progressBar'); if (!bar) return;
-    let rect = bar.getBoundingClientRect();
-    audio.currentTime = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width)) * audio.duration;
+  function prevTrack(){loadTrack((curTrack-1+playlist.length)%playlist.length,isPlaying);}
+  function nextTrack(){loadTrack((curTrack+1)%playlist.length,isPlaying);}
+  function seekAudio(e){
+    if(!audio.duration)return;
+    let bar=document.getElementById('progressBar');if(!bar)return;
+    let rect=bar.getBoundingClientRect();
+    audio.currentTime=Math.min(1,Math.max(0,(e.clientX-rect.left)/rect.width))*audio.duration;
   }
-  if (audio) {
-    audio.addEventListener('timeupdate', () => {
-      if (audio.duration) {
-        let pf = document.getElementById('progressFill'); if (pf) pf.style.width = (audio.currentTime / audio.duration) * 100 + '%';
-        let tn = document.getElementById('timeNow'); if (tn) tn.innerText = Math.floor(audio.currentTime / 60) + ':' + Math.floor(audio.currentTime % 60).toString().padStart(2, '0');
-        let td = document.getElementById('timeDur'); if (td) td.innerText = Math.floor(audio.duration / 60) + ':' + Math.floor(audio.duration % 60).toString().padStart(2, '0');
+  if(audio){
+    audio.addEventListener('timeupdate',()=>{
+      if(audio.duration){
+        let pf=document.getElementById('progressFill');if(pf)pf.style.width=(audio.currentTime/audio.duration)*100+'%';
+        let tn=document.getElementById('timeNow');if(tn)tn.innerText=Math.floor(audio.currentTime/60)+':'+Math.floor(audio.currentTime%60).toString().padStart(2,'0');
+        let td=document.getElementById('timeDur');if(td)td.innerText=Math.floor(audio.duration/60)+':'+Math.floor(audio.duration%60).toString().padStart(2,'0');
       }
     });
-    audio.addEventListener('ended', nextTrack);
+    audio.addEventListener('ended',nextTrack);
   }
-  function openPlayer() { openOverlay('playerOverlay'); if (!audio.src) loadTrack(0, false); }
-  function closePlayer() { closeOverlay('playerOverlay'); if (audio && isPlaying) { audio.pause(); setPlaying(false); } }
+  function closePlayer(){closeOverlay('playerOverlay');if(audio&&isPlaying){audio.pause();setPlaying(false);}}
 
-  let pinBuf = '', tapCount = 0, tapTimer = null;
-  document.getElementById('hdrLogo')?.addEventListener('click', () => {
+  let pinBuf='',tapCount=0,tapTimer=null;
+  document.querySelector('.hdr-avatar')?.addEventListener('click',()=>{
     tapCount++;
-    if (tapTimer) clearTimeout(tapTimer);
-    tapTimer = setTimeout(() => tapCount = 0, 500);
-    if (tapCount >= 2) { tapCount = 0; openPin(); }
+    if(tapTimer)clearTimeout(tapTimer);
+    tapTimer=setTimeout(()=>tapCount=0,500);
+    if(tapCount>=3){tapCount=0;openPin();}
   });
-  function openPin() {
-    pinBuf = ''; updatePinDots();
-    let e = document.getElementById('pinError'); if (e) e.innerText = '';
+  function openPin(){
+    pinBuf='';updatePinDots();
+    let e=document.getElementById('pinError');if(e)e.innerText='';
     openOverlay('pinOverlay');
   }
-  function cancelPin() { closeOverlay('pinOverlay'); pinBuf = ''; }
-  function enterPin(n) {
-    if (pinBuf.length >= 4) return;
-    pinBuf += n; updatePinDots();
-    if (pinBuf.length === 4) verifyPin();
+  function cancelPin(){closeOverlay('pinOverlay');pinBuf='';}
+  function enterPin(n){
+    if(pinBuf.length>=4)return;
+    pinBuf+=n;updatePinDots();
+    if(pinBuf.length===4)verifyPin();
   }
-  function backspacePin() { pinBuf = pinBuf.slice(0, -1); updatePinDots(); let e = document.getElementById('pinError'); if (e) e.innerText = ''; }
-  function updatePinDots() { document.querySelectorAll('#pinDots .pin-dot').forEach((d, i) => d.classList.toggle('filled', i < pinBuf.length)); }
-  function verifyPin() {
-    let owner = getOwner(), correct = owner.pin || CFG.PIN;
-    if (pinBuf === correct) { cancelPin(); openOwnerPanel(); }
-    else { let e = document.getElementById('pinError'); if (e) e.innerText = 'PIN salah'; pinBuf = ''; setTimeout(updatePinDots, 200); }
+  function backspacePin(){pinBuf=pinBuf.slice(0,-1);updatePinDots();let e=document.getElementById('pinError');if(e)e.innerText='';}
+  function updatePinDots(){document.querySelectorAll('#pinDots .pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<pinBuf.length));}
+  function verifyPin(){
+    let owner=getOwner(),correct=owner.pin||CFG.PIN;
+    if(pinBuf===correct){cancelPin();openOwnerPanel();}
+    else{let e=document.getElementById('pinError');if(e)e.innerText='PIN salah';pinBuf='';setTimeout(updatePinDots,200);}
   }
-  function openOwnerPanel() {
-    renderOwnerOrders(); renderMenuEditor(); let owner = getOwner();
-    let n = document.getElementById('st-normal'); if (n) n.classList.toggle('active', !owner.overrideStatus || owner.overrideStatus === 'normal');
-    let t = document.getElementById('st-tutup'); if (t) t.classList.toggle('active', owner.overrideStatus === 'tutup_cepat');
-    let l = document.getElementById('st-libur'); if (l) l.classList.toggle('active', owner.overrideStatus === 'libur');
-    let tj = document.getElementById('tutupJam'); if (tj) tj.style.display = owner.overrideStatus === 'tutup_cepat' ? 'block' : 'none';
-    if (owner.overrideHour && tj) tj.value = owner.overrideHour;
-    let key = getAiKey();
-    let ks = document.getElementById('aiKeyStatus');
-    let aik = document.getElementById('aiApiKey');
-    if (aik) aik.value = key ? '••••••••••••••••' : '';
-    if (ks) ks.innerHTML = key ? '<span style="color:var(--ok);">✅ AI Aktif – Gemini Flash (OpenRouter)</span>' : '<span style="color:var(--parch-3);">⚪ Mode Manual (Offline)</span>';
+  function openOwnerPanel(){
+    renderOwnerOrders();renderMenuEditor();let owner=getOwner();
+    let n=document.getElementById('st-normal');if(n)n.classList.toggle('active',!owner.overrideStatus||owner.overrideStatus==='normal');
+    let t=document.getElementById('st-tutup');if(t)t.classList.toggle('active',owner.overrideStatus==='tutup_cepat');
+    let l=document.getElementById('st-libur');if(l)l.classList.toggle('active',owner.overrideStatus==='libur');
+    let tj=document.getElementById('tutupJam');if(tj)tj.style.display=owner.overrideStatus==='tutup_cepat'?'block':'none';
+    if(owner.overrideHour&&tj)tj.value=owner.overrideHour;
+    let key=getAiKey();
+    let ks=document.getElementById('aiKeyStatus'),aik=document.getElementById('aiApiKey');
+    if(aik)aik.value=key?'••••••••••••••••':'';
+    if(ks)ks.innerHTML=key?'<span style="color:#155724;">✅ AI Aktif</span>':'<span>⚪ Mode Manual</span>';
     openOverlay('ownerOverlay');
   }
-  function hideOwnerPanel() { closeOverlay('ownerOverlay'); }
-  function setOverride(mode) {
-    let owner = getOwner(); owner.overrideStatus = mode;
-    if (mode === 'tutup_cepat') {
-      let jam = parseInt(document.getElementById('tutupJam')?.value || 20);
-      owner.overrideHour = (jam >= 13 && jam <= 23) ? jam : 20;
-      let tj = document.getElementById('tutupJam'); if (tj) tj.style.display = 'block';
-    } else { let tj = document.getElementById('tutupJam'); if (tj) tj.style.display = 'none'; }
-    saveOwner(owner); checkTime(); openOwnerPanel();
-    toast(mode === 'libur' ? 'Warung LIBUR' : (mode === 'tutup_cepat' ? 'Tutup jam ' + owner.overrideHour + ':00' : 'Status Normal'), 'success');
+  function hideOwnerPanel(){closeOverlay('ownerOverlay');}
+  function setOverride(mode){
+    let owner=getOwner();owner.overrideStatus=mode;
+    if(mode==='tutup_cepat'){
+      let jam=parseInt(document.getElementById('tutupJam')?.value||20);
+      owner.overrideHour=(jam>=13&&jam<=23)?jam:20;
+      let tj=document.getElementById('tutupJam');if(tj)tj.style.display='block';
+    } else{let tj=document.getElementById('tutupJam');if(tj)tj.style.display='none';}
+    saveOwner(owner);checkTime();openOwnerPanel();
+    toast(mode==='libur'?'Warung LIBUR':(mode==='tutup_cepat'?'Tutup jam '+owner.overrideHour+':00':'Status Normal'),'success');
   }
-  function changePin() {
-    let val = document.getElementById('newPin')?.value;
-    if (!/^\d{4}$/.test(val)) { toast('PIN harus 4 digit', 'error'); return; }
-    let owner = getOwner(); owner.pin = val; saveOwner(owner);
-    if (document.getElementById('newPin')) document.getElementById('newPin').value = '';
-    toast('PIN berhasil diganti', 'success');
+  function changePin(){
+    let val=document.getElementById('newPin')?.value;
+    if(!/^\d{4}$/.test(val)){toast('PIN harus 4 digit','error');return;}
+    let owner=getOwner();owner.pin=val;saveOwner(owner);
+    if(document.getElementById('newPin'))document.getElementById('newPin').value='';
+    toast('PIN berhasil diganti','success');
   }
-
-  function saveAiKey() {
-    let val = document.getElementById('aiApiKey')?.value?.trim();
-    if (!val) { toast('Masukkan API key dulu', 'error'); return; }
-    if (val.length < 10) { toast('API key terlalu pendek', 'error'); return; }
+  function saveAiKey(){
+    let val=document.getElementById('aiApiKey')?.value?.trim();
+    if(!val){toast('Masukkan API key dulu','error');return;}
+    if(val.length<10){toast('API key terlalu pendek','error');return;}
     saveAiKeyStorage(val);
-    toast('API Key disimpan! AI aktif 🚀', 'success');
-    let ks = document.getElementById('aiKeyStatus');
-    if (ks) ks.innerHTML = '<span style="color:var(--ok);">✅ AI Aktif – Gemini Flash (OpenRouter)</span>';
-    let aik = document.getElementById('aiApiKey');
-    if (aik) aik.value = '••••••••••••••••';
+    toast('API Key disimpan! AI aktif 🚀','success');
+    let ks=document.getElementById('aiKeyStatus');if(ks)ks.innerHTML='<span style="color:#155724;">✅ AI Aktif</span>';
+    let aik=document.getElementById('aiApiKey');if(aik)aik.value='••••••••••••••••';
   }
-  function clearAiKey() {
-    clearAiKeyStorage();
-    toast('API Key dihapus. Mode manual aktif.', 'warn');
-    let ks = document.getElementById('aiKeyStatus');
-    if (ks) ks.innerHTML = '<span style="color:var(--parch-3);">⚪ Mode Manual (Offline)</span>';
-    let aik = document.getElementById('aiApiKey');
-    if (aik) aik.value = '';
+  function clearAiKey(){
+    clearAiKeyStorage();toast('API Key dihapus.','warn');
+    let ks=document.getElementById('aiKeyStatus');if(ks)ks.innerHTML='<span>⚪ Mode Manual</span>';
+    let aik=document.getElementById('aiApiKey');if(aik)aik.value='';
   }
 
-  function renderOwnerOrders() {
-    let orders = getOrders();
-    let cs = document.getElementById('orderCount'); if (cs) cs.innerText = orders.length;
-    let container = document.getElementById('ownerOrderList'); if (!container) return;
-    if (!orders.length) { container.innerHTML = '<div style="font-size:12px;color:var(--parch-3);padding:10px 0;font-weight:300;">Belum ada order masuk</div>'; return; }
-    container.innerHTML = orders.map(o => '<div class="o-card"><div class="o-card-id">' + o.id + '</div><div class="o-card-meta">' + o.name + ' · ' + o.type + ' · ' + new Date(o.timestamp).toLocaleString('id-ID') + '</div><div class="o-card-items">' + o.items.map(i => i.name + ' ×' + i.qty).join(', ') + '</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;"><div class="o-card-total">Rp ' + fmt(o.total) + '</div><div><button class="btn-sm-ok" onclick="WCT.confirmOrder(\'' + o.id + '\')">✓ OK</button><button class="btn-sm-no" onclick="WCT.deleteOrder(\'' + o.id + '\')">✕ Hapus</button></div></div></div>').join('');
+  function renderOwnerOrders(){
+    let orders=getOrders();
+    let cs=document.getElementById('orderCount');if(cs)cs.innerText=orders.length;
+    let container=document.getElementById('ownerOrderList');if(!container)return;
+    if(!orders.length){container.innerHTML='<div style="font-size:12px;color:var(--text-3);padding:10px 0;font-weight:600;">Belum ada order masuk</div>';return;}
+    container.innerHTML=orders.map(o=>'<div class="o-card"><div class="o-card-id">'+o.id+'</div><div class="o-card-meta">'+o.name+' · '+o.type+' · '+new Date(o.timestamp).toLocaleString('id-ID')+'</div><div class="o-card-items">'+o.items.map(i=>i.name+' ×'+i.qty).join(', ')+'</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;"><div class="o-card-total">Rp '+fmt(o.total)+'</div><div><button class="btn-sm-ok" onclick="WCT.confirmOrder(\''+o.id+'\')">✓ OK</button><button class="btn-sm-no" onclick="WCT.deleteOrder(\''+o.id+'\')">✕ Hapus</button></div></div></div>').join('');
   }
-  function confirmOrder(id) {
-    let orders = getOrders(); let o = orders.find(x => x.id === id);
-    if (o && o.status !== 'confirmed') { o.status = 'confirmed'; saveOrders(orders); renderOwnerOrders(); toast('Order dikonfirmasi', 'success'); }
-  }
-  function deleteOrder(id) { saveOrders(getOrders().filter(o => o.id !== id)); renderOwnerOrders(); toast('Order dihapus', 'success'); }
-  function clearAllOrders() {
-    if (confirm('Hapus semua order?')) { saveOrders([]); renderOwnerOrders(); toast('Semua order dihapus', 'success'); }
-  }
+  function confirmOrder(id){let orders=getOrders();let o=orders.find(x=>x.id===id);if(o&&o.status!=='confirmed'){o.status='confirmed';saveOrders(orders);renderOwnerOrders();toast('Order dikonfirmasi','success');}}
+  function deleteOrder(id){saveOrders(getOrders().filter(o=>o.id!==id));renderOwnerOrders();toast('Order dihapus','success');}
+  function clearAllOrders(){if(confirm('Hapus semua order?')){saveOrders([]);renderOwnerOrders();toast('Semua order dihapus','success');}}
 
-  /* ============================
-     AI CHAT — OFFLINE PATTERNS
-     Bahasa Jawa + Indonesia campur
-     ============================ */
-  const AI_RESPONSES = [
-    // SALAM & BASA BASI
-    {
-      pattern: /halo|hai|hi|hello|p+agi|siang|sore|malam|selamat|sugeng|monggo|ndak|nda[kh]/i,
-      answers: [
-        'Halo kang! 👋 Piye kabare? Arep pesen opo dino iki? 😄',
-        'Wah sugeng rawuh! 🙏 Ono sing iso dibantu? Langsung ae takon!',
-        'Halo-halo! Selamat datang neng Warung CT 🍽️ Arep mangan opo?',
-        'Monggo monggo, silakan! Warung CT siap melayani sampean 😊'
-      ]
-    },
-    // MENU UTAMA
-    {
-      pattern: /menu|makanan|masakan|ada opo|ana opo|jual opo|tersedia|daftar/i,
-      answers: [
-        'Iki menune Warung CT:\n\n🍗 Ayam Goreng – 10rb\n🐟 Pecel Lele – 10rb\n🍳 Dadar – 7rb\n🍖 Ati Ampela – 8rb\n🌿 Tempe Penyet – 6rb\n🍚 Nasgor Ori – 10rb\n🍛 Nasgor + Sosis – 13rb\n🍜 Nasgor + Dadar – 13rb\n\nTambahan: Telur 3rb · Kepala 3rb · Sambal 3rb · Nasi 3rb\n\nMilih sing mana bro? 😄',
-        'Menu lengkap Warung CT iki:\n\n🔥 Menu Utama:\nAyam Goreng (10k) · Pecel Lele (10k) · Dadar (7k) · Ati Ampela (8k) · Tempe Penyet (6k) · Nasgor Ori (10k) · Nasgor+Sosis (13k) · Nasgor+Dadar (13k)\n\n➕ Tambahan:\nTelur/Kepala/Sambal/Nasi masing-masing 3k, Ati Ampela 5k\n\nCek atas buat langsung milih ya!'
-      ]
-    },
-    // BEST SELLER & REKOMENDASI
-    {
-      pattern: /best.?seller|paling laris|favorit|rekomendasine|rekomendasi|enak opo|enak apa|seng enak|yang enak|populer/i,
-      answers: [
-        'Best seller Warung CT:\n\n🥇 Pecel Lele – Juara! Lele krispi + sambal mantep\n🥈 Ayam Goreng – Gurih kriuk poll\n🥉 Nasgor Ori – Simple tapi nagih\n\nKalau bingung milih, Pecel Lele + Es Teh = combo sempurna! 🔥',
-        'Sing paling rame dipesan iku:\n1️⃣ Pecel Lele (10rb) — jadi andalan!\n2️⃣ Ayam Goreng (10rb) — bumbu meresap\n3️⃣ Nasgor + Dadar (13rb) — kenyang banget\n\nJamin gak nyesel bro! 😋'
-      ]
-    },
-    // HARGA MURAH / HEMAT
-    {
-      pattern: /murah|hemat|ekonomis|budget|paling murah|sing murah|terjangkau|irit/i,
-      answers: [
-        'Sing paling murah?\n🌿 Tempe Penyet – cuma 6rb!\nTambah Nasi Putih 3rb = kenyang cuma 9rb 💪\n\nKalau minum tambah Es Teh 3rb, total 12rb wes komplit!',
-        'Paket hemat Warung CT:\n\n💰 Paket 9rb: Tempe Penyet + Nasi\n💰 Paket 12rb: Tempe Penyet + Nasi + Es Teh\n💰 Paket 13rb: Dadar + Nasi + Es Teh\n\nMurah tapi tetep kenyang bro! 😄'
-      ]
-    },
-    // JAM BUKA
-    {
-      pattern: /jam buka|bukane kapan|jam berapa|buka jam|tutup jam|jam operasional|buka sampe|sampai jam|waktune/i,
-      answers: [
-        'Jam buka Warung CT:\n\n🛵 Delivery: 15:00 – 21:00\n🚶 Pickup & Dine-in: 13:00 – 23:00\n\nJangan telat pesennya ya bro, nanti kehabisan! 😅',
-        'Warung CT buka:\n• Pesan antar mulai jam 3 sore sampek jam 9 malem\n• Ambil sendiri/makan di sini mulai jam 1 siang sampek jam 11 malem\n\nBuka tiap hari kecuali lagi libur. Cek status di atas ya!'
-      ]
-    },
-    // ONGKIR
-    {
-      pattern: /ongkir|ongkos kirim|biaya antar|delivery fee|biaya delivery|piro ongkire|berapa ongkir|antar berapa/i,
-      answers: [
-        'Ongkir Warung CT:\n\n📍 ≤ 1 km → Rp 2.000\n📍 1–2 km → Rp 3.000\n📍 2–3 km → Rp 4.000\n📍 > 3 km → ❌ Diluar jangkauan\n\nKlik "Tandai Lokasi" buat tau ongkir persisnya!',
-        'Ongkirnya murah bro:\n• 1 km pertama: 2rb\n• Lebih dari 1 km: +1rb per km\n• Maksimal jarak: 3 km\n\nTandai lokasimu dulu ya biar ketauan totalnya 📍'
-      ]
-    },
-    // LOKASI / ALAMAT
-    {
-      pattern: /lokasi|alamat|dimana|neng ngendi|letak|warunge neng endi|tempat|posisi/i,
-      answers: [
-        '📍 Warung CT ada di Sidomukti, Kembang Bahu, Lamongan, Jawa Timur!\n\nKalau mau delivery, klik tombol "Tandai Lokasi" dulu biar sistem otomatis hitung jarak dan ongkirnya 🛵',
-        'Warunge neng Sidomukti, Kembang Bahu, Lamongan, Jawa Timur bro! 📍\n\nArea delivery maksimal 3 km dari warung. Tandai lokasimu dulu ya!'
-      ]
-    },
-    // PECEL LELE
-    {
-      pattern: /pecel.?lele|lele|pece/i,
-      answers: [
-        '🐟 Pecel Lele – Rp 10.000\nLele goreng krispi + sambal pecel yang nendang!\nIni best seller-nya Warung CT 🔥\n\nMau tambah sambal extra? Tinggal pilih di menu tambahan!',
-        'Pecel Lele kita legendaris bro! 🐟\nHarganya 10rb, lele-nya fresh, digoreng crispy sampe kulit-kulitnya renyah\nSambalnya juga bikin nagih 🌶️'
-      ]
-    },
-    // AYAM GORENG
-    {
-      pattern: /ayam.?goreng|ayam|chicken/i,
-      answers: [
-        '🍗 Ayam Goreng – Rp 10.000\nDagingnya empuk, bumbu meresap poll!\nCocok banget sama nasi hangat + sambal 😋\n\nMau tambah kepala atau ati ampela? Ada di menu tambahan!',
-        'Ayam Goreng 10rb bro! 🍗\nDimasak pake bumbu rempah khas warung CT\nCrispy di luar, juicy di dalam — gak bakal nyesel!'
-      ]
-    },
-    // NASI GORENG
-    {
-      pattern: /nasi.?goreng|nasgor|nasigoreng/i,
-      answers: [
-        'Nasi Goreng Warung CT:\n\n🍚 Nasgor Ori – 10rb (klasik, mantap)\n🍛 Nasgor + Sosis – 13rb (lebih berisi)\n🍜 Nasgor + Dadar – 13rb (telur dadar tebal!)\n\nMau yang mana bro? Semuanya enak!',
-        'Ada 3 pilihan Nasgor nih:\n• Ori: 10rb — simpel tapi favorit\n• + Sosis: 13rb — buat yang suka sosis\n• + Dadar: 13rb — buat yang suka telur\n\nPilih sesuai mood! 😄'
-      ]
-    },
-    // TEMPE
-    {
-      pattern: /tempe|penyet/i,
-      answers: [
-        '🌿 Tempe Penyet – Rp 6.000\nMenu paling hemat di Warung CT!\nTempe digoreng lalu dipenyet, disajikan sama sambal\nKenyang + murah = perfect combo 💪',
-        'Tempe Penyet cuma 6rb bro! 🌿\nBuat yang lagi hemat atau mau tambah lauk\nEnak banget dimakan sama nasi anget!'
-      ]
-    },
-    // ATI AMPELA
-    {
-      pattern: /ati|ampela|jeroan/i,
-      answers: [
-        '🍖 Ati Ampela Warung CT:\n• Menu utama: Rp 8.000\n• Tambahan: Rp 5.000\n\nBuat pecinta jeroan wajib coba! Teksturnya kenyal-kenyal gurih 🔥',
-        'Ati Ampela 8rb bro! 🍖\nDimasak sampe bumbu meresap, teksturnya pas\nBisa juga jadi tambahan di menu lain (5rb aja!)'
-      ]
-    },
-    // DADAR / TELUR
-    {
-      pattern: /dadar|telur.?dadar|telor/i,
-      answers: [
-        '🍳 Dadar (Telur Dadar) – Rp 7.000\nTelur dadar tebal, gurih, pas buat teman nasi!\n\nBisa juga jadi tambahan Nasgor:\n• Tambahan Telur: 3rb\n• Nasgor + Dadar: 13rb (langsung kombo)',
-        'Dadar 7rb bro! 🍳\nTelur dadar pake resep rahasia CT, tebal dan gurih\nAtau pilih Nasgor + Dadar biar langsung kombo!'
-      ]
-    },
-    // MINUMAN
-    {
-      pattern: /minuman|minum|es teh|kopi|teh|nutrisari|susu|pop.?ice|es.?jeruk|milo|good.?day|chocolatos|minume/i,
-      answers: [
-        'Daftar minuman Warung CT:\n\n🧋 Es Teh – 3rb\n🍵 Teh Hangat – 3rb\n🍊 Nutrisari – 3rb\n☕ Kopi Hitam – 3rb\n🥤 Kopi White – 3rb\n🥛 Susu – 3rb\n🧃 Pop Ice – 3rb\n🍋 Es Jeruk – 4rb\n🍫 Milo – 4rb\n☀️ Good Day – 4rb\n🍫 Chocolatos – 4rb\n\nSegarr! Mau yang mana? 😄',
-        'Minuman tersedia:\n• 3rb: Es Teh, Teh Hangat, Nutrisari, Kopi Hitam, Kopi White, Susu, Pop Ice\n• 4rb: Es Jeruk, Milo, Good Day, Chocolatos\n\nCombo favorit: Pecel Lele + Es Teh = 13rb aja! 🔥'
-      ]
-    },
-    // SAMBAL / PEDAS
-    {
-      pattern: /pedas|sambal|sambel|cabe|cabai|pedes/i,
-      answers: [
-        '🌶️ Suka pedas? Wah cocok di Warung CT!\n\nBisa tambah Sambal extra cuma 3rb\nPaling nampol: Pecel Lele + Sambal double 🔥\n\nTapi awas bro, sambalnya beneran pedes ya! 😂',
-        'Pecinta pedas ketemu tempatnya nih! 🌶️\nSambal Warung CT terkenal nendang\nMau tambah sambal? Pilih di menu Tambahan ya!'
-      ]
-    },
-    // TUTUP / LIBUR
-    {
-      pattern: /tutup|libur|besok|buka lagi|kapan buka|closed/i,
-      answers: [
-        'Cek status buka/tutup di badge hijau/merah di atas halaman ya!\n\nKalau tutup:\n🛵 Delivery buka lagi jam 15:00\n🚶 Pickup buka lagi jam 13:00\n\nSabar ya bro, makanan enak butuh ditunggu! 😄',
-        'Status warung real-time bisa dilihat di bagian atas aplikasi!\nKalau merah berarti lagi tutup, hijau berarti buka 🟢\n\nBisa balik lagi nanti ya!'
-      ]
-    },
-    // CARA ORDER
-    {
-      pattern: /cara|gimana|piye|pesan|order|mesen|beli|kumaha/i,
-      answers: [
-        'Cara order di Warung CT:\n\n1️⃣ Isi nama kamu\n2️⃣ Pilih tipe: Diantar / Ambil / Di Sini\n3️⃣ Kalau diantar, tap "Tandai Lokasi"\n4️⃣ Pilih menu yang diinginkan\n5️⃣ Tap "Order via WhatsApp"\n6️⃣ Kirim pesan ke owner\n\nGampang kan? 😄',
-        'Gampang bro, tinggal:\n• Isi nama → pilih delivery/pickup/dinein\n• Kalau delivery: tap lokasi dulu\n• Pilih menu di bawah\n• Klik Order via WhatsApp → kirim!\n\nOtomatis deh ordernya ke dapur! 🍽️'
-      ]
-    },
-    // PEMBAYARAN
-    {
-      pattern: /bayar|payment|transfer|tunai|cash|duit|bayare|ongkos/i,
-      answers: [
-        '💵 Pembayaran di Warung CT:\n• Cash / tunai saat delivery tiba\n• Bisa juga transfer — konfirmasi sama owner via chat WA\n\nTidak ada biaya tambahan selain ongkir 😊',
-        'Bayarnya pas kurir datang ya bro (COD)! 💵\nBisa cash atau kalau mau transfer bisa konfirmasi langsung di chat WA setelah order'
-      ]
-    },
-    // ESTIMASI WAKTU
-    {
-      pattern: /berapa lama|lama|estimasi|tunggu|kapan datang|kapan nyampe|cepet/i,
-      answers: [
-        '⏱️ Estimasi waktu:\n• Dalam 1 km: ~15-20 menit\n• 1-3 km: ~20-35 menit\n\nTergantung kondisi dapur dan jarak ya bro!\nSambil nunggu bisa dengerin musik di Warung CT 🎵',
-        'Biasanya 15-30 menit bro, tergantung jarak dan ramai tidaknya!\nKalau mau tau lebih pasti, bisa chat langsung di WA setelah order 📱'
-      ]
-    },
-    // TERIMA KASIH
-    {
-      pattern: /terima kasih|makasih|matur nuwun|matur suwun|thanks|thx|tq|trims|suwun/i,
-      answers: [
-        'Sami-sami bro! 🙏 Matur nuwun wes mampir!\nSemoga makanane enak dan bikin betah! 😄',
-        'Iyo bro, sami-sami! 😊 Seneng bisa bantu!\nDitunggu orderane ya, dijamin mantep! 🔥',
-        'Matur nuwun yo! Kalau butuh apa-apa takon wae 😄'
-      ]
-    },
-    // PUJIAN / WARUNG BAGUS
-    {
-      pattern: /enak|mantep|mantap|keren|bagus|ok|oke|top|josss|jos|gak kecewa|ngga kecewa/i,
-      answers: [
-        'Makasih bro udah seneng! 😄 CT & Bojo bakal terus jaga kualitas biar makin mantep!\nJangan lupa balik lagi ya! 🔥',
-        'Wah seneng denger itu! 🙏 Warung CT emang prioritasin rasa dan keramahan\nDitunggu order berikutnya! 😊'
-      ]
-    },
-    // NGGAK NGERTI
-    {
-      pattern: /.*/,
-      answers: [
-        'Hmm, aku kurang paham maksude bro 🤔\n\nCoba tanya:\n• Menu & harga\n• Jam buka warung\n• Cara pesan\n• Ongkir\n• Rekomendasi menu\n\nAyo takon maneh, aku siap bantu! 😄',
-        'Waduh aku bingung nih bro 😅\nTapi aku bisa bantu info soal:\n✅ Menu & harga\n✅ Jam buka\n✅ Ongkir & delivery\n✅ Rekomendasi\n\nCoba tanya yang itu ya!',
-        'Maaf bro, aku durung mudeng 🙏\nIso takon babagan menu, jam buka, ongkir, utowo rekomendasi yo!'
-      ]
-    }
+  // AI
+  const AI_RESPONSES=[
+    {pattern:/halo|hai|hi|hello|p+agi|siang|sore|malam|selamat|sugeng|monggo/i,answers:['Halo kang! 👋 Piye kabare? Arep pesen opo dino iki? 😄','Wah sugeng rawuh! 🙏 Ono sing iso dibantu?','Halo! Selamat datang neng Warung CT 🍽️']},
+    {pattern:/menu|makanan|ada opo|jual opo|tersedia|daftar/i,answers:['Menu Warung CT:\n\n🍗 Ayam Goreng – 10rb\n🐟 Pecel Lele – 10rb\n🍳 Dadar – 7rb\n🍖 Ati Ampela – 8rb\n🌿 Tempe Penyet – 6rb\n🍚 Nasgor Ori – 10rb\n🍛 Nasgor+Sosis – 13rb\n🍜 Nasgor+Dadar – 13rb\n\nTambahan: Telur/Kepala/Sambal/Nasi 3rb\nMinuman mulai 3rb']},
+    {pattern:/best.?seller|favorit|rekomendasine|enak opo|populer/i,answers:['Best seller Warung CT:\n\n🥇 Pecel Lele – Juara!\n🥈 Ayam Goreng – Gurih kriuk\n🥉 Nasgor Ori – Nagih!\n\nCombo terbaik: Pecel Lele + Es Teh = 13rb 🔥']},
+    {pattern:/murah|hemat|paling murah/i,answers:['Paling murah:\n🌿 Tempe Penyet – 6rb\n+ Nasi 3rb = kenyang 9rb aja! 💪']},
+    {pattern:/jam buka|bukane kapan|jam berapa|buka jam|tutup jam/i,answers:['Jam buka Warung CT:\n🛵 Antar: 15:00–21:00\n🚶 Ambil/Makan: 13:00–23:00']},
+    {pattern:/ongkir|ongkos kirim|biaya antar/i,answers:['Ongkir Warung CT:\n📍 ≤1 km → 2rb\n📍 1–2 km → 3rb\n📍 2–3 km → 4rb\n📍 >3 km → ❌ Diluar jangkauan\n\nTandai lokasi di tombol order buat cek ongkir!']},
+    {pattern:/lokasi|alamat|dimana|neng ngendi/i,answers:['📍 Warung CT ada di Sidomukti, Kembang Bahu, Lamongan, Jawa Timur!\n\nDelivery maksimal 3 km dari warung.']},
+    {pattern:/terima kasih|makasih|matur nuwun|suwun|thanks/i,answers:['Sami-sami bro! 🙏 Ditunggu orderane ya! 😄','Iyo, sami-sami! Seneng bisa bantu! 😊']},
+    {pattern:/.*/,answers:['Hmm, aku kurang paham 🤔\n\nBisa tanya:\n• Menu & harga\n• Jam buka\n• Ongkir\n• Rekomendasi']}
   ];
 
-  function getAIResponse(text) {
-    for (const item of AI_RESPONSES) {
-      if (item.pattern.test(text)) {
-        const arr = item.answers;
-        return arr[Math.floor(Math.random() * arr.length)];
-      }
-    }
-    // fallback (shouldn't reach here due to .* pattern)
-    return 'Iso takon babagan menu, jam buka, ongkir, utowo rekomendasi yo bro! 😄';
+  function getAIResponse(text){
+    for(const item of AI_RESPONSES){if(item.pattern.test(text)){const arr=item.answers;return arr[Math.floor(Math.random()*arr.length)];}}
+    return'Iso takon babagan menu, jam buka, utowo ongkir yo bro! 😄';
   }
 
-  function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  function escHtml(str){return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function addMsg(text,from){
+    const body=document.getElementById('aiBody');
+    const div=document.createElement('div');
+    div.className='ai-bubble '+from;
+    const safe=from==='user'?escHtml(text):text;
+    div.innerHTML=safe.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+    body.appendChild(div);body.scrollTop=body.scrollHeight;
   }
-
-  function addMsg(text, from) {
-    const body = document.getElementById('aiBody');
-    const div = document.createElement('div');
-    div.className = 'ai-bubble ' + from;
-    const safe = from === 'user' ? escHtml(text) : text;
-    div.innerHTML = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
-    body.appendChild(div);
-    body.scrollTop = body.scrollHeight;
+  function addTyping(){
+    const body=document.getElementById('aiBody');
+    const div=document.createElement('div');
+    div.className='ai-bubble bot ai-typing';div.id='aiTyping';
+    div.innerHTML='<span></span><span></span><span></span>';
+    body.appendChild(div);body.scrollTop=body.scrollHeight;
   }
+  function removeTyping(){const el=document.getElementById('aiTyping');if(el)el.remove();}
 
-  function addTyping() {
-    const body = document.getElementById('aiBody');
-    const div = document.createElement('div');
-    div.className = 'ai-bubble bot ai-typing'; div.id = 'aiTyping';
-    div.innerHTML = '<span></span><span></span><span></span>';
-    body.appendChild(div);
-    body.scrollTop = body.scrollHeight;
-  }
-  function removeTyping() {
-    const el = document.getElementById('aiTyping');
-    if (el) el.remove();
-  }
+  let chatHistory=[];
+  const AI_SYSTEM_PROMPT=`Kamu adalah Asisten Warung CT yang ramah dan gaul. Jawab dengan bahasa Jawa campur Indonesia yang santai. Warung CT ada di Sidomukti, Kembang Bahu, Lamongan. Menu: Ayam Goreng 10rb, Pecel Lele 10rb (best seller), Dadar 7rb, Ati Ampela 8rb, Tempe Penyet 6rb, Nasgor Ori 10rb, Nasgor+Sosis 13rb, Nasgor+Dadar 13rb. Tambahan 3-5rb. Minuman 3-4rb. Antar buka 15-21, ambil/makan 13-23. Ongkir: 1km=2rb, tiap km tambah 1rb, maks 3km.`;
 
-  let chatHistory = [];
-
-  // ✅ System prompt lengkap dan informatif
-  const AI_SYSTEM_PROMPT = `Kamu adalah Asisten Warung CT yang ramah, helpful, dan gaul. 
-Jawab dengan bahasa Jawa campur Indonesia yang santai, seperti orang Jawa Timur ngobrol sehari-hari.
-Gunakan kata seperti: bro, kang, mas, rek, ojo, arep, piye, matur nuwun, dll secara natural.
-Jangan terlalu formal. Pakai emoji secukupnya biar ceria.
-
-INFORMASI WARUNG CT:
-Nama: Warung CT – The Real Temenan
-Lokasi: Sidomukti, Kembang Bahu, Lamongan, Jawa Timur
-Tagline: Sejak Zaman Mojopahit
-
-JAM BUKA:
-- Delivery: 15:00–21:00
-- Pickup & Dine-in: 13:00–23:00
-
-MENU UTAMA:
-- Ayam Goreng: Rp 10.000
-- Pecel Lele: Rp 10.000 (BEST SELLER)
-- Dadar: Rp 7.000
-- Ati Ampela: Rp 8.000
-- Tempe Penyet: Rp 6.000 (paling murah)
-- Nasgor Ori: Rp 10.000
-- Nasgor + Sosis: Rp 13.000
-- Nasgor + Dadar: Rp 13.000
-
-MENU TAMBAHAN:
-- Telur: Rp 3.000
-- Kepala: Rp 3.000
-- Ati Ampela: Rp 5.000
-- Sambal: Rp 3.000
-- Nasi Putih: Rp 3.000
-
-MINUMAN (semua bisa es atau hangat):
-- Es Teh / Teh Hangat / Nutrisari / Kopi Hitam / Kopi White / Susu / Pop Ice: Rp 3.000
-- Es Jeruk / Milo / Good Day / Chocolatos: Rp 4.000
-
-ONGKIR:
-- ≤1 km: Rp 2.000
-- >1 km: Rp 2.000 + Rp 1.000/km
-- Maksimal radius: 3 km
-
-CARA ORDER: Pilih menu di aplikasi → tap Order via WhatsApp → pesan otomatis terkirim ke dapur. Sistem sudah otomatis, tidak perlu tanya cara order ke orang lain.
-
-PEMBAYARAN: Cash saat terima, atau bisa transfer setelah konfirmasi di chat.
-
-JANGAN sebut nomor WhatsApp owner. Order sudah otomatis via sistem aplikasi ini.
-Kalau ada pertanyaan di luar warung, jawab saja dengan ramah tapi tetap arahkan ke topik warung.`;
-
-  async function sendChat() {
-    const inp = document.getElementById('aiInput');
-    const text = inp.value.trim();
-    if (!text) return;
-
-    addMsg(text, 'user');
-    inp.value = '';
-    addTyping();
-
-    chatHistory.push({ role: 'user', content: text });
-
-    // Susun pesan dengan system prompt dari AI_SYSTEM_PROMPT
-    const messages = [
-      { role: 'system', content: AI_SYSTEM_PROMPT },
-      ...chatHistory.slice(-10)
-    ];
-
-    try {
-      const res = await fetch(OR_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: OR_MODEL,
-          messages: messages,
-          temperature: 0.75,
-          max_tokens: 500
-        })
-      });
-
+  async function sendChat(){
+    const inp=document.getElementById('aiInput');
+    const text=inp.value.trim();if(!text)return;
+    addMsg(text,'user');inp.value='';addTyping();
+    chatHistory.push({role:'user',content:text});
+    const messages=[{role:'system',content:AI_SYSTEM_PROMPT},...chatHistory.slice(-10)];
+    try{
+      const res=await fetch(OR_API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:OR_MODEL,messages,temperature:0.75,max_tokens:400})});
       removeTyping();
-
-      if (!res.ok) throw new Error('Worker HTTP ' + res.status);
-
-      const data = await res.json();
-      const reply = data.choices?.[0]?.message?.content;
-
-      if (reply) {
-        addMsg(reply, 'bot');
-        chatHistory.push({ role: 'assistant', content: reply });
-      } else {
-        throw new Error('Empty reply');
-      }
-    } catch (e) {
-      console.warn('Worker fetch error:', e);
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      const data=await res.json();
+      const reply=data.choices?.[0]?.message?.content;
+      if(reply){addMsg(reply,'bot');chatHistory.push({role:'assistant',content:reply});}
+      else throw new Error('Empty');
+    } catch(e){
       removeTyping();
-      // Fallback ke offline
-      const reply = getAIResponse(text);
-      addMsg(reply, 'bot');
-      chatHistory.push({ role: 'assistant', content: reply });
+      const reply=getAIResponse(text);addMsg(reply,'bot');chatHistory.push({role:'assistant',content:reply});
     }
   }
 
-  function askAI(text) {
-    const inp = document.getElementById('aiInput');
-    if (inp) inp.value = text;
-    sendChat();
+  function askAI(text){const inp=document.getElementById('aiInput');if(inp)inp.value=text;sendChat();}
+  function toggleChat(){
+    const chat=document.getElementById('aiChat'),fab=document.getElementById('aiFab');
+    const isOpen=chat.classList.contains('show');
+    if(isOpen){chat.classList.remove('show');fab.style.transform='scale(1)';}
+    else{chat.classList.add('show');fab.style.transform='scale(0)';setTimeout(()=>{const inp=document.getElementById('aiInput');if(inp)inp.focus();},300);}
   }
 
-  function toggleChat() {
-    const chat = document.getElementById('aiChat');
-    const fab = document.getElementById('aiFab');
-    const isOpen = chat.classList.contains('show');
-    if (isOpen) {
-      chat.classList.remove('show');
-      fab.style.transform = 'scale(1)';
-    } else {
-      chat.classList.add('show');
-      fab.style.transform = 'scale(0)';
-      setTimeout(() => {
-        const inp = document.getElementById('aiInput');
-        if (inp) inp.focus();
-      }, 300);
-    }
-  }
-
-  function init() {
-    loadMenus();
-    renderMenu('menuUtama', menuUtama);
-    renderMenu('menuTambahan', menuTambahan);
-    renderMenu('menuMinuman', menuMinuman);
-
-    let c = getPref();
-    if (c.name) { S.name = c.name; let un = document.getElementById('userName'); if (un) un.value = c.name; }
-    if (c.orderType) setOrderType(c.orderType); else setOrderType('delivery');
-
-    let unInput = document.getElementById('userName');
-    if (unInput) unInput.addEventListener('input', e => {
-      S.name = e.target.value.slice(0, 40); savePref(); updateUI();
+  function showLastOrder(){
+    const history=getOrders();
+    const c=getPref();
+    const last=history.find(o=>o.items?.length);
+    if(!last){toast('Belum ada riwayat order','warn');return;}
+    clearCartDOM();
+    last.items.forEach(i=>{const match=allMenu.find(m=>m.name===i.name);if(match)S.cart[match.id]=i.qty;});
+    allMenu.forEach(m=>{
+      let el=document.getElementById('qty-'+m.id);if(el)el.innerText=S.cart[m.id]||0;
+      let mi=document.getElementById('mi-'+m.id);if(mi)mi.classList.toggle('sel',(S.cart[m.id]||0)>0);
     });
-
-    checkTime();
-    setInterval(() => checkTime(), 60000);
     updateUI();
-    loadTrack(0, false);
+    toast('✅ Order terakhir dimuat!','success');
+  }
+
+  function renderMenuEditor(){
+    const container=document.getElementById('menuEditor');if(!container)return;
+    let html='';
+    const cats=[{key:'utama',label:'Menu Utama',arr:menuUtama},{key:'tambahan',label:'Tambahan',arr:menuTambahan},{key:'minuman',label:'Minuman',arr:menuMinuman}];
+    cats.forEach(cat=>{
+      html+='<div class="me-cat"><div class="me-cat-ttl">'+cat.label+'</div>';
+      cat.arr.forEach((item,idx)=>{
+        html+='<div class="me-row" data-cat="'+cat.key+'" data-idx="'+idx+'">'+'<input class="me-icon" value="'+(item.icon||'')+'" placeholder="icon">'+'<input class="me-name" value="'+item.name+'" placeholder="Nama menu">'+'<input class="me-price" type="number" value="'+item.price+'" placeholder="Harga">'+'<button class="me-del" onclick="WCT.removeMenuRow(this)">✕</button></div>';
+      });
+      html+='<button class="me-add" onclick="WCT.addMenuRow(\''+cat.key+'\')">+ Tambah '+cat.label+'</button></div>';
+    });
+    container.innerHTML=html;
+  }
+
+  function addMenuRow(catKey){
+    const cats={utama:menuUtama,tambahan:menuTambahan,minuman:menuMinuman};
+    const arr=cats[catKey];
+    const prefix=catKey==='utama'?'u':catKey==='tambahan'?'t':'m';
+    const maxId=arr.length>0?Math.max(...arr.map(m=>parseInt(m.id.slice(1))||0)):0;
+    arr.push({id:prefix+(maxId+1),name:'Menu Baru',price:5000,icon:'🆕'});
+    renderMenuEditor();toast('Menu baru ditambahkan. Jangan lupa Simpan!','warn');
+  }
+
+  function removeMenuRow(btn){
+    const row=btn.closest('.me-row');if(!row)return;
+    const cat=row.dataset.cat,idx=parseInt(row.dataset.idx);
+    const cats={utama:menuUtama,tambahan:menuTambahan,minuman:menuMinuman};
+    cats[cat].splice(idx,1);renderMenuEditor();toast('Menu dihapus. Jangan lupa Simpan!','warn');
+  }
+
+  function updateMenuFromDOM(){
+    document.querySelectorAll('#menuEditor .me-row').forEach(row=>{
+      const cat=row.dataset.cat,idx=parseInt(row.dataset.idx);
+      const inputs=row.querySelectorAll('input');
+      const cats={utama:menuUtama,tambahan:menuTambahan,minuman:menuMinuman};
+      if(cats[cat][idx]){cats[cat][idx].icon=inputs[0].value;cats[cat][idx].name=inputs[1].value.trim();cats[cat][idx].price=parseInt(inputs[2].value)||0;}
+    });
+  }
+
+  function saveMenusFromEditor(){
+    updateMenuFromDOM();saveMenus();
+    renderMenu('menuUtama',menuUtama);renderMenu('menuTambahan',menuTambahan);renderMenu('menuMinuman',menuMinuman);
+    clearCartDOM();toast('Menu berhasil disimpan!','success');
+  }
+
+  function initSocialProof(){
+    const el=document.getElementById('webCounter');if(!el)return;
+    const orders=getOrders();
+    let base=Math.max(orders.length,parseInt(localStorage.getItem('wct_counter')||'34'));
+    localStorage.setItem('wct_counter',base);
+    el.innerText=' '+base+'+ ';
+  }
+
+  function init(){
+    loadMenus();
+    renderMenu('menuUtama',menuUtama);renderMenu('menuTambahan',menuTambahan);renderMenu('menuMinuman',menuMinuman);
+    let c=getPref();
+    if(c.orderType)S.orderType=c.orderType; else S.orderType='pickup';
+    if(c.name)S.name=c.name;
+    checkTime();
+    setInterval(()=>checkTime(),60000);
+    updateUI();
+    loadTrack(0,false);
     initSocialProof();
   }
 
-
-  /* ============================
-     FITUR: Social Proof Counter
-     ============================ */
-  function initSocialProof() {
-    const el = document.getElementById('webCounter');
-    if (!el) return;
-    let base = parseInt(localStorage.getItem('wct_counter') || '0');
-    if (base < 24) { base = 24 + Math.floor(Math.random() * 15); }
-    localStorage.setItem('wct_counter', base);
-    el.innerText = base + '+';
-    setInterval(() => {
-      if (Math.random() > 0.65) {
-        base += Math.floor(Math.random() * 2) + 1;
-        localStorage.setItem('wct_counter', base);
-        el.innerText = base + '+';
-      }
-    }, 35000);
-  }
-
-  /* ============================
-     FITUR: Repeat Last Order
-     ============================ */
-  function showLastOrder() {
-    const history = getOrders();
-    const last = history.find(o => o.name.trim().toLowerCase() === S.name.trim().toLowerCase() && o.items?.length);
-    if (!last) { toast('Belum ada riwayat order dengan nama ini', 'warn'); return; }
-    clearCartDOM();
-    last.items.forEach(i => {
-      const match = allMenu.find(m => m.name === i.name);
-      if (match) { S.cart[match.id] = i.qty; }
-    });
-    allMenu.forEach(m => {
-      let el = document.getElementById('qty-' + m.id); if (el) el.innerText = S.cart[m.id];
-      let mi = document.getElementById('mi-' + m.id); if (mi) mi.classList.toggle('sel', S.cart[m.id] > 0);
-    });
-    updateUI();
-    toast('✅ Load order terakhir: ' + last.items.map(i=>i.name).join(', '), 'success');
-  }
-
-  /* ============================
-     CMS: Menu Editor
-     ============================ */
-  function renderMenuEditor() {
-    const container = document.getElementById('menuEditor');
-    if (!container) return;
-    let html = '';
-    const cats = [
-      { key: 'utama', label: 'Menu Utama', arr: menuUtama },
-      { key: 'tambahan', label: 'Tambahan', arr: menuTambahan },
-      { key: 'minuman', label: 'Minuman', arr: menuMinuman }
-    ];
-    cats.forEach(cat => {
-      html += '<div class="me-cat"><div class="me-cat-ttl">' + cat.label + '</div>';
-      cat.arr.forEach((item, idx) => {
-        html += '<div class="me-row" data-cat="' + cat.key + '" data-idx="' + idx + '">' +
-          '<input class="me-icon" value="' + (item.icon || '') + '" placeholder="icon" title="Emoji icon">' +
-          '<input class="me-name" value="' + item.name + '" placeholder="Nama menu">' +
-          '<input class="me-price" type="number" value="' + item.price + '" placeholder="Harga">' +
-          '<button class="me-del" onclick="WCT.removeMenuRow(this)" title="Hapus">✕</button>' +
-          '</div>';
-      });
-      html += '<button class="me-add" onclick="WCT.addMenuRow(\'' + cat.key + '\')">+ Tambah ' + cat.label + '</button>';
-      html += '</div>';
-    });
-    container.innerHTML = html;
-  }
-
-  function addMenuRow(catKey) {
-    const cats = { utama: menuUtama, tambahan: menuTambahan, minuman: menuMinuman };
-    const arr = cats[catKey];
-    const prefix = catKey === 'utama' ? 'u' : catKey === 'tambahan' ? 't' : 'm';
-    const maxId = arr.length > 0 ? Math.max(...arr.map(m => parseInt(m.id.slice(1)) || 0)) : 0;
-    arr.push({ id: prefix + (maxId + 1), name: 'Menu Baru', price: 5000, icon: '🆕' });
-    renderMenuEditor();
-    toast('Menu baru ditambahkan. Jangan lupa Simpan!', 'warn');
-  }
-
-  function removeMenuRow(btn) {
-    const row = btn.closest('.me-row');
-    if (!row) return;
-    const cat = row.dataset.cat;
-    const idx = parseInt(row.dataset.idx);
-    const cats = { utama: menuUtama, tambahan: menuTambahan, minuman: menuMinuman };
-    cats[cat].splice(idx, 1);
-    renderMenuEditor();
-    toast('Menu dihapus. Jangan lupa Simpan!', 'warn');
-  }
-
-  function updateMenuFromDOM() {
-    const rows = document.querySelectorAll('#menuEditor .me-row');
-    rows.forEach(row => {
-      const cat = row.dataset.cat;
-      const idx = parseInt(row.dataset.idx);
-      const inputs = row.querySelectorAll('input');
-      const icon = inputs[0].value;
-      const name = inputs[1].value.trim();
-      const price = parseInt(inputs[2].value) || 0;
-      const cats = { utama: menuUtama, tambahan: menuTambahan, minuman: menuMinuman };
-      if (cats[cat][idx]) {
-        cats[cat][idx].icon = icon;
-        cats[cat][idx].name = name;
-        cats[cat][idx].price = price;
-      }
-    });
-  }
-
-  function saveMenusFromEditor() {
-    updateMenuFromDOM();
-    saveMenus();
-    renderMenu('menuUtama', menuUtama);
-    renderMenu('menuTambahan', menuTambahan);
-    renderMenu('menuMinuman', menuMinuman);
-    clearCartDOM();
-    toast('Menu berhasil disimpan!', 'success');
-  }
-
-
-  window.WCT = {
-    upd, setOrderType, getLocation, showConfirm, hideConfirm, doOrder, resetOrder,
-    toggleQR, copyLink, openPlayer, closePlayer, togglePlay, prevTrack, nextTrack, seekAudio, loadTrack,
-    enterPin, backspacePin, cancelPin, setOverride, changePin, confirmOrder, deleteOrder, clearAllOrders, hideOwnerPanel,
-    afterOrderMusic, openPlayerFromPrompt, openPlayerFromPromptTrack, closeMusicPrompt,
-    toggleChat, sendChat, askAI, saveAiKey, clearAiKey,
-    showLastOrder, addMenuRow, removeMenuRow, saveMenusFromEditor, resetMenus
+  window.WCT={
+    upd,setOrderType,getLocation,showConfirm,hideConfirm,doOrder,resetOrder,
+    toggleQR,copyLink,closePlayer,togglePlay,prevTrack,nextTrack,seekAudio,loadTrack,
+    enterPin,backspacePin,cancelPin,setOverride,changePin,confirmOrder,deleteOrder,clearAllOrders,hideOwnerPanel,
+    afterOrderMusic,openPlayerFromPrompt,openPlayerFromPromptTrack,closeMusicPrompt,
+    toggleChat,sendChat,askAI,saveAiKey,clearAiKey,
+    showLastOrder,addMenuRow,removeMenuRow,saveMenusFromEditor,resetMenus,onModalName
   };
 
   init();
 })();
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  const swCode = `
-    // ⚠️ GANTI ANGKA INI SETIAP UPLOAD KE REPO ASLI (v1 → v2 → v3 dst)
-    const CACHE_NAME = 'warungct-v1';
-    const urlsToCache = [
-      './',
-      './index.html'
-    ];
-    self.addEventListener('install', e => {
-      e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)).then(() => self.skipWaiting()));
-    });
-    self.addEventListener('activate', e => {
-      e.waitUntil(caches.keys().then(names => Promise.all(names.filter(n => n !== CACHE_NAME).map(n => caches.delete(n)))).then(() => self.clients.claim()));
-    });
-    self.addEventListener('fetch', e => {
-      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
-    });
-  `;
-  const swBlob = new Blob([swCode], { type: 'application/javascript' });
-  const swUrl = URL.createObjectURL(swBlob);
-  navigator.serviceWorker.register(swUrl).then(reg => {
-    console.log('SW registered');
-  }).catch(err => {
-    console.log('SW failed', err);
-  });
-}
 </script>
 </body>
 </html>
