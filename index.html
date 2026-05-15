@@ -795,7 +795,7 @@ body{
       </div>
 
       <div class="flbl">Catatan (opsional)</div>
-      <textarea id="orderNotes" class="notes-field" placeholder="Contoh: sambalnya banyak ya, jangan pake bawang…"></textarea>
+      <textarea id="orderNotes" class="notes-field" placeholder="Contoh: pecel lelene di tandai yo…"></textarea>
 
       <button class="btn-primary" onclick="WCT.doOrder()">✅ Kirim Order via WhatsApp</button>
       <button class="btn-ghost" onclick="WCT.hideConfirm()">Batal</button>
@@ -1304,7 +1304,7 @@ body{
   function removeTyping(){const el=document.getElementById('aiTyping');if(el)el.remove();}
 
   let chatHistory=[];
-  const AI_SYSTEM_PROMPT=`Kamu adalah Asisten Warung CT yang ramah dan gaul. Jawab dengan bahasa Jawa campur Indonesia yang santai. Warung CT di Sidomukti, Kembang Bahu, Lamongan. Menu: Ayam Goreng 10rb, Pecel Lele 10rb (best seller), Dadar 7rb, Ati Ampela 8rb, Tempe Penyet 6rb, Nasgor Ori 10rb, Nasgor+Sosis 13rb, Nasgor+Dadar 13rb. Tambahan 3-5rb. Minuman 3-4rb. Antar 13-21, ambil/makan 13-23. Ongkir: 1km=2rb, +1rb/km, maks 4km. Jangan sebut nomor WA owner. Jangan terima order langsung`;
+  const AI_SYSTEM_PROMPT=`Kamu adalah Asisten Warung CT yang ramah dan gaul. Jawab dengan bahasa Jawa campur Indonesia yang santai. Warung CT di Sidomukti, Kembang Bahu, Lamongan. Menu: Ayam Goreng 10rb, Pecel Lele 10rb (best seller), Dadar 7rb, Ati Ampela 8rb, Tempe Penyet 6rb, Nasgor Ori 10rb, Nasgor+Sosis 13rb, Nasgor+Dadar 13rb. Tambahan 3-5rb. Minuman 3-4rb. Antar 13-21, ambil/makan 13-23. Ongkir: 1km=2rb, +1rb/km, maks 4km. Jangan sebut nomor WA owner. Jangan terima order langsung, arahakan order lewat web ini`;
 
   async function sendChat(){
     const inp=document.getElementById('aiInput');const text=inp.value.trim();if(!text)return;
