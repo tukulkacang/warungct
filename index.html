@@ -525,7 +525,7 @@ body{
 }
 #qrcode{display:inline-block;margin:10px auto;border-radius:var(--r-sm);overflow:hidden;border:3px solid var(--cream3);padding:8px;background:#fff;}
 
-/* ═══ OWNER PANEL ═══ */
+/* ═══ OWNER PANEL (without AI key section) ═══ */
 .owner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 14px;}
 .owner-grid button{
   background:var(--cream2);border:1.5px solid var(--cream3);
@@ -797,30 +797,6 @@ body{
       <div class="flbl">Catatan (opsional)</div>
       <textarea id="orderNotes" class="notes-field" placeholder="Contoh: pecel lelene di tandai yo…"></textarea>
 
-      <!-- ========== TAMBAHAN METODE PEMBAYARAN (6 BANK + DANA) ========== -->
-      <div class="flbl">Metode Pembayaran</div>
-      <div id="paymentMethods">
-        <label style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-          <input type="radio" name="payment" value="transfer" checked onchange="WCT.togglePaymentDetails()"> Transfer Bank
-        </label>
-        <div id="bankSelection" style="margin-left:24px; margin-bottom:12px;">
-          <select id="bankSelect" class="field" style="padding:10px;">
-            <option value="BCA - 1234567890 a.n. WARUNG CT">BCA - 1234567890 a.n. WARUNG CT</option>
-            <option value="Mandiri - 9876543210 a.n. WARUNG CT">Mandiri - 9876543210 a.n. WARUNG CT</option>
-            <option value="BRI - 555544443333 a.n. WARUNG CT">BRI - 555544443333 a.n. WARUNG CT</option>
-            <option value="BNI - 777788889999 a.n. WARUNG CT">BNI - 777788889999 a.n. WARUNG CT</option>
-            <option value="BSI - 111122223333 a.n. WARUNG CT">BSI - 111122223333 a.n. WARUNG CT</option>
-            <option value="CIMB Niaga - 444455556666 a.n. WARUNG CT">CIMB Niaga - 444455556666 a.n. WARUNG CT</option>
-          </select>
-        </div>
-        <label style="display:flex; align-items:center; gap:8px;">
-          <input type="radio" name="payment" value="dana" onchange="WCT.togglePaymentDetails()"> DANA (QRIS / Transfer)
-        </label>
-        <div id="danaInfo" style="margin-left:24px; margin-bottom:12px; display:none;">
-          <div class="gps-info">💳 DANA: 081234567890 a.n. WARUNG CT<br>Scan QR atau transfer ke nomor DANA di atas.</div>
-        </div>
-      </div>
-
       <button class="btn-primary" onclick="WCT.doOrder()">✅ Kirim Order via WhatsApp</button>
       <button class="btn-ghost" onclick="WCT.hideConfirm()">Batal</button>
     </div>
@@ -886,7 +862,7 @@ body{
     </div>
   </div>
 
-  <!-- OWNER PANEL -->
+  <!-- OWNER PANEL (without API Key section) -->
   <div id="ownerOverlay" class="overlay">
     <div class="sheet">
       <div class="drag"></div>
@@ -901,6 +877,7 @@ body{
       <div class="flbl">Ganti PIN</div>
       <input type="password" id="newPin" maxlength="4" placeholder="PIN baru (4 digit)" class="input-sm">
       <button class="btn-primary" style="margin-bottom:14px;" onclick="WCT.changePin()">Simpan PIN Baru</button>
+      <!-- API Key section removed for security -->
       <div class="flbl">Order Masuk (<span id="orderCount">0</span>)</div>
       <div id="ownerOrderList"></div>
       <div class="flbl" style="margin-top:18px;">📝 Kelola Menu</div>
@@ -968,29 +945,20 @@ body{
 <script>
 (function(){
   // ════════════════════════════════════════
-  // KONFIGURASI (TAMBAH BANK & DANA)
+  // KONFIGURASI - TIDAK ADA FALLBACK NOMOR WA
   // ════════════════════════════════════════
   const CFG={
     WA_WORKER:'https://warung-ct-wa.sejak7hari.workers.dev/send',
+    // WA_FALLBACK sudah dihapus total - nomor tidak disimpan di client
     WARUNG_LAT:-7.166875,
     WARUNG_LON:112.326875,
     MAX_KM:3,
     SHARE_URL:'https://tukulkacang.github.io/warungct/',
-    PIN:'0000',
-    // DATA REKENING (GANTI DENGAN REKENING ASLI)
-    BANK_LIST:[
-      {name:'BCA', number:'1234567890', owner:'WARUNG CT'},
-      {name:'Mandiri', number:'9876543210', owner:'WARUNG CT'},
-      {name:'BRI', number:'555544443333', owner:'WARUNG CT'},
-      {name:'BNI', number:'777788889999', owner:'WARUNG CT'},
-      {name:'BSI', number:'111122223333', owner:'WARUNG CT'},
-      {name:'CIMB Niaga', number:'444455556666', owner:'WARUNG CT'}
-    ],
-    DANA_NUMBER:'081234567890',
-    DANA_OWNER:'WARUNG CT'
+    PIN:'0000'
   };
 
   // Fungsi kirim ke WA via Worker (nomor tersembunyi dari client)
+  // Jika Worker gagal, tampilkan error dan tidak membuka WA.
   async function openWA(msg){
     try{
       const res=await fetch(CFG.WA_WORKER,{
@@ -1092,6 +1060,8 @@ body{
   const saveOwner=d=>localStorage.setItem('wct_owner',JSON.stringify(d));
   const getOrders=()=>{try{return JSON.parse(localStorage.getItem('wct_orders'))||[];}catch{return[];}};
   const saveOrders=l=>localStorage.setItem('wct_orders',JSON.stringify(l));
+
+  // Tidak ada fungsi AI key storage karena sudah dihapus
 
   function clearCartDOM(){allMenu.forEach(m=>{S.cart[m.id]=0;let el=document.getElementById('qty-'+m.id);if(el)el.innerText='0';let mi=document.getElementById('mi-'+m.id);if(mi)mi.classList.remove('sel');});updateUI();}
 
@@ -1204,33 +1174,9 @@ body{
     S.name=c.name||'';
     setOrderType(S.orderType);
     updateUI();
-
-    // populate bank select from CFG
-    let bankSelect=document.getElementById('bankSelect');
-    if(bankSelect && CFG.BANK_LIST){
-      bankSelect.innerHTML='';
-      CFG.BANK_LIST.forEach(b=>{
-        let opt=document.createElement('option');
-        opt.value=`${b.name} - ${b.number} a.n. ${b.owner}`;
-        opt.textContent=opt.value;
-        bankSelect.appendChild(opt);
-      });
-    }
-    let danaInfoDiv=document.getElementById('danaInfo');
-    if(danaInfoDiv && CFG.DANA_NUMBER){
-      danaInfoDiv.innerHTML=`<div class="gps-info">💳 DANA: ${CFG.DANA_NUMBER} a.n. ${CFG.DANA_OWNER}<br>Scan QR atau transfer ke nomor DANA di atas.</div>`;
-    }
-
     openOverlay('confirmModal');
   }
   function hideConfirm(){closeOverlay('confirmModal');}
-
-  // Fungsi untuk toggle tampilan bank / DANA
-  function togglePaymentDetails(){
-    let isTransfer = document.querySelector('input[name="payment"]:checked').value === 'transfer';
-    document.getElementById('bankSelection').style.display = isTransfer ? 'block' : 'none';
-    document.getElementById('danaInfo').style.display = isTransfer ? 'none' : 'block';
-  }
 
   let _cd=false;
   function doOrder(){
@@ -1251,15 +1197,6 @@ body{
     if(S.orderType==='delivery')msg+='Ongkir: Rp '+fmt(S.shipping)+'\n';
     msg+='TOTAL: Rp '+fmt(grand)+'\n';
     if(notes)msg+='Catatan: '+escWA(notes)+'\n';
-
-    // TAMBAHAN INSTRUKSI PEMBAYARAN
-    let paymentMethod = document.querySelector('input[name="payment"]:checked').value;
-    if(paymentMethod === 'transfer'){
-      let selectedBank = document.getElementById('bankSelect').value;
-      msg+=`\nPEMBAYARAN: Transfer ke ${selectedBank}\nSetelah transfer, kirim bukti ke nomor WA owner (ada di chat).`;
-    } else {
-      msg+=`\nPEMBAYARAN: DANA (QRIS/Transfer) ke ${CFG.DANA_NUMBER} a.n. ${CFG.DANA_OWNER}\nScan QR atau transfer, lalu kirim bukti.`;
-    }
 
     let orders=getOrders();
     orders.unshift({id:orderId,name:S.name,type:S.orderType,dist:S.distKm,items:allMenu.filter(m=>S.cart[m.id]>0).map(m=>({name:m.name,qty:S.cart[m.id],price:m.price})),total:grand,notes,status:'pending',timestamp:Date.now()});
@@ -1322,11 +1259,14 @@ body{
     let l=document.getElementById('st-libur');if(l)l.classList.toggle('active',owner.overrideStatus==='libur');
     let tj=document.getElementById('tutupJam');if(tj)tj.style.display=owner.overrideStatus==='tutup_cepat'?'block':'none';
     if(owner.overrideHour&&tj)tj.value=owner.overrideHour;
+    // Tidak ada kode untuk AI key status karena sudah dihapus
     openOverlay('ownerOverlay');
   }
   function hideOwnerPanel(){closeOverlay('ownerOverlay');}
   function setOverride(mode){let owner=getOwner();owner.overrideStatus=mode;if(mode==='tutup_cepat'){let jam=parseInt(document.getElementById('tutupJam')?.value||20);owner.overrideHour=(jam>=13&&jam<=23)?jam:20;let tj=document.getElementById('tutupJam');if(tj)tj.style.display='block';}else{let tj=document.getElementById('tutupJam');if(tj)tj.style.display='none';}saveOwner(owner);checkTime();openOwnerPanel();toast(mode==='libur'?'Warung LIBUR':(mode==='tutup_cepat'?'Tutup jam '+owner.overrideHour+':00':'Status Normal'),'success');}
   function changePin(){let val=document.getElementById('newPin')?.value;if(!/^\d{4}$/.test(val)){toast('PIN harus 4 digit','error');return;}let owner=getOwner();owner.pin=val;saveOwner(owner);if(document.getElementById('newPin'))document.getElementById('newPin').value='';toast('PIN berhasil diganti','success');}
+
+  // Tidak ada fungsi saveAiKey, clearAiKey, dll
 
   function renderOwnerOrders(){
     let orders=getOrders();let cs=document.getElementById('orderCount');if(cs)cs.innerText=orders.length;
@@ -1409,11 +1349,6 @@ body{
     let c=getPref();S.orderType=c.orderType||'pickup';if(c.name)S.name=c.name;
     checkTime();setInterval(()=>checkTime(),60000);
     updateUI();loadTrack(0,false);initSocialProof();
-
-    // inisialisasi payment toggle
-    let radios=document.querySelectorAll('input[name="payment"]');
-    radios.forEach(r=>r.addEventListener('change', togglePaymentDetails));
-    togglePaymentDetails();
   }
 
   window.WCT={
@@ -1421,8 +1356,7 @@ body{
     toggleQR,copyLink,closePlayer,togglePlay,prevTrack,nextTrack,seekAudio,loadTrack,
     enterPin,backspacePin,cancelPin,setOverride,changePin,confirmOrder,deleteOrder,clearAllOrders,hideOwnerPanel,
     afterOrderMusic,openPlayerFromPrompt,openPlayerFromPromptTrack,closeMusicPrompt,
-    toggleChat,sendChat,askAI,showLastOrder,addMenuRow,removeMenuRow,saveMenusFromEditor,resetMenus,onModalName,
-    togglePaymentDetails
+    toggleChat,sendChat,askAI,showLastOrder,addMenuRow,removeMenuRow,saveMenusFromEditor,resetMenus,onModalName
   };
 
   init();
