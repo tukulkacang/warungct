@@ -525,7 +525,7 @@ body{
 }
 #qrcode{display:inline-block;margin:10px auto;border-radius:var(--r-sm);overflow:hidden;border:3px solid var(--cream3);padding:8px;background:#fff;}
 
-/* ═══ OWNER PANEL ═══ */
+/* ═══ OWNER PANEL (without AI key section) ═══ */
 .owner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 14px;}
 .owner-grid button{
   background:var(--cream2);border:1.5px solid var(--cream3);
@@ -862,7 +862,7 @@ body{
     </div>
   </div>
 
-  <!-- OWNER PANEL -->
+  <!-- OWNER PANEL (without API Key section) -->
   <div id="ownerOverlay" class="overlay">
     <div class="sheet">
       <div class="drag"></div>
@@ -877,7 +877,7 @@ body{
       <div class="flbl">Ganti PIN</div>
       <input type="password" id="newPin" maxlength="4" placeholder="PIN baru (4 digit)" class="input-sm">
       <button class="btn-primary" style="margin-bottom:14px;" onclick="WCT.changePin()">Simpan PIN Baru</button>
-      <div id="aiKeyStatus" style="font-size:11px;color:var(--ink3);margin-bottom:12px;font-weight:600;"></div>
+      <!-- API Key section removed for security -->
       <div class="flbl">Order Masuk (<span id="orderCount">0</span>)</div>
       <div id="ownerOrderList"></div>
       <div class="flbl" style="margin-top:18px;">📝 Kelola Menu</div>
@@ -945,16 +945,11 @@ body{
 <script>
 (function(){
   // ════════════════════════════════════════
-  // NOMOR WA DISEMBUNYIKAN via Cloudflare Worker
-  // Pelanggan tidak bisa lihat nomor dari source code
-  // Worker URL: ganti dengan worker kamu sendiri
+  // KONFIGURASI - TIDAK ADA FALLBACK NOMOR WA
   // ════════════════════════════════════════
   const CFG={
-    // Nomor WA tidak disimpan di sini — dikirim via Worker
-    // Cara setup: buat Cloudflare Worker yang return redirect ke wa.me/NOMORMU
     WA_WORKER:'https://warung-ct-wa.sejak7hari.workers.dev/send',
-    // Fallback jika worker tidak ada (hapus setelah worker aktif)
-    WA_FALLBACK:atob('KzYyODU3MzAwMzAxMTI='),
+    // WA_FALLBACK sudah dihapus total - nomor tidak disimpan di client
     WARUNG_LAT:-7.166875,
     WARUNG_LON:112.326875,
     MAX_KM:3,
@@ -963,9 +958,9 @@ body{
   };
 
   // Fungsi kirim ke WA via Worker (nomor tersembunyi dari client)
+  // Jika Worker gagal, tampilkan error dan tidak membuka WA.
   async function openWA(msg){
     try{
-      // Coba kirim via Worker dulu
       const res=await fetch(CFG.WA_WORKER,{
         method:'POST',
         headers:{'Content-Type':'application/json'},
@@ -973,11 +968,20 @@ body{
       });
       if(res.ok){
         const data=await res.json();
-        if(data.url)return window.open(data.url,'_blank');
+        if(data.url){
+          window.open(data.url,'_blank');
+          return true;
+        } else {
+          throw new Error('Worker tidak mengembalikan URL');
+        }
+      } else {
+        throw new Error('Worker merespon dengan status '+res.status);
       }
-    }catch(e){}
-    // Fallback: pakai nomor langsung (untuk development)
-    window.open('https://wa.me/'+CFG.WA_FALLBACK+'?text='+encodeURIComponent(msg),'_blank');
+    } catch(e){
+      console.error('Gagal mengirim pesan ke Worker WA:', e);
+      toast('⚠️ Gangguan koneksi ke server. Silakan coba lagi nanti atau hubungi owner langsung.', 'error');
+      return false;
+    }
   }
 
   const OR_API_URL='https://warung-ct-ai.sejak7hari.workers.dev/';
@@ -1056,9 +1060,8 @@ body{
   const saveOwner=d=>localStorage.setItem('wct_owner',JSON.stringify(d));
   const getOrders=()=>{try{return JSON.parse(localStorage.getItem('wct_orders'))||[];}catch{return[];}};
   const saveOrders=l=>localStorage.setItem('wct_orders',JSON.stringify(l));
-  const getAiKey=()=>{try{return localStorage.getItem('wct_ai_key')||'';}catch{return'';}};
-  const saveAiKeyStorage=k=>{try{localStorage.setItem('wct_ai_key',k);}catch{}};
-  const clearAiKeyStorage=()=>{try{localStorage.removeItem('wct_ai_key');}catch{}};
+
+  // Tidak ada fungsi AI key storage karena sudah dihapus
 
   function clearCartDOM(){allMenu.forEach(m=>{S.cart[m.id]=0;let el=document.getElementById('qty-'+m.id);if(el)el.innerText='0';let mi=document.getElementById('mi-'+m.id);if(mi)mi.classList.remove('sel');});updateUI();}
 
@@ -1199,7 +1202,6 @@ body{
     orders.unshift({id:orderId,name:S.name,type:S.orderType,dist:S.distKm,items:allMenu.filter(m=>S.cart[m.id]>0).map(m=>({name:m.name,qty:S.cart[m.id],price:m.price})),total:grand,notes,status:'pending',timestamp:Date.now()});
     saveOrders(orders);savePref();
 
-    // Update counter dari order real
     let base=parseInt(localStorage.getItem('wct_counter')||'34');
     base+=1;localStorage.setItem('wct_counter',base);
     let ce=document.getElementById('webCounter');if(ce)ce.innerText=base+'+';
@@ -1257,17 +1259,14 @@ body{
     let l=document.getElementById('st-libur');if(l)l.classList.toggle('active',owner.overrideStatus==='libur');
     let tj=document.getElementById('tutupJam');if(tj)tj.style.display=owner.overrideStatus==='tutup_cepat'?'block':'none';
     if(owner.overrideHour&&tj)tj.value=owner.overrideHour;
-    let key=getAiKey();
-    let ks=document.getElementById('aiKeyStatus'),aik=document.getElementById('aiApiKey');
-    if(aik)aik.value=key?'••••••••••••••••':'';
-    if(ks)ks.innerHTML=key?'<span style="color:var(--g2);">✅ AI Aktif</span>':'<span>⚪ Mode Manual</span>';
+    // Tidak ada kode untuk AI key status karena sudah dihapus
     openOverlay('ownerOverlay');
   }
   function hideOwnerPanel(){closeOverlay('ownerOverlay');}
   function setOverride(mode){let owner=getOwner();owner.overrideStatus=mode;if(mode==='tutup_cepat'){let jam=parseInt(document.getElementById('tutupJam')?.value||20);owner.overrideHour=(jam>=13&&jam<=23)?jam:20;let tj=document.getElementById('tutupJam');if(tj)tj.style.display='block';}else{let tj=document.getElementById('tutupJam');if(tj)tj.style.display='none';}saveOwner(owner);checkTime();openOwnerPanel();toast(mode==='libur'?'Warung LIBUR':(mode==='tutup_cepat'?'Tutup jam '+owner.overrideHour+':00':'Status Normal'),'success');}
   function changePin(){let val=document.getElementById('newPin')?.value;if(!/^\d{4}$/.test(val)){toast('PIN harus 4 digit','error');return;}let owner=getOwner();owner.pin=val;saveOwner(owner);if(document.getElementById('newPin'))document.getElementById('newPin').value='';toast('PIN berhasil diganti','success');}
-  function saveAiKey(){let val=document.getElementById('aiApiKey')?.value?.trim();if(!val){toast('Masukkan API key dulu','error');return;}if(val.length<10){toast('API key terlalu pendek','error');return;}saveAiKeyStorage(val);toast('API Key disimpan! 🚀','success');let ks=document.getElementById('aiKeyStatus');if(ks)ks.innerHTML='<span style="color:var(--g2);">✅ AI Aktif</span>';let aik=document.getElementById('aiApiKey');if(aik)aik.value='••••••••••••••••';}
-  function clearAiKey(){clearAiKeyStorage();toast('API Key dihapus.','warn');let ks=document.getElementById('aiKeyStatus');if(ks)ks.innerHTML='<span>⚪ Mode Manual</span>';let aik=document.getElementById('aiApiKey');if(aik)aik.value='';}
+
+  // Tidak ada fungsi saveAiKey, clearAiKey, dll
 
   function renderOwnerOrders(){
     let orders=getOrders();let cs=document.getElementById('orderCount');if(cs)cs.innerText=orders.length;
@@ -1357,8 +1356,7 @@ body{
     toggleQR,copyLink,closePlayer,togglePlay,prevTrack,nextTrack,seekAudio,loadTrack,
     enterPin,backspacePin,cancelPin,setOverride,changePin,confirmOrder,deleteOrder,clearAllOrders,hideOwnerPanel,
     afterOrderMusic,openPlayerFromPrompt,openPlayerFromPromptTrack,closeMusicPrompt,
-    toggleChat,sendChat,askAI,saveAiKey,clearAiKey,
-    showLastOrder,addMenuRow,removeMenuRow,saveMenusFromEditor,resetMenus,onModalName
+    toggleChat,sendChat,askAI,showLastOrder,addMenuRow,removeMenuRow,saveMenusFromEditor,resetMenus,onModalName
   };
 
   init();
