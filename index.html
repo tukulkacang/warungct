@@ -1280,7 +1280,7 @@ body{
 
   const AI_RESPONSES=[
     {pattern:/halo|hai|hi|hello|pagi|siang|sore|malam|selamat|sugeng|monggo/i,answers:['Halo Cak! 👋 Piye kabare? Arep pesen opo dino iki? 😄','Wah sugeng rawuh! 🙏 Ono sing iso dibantu?','Halo! Selamat datang neng Warung CT 🍽️']},
-    {pattern:/menu|makanan|ada opo|jual opo|tersedia|daftar/i,answers:['Menu Warung CT:\n\n🍗 Ayam Goreng – 10rb\n🐟 Pecel Lele – 10rb ⭐\n🍳 Dadar – 7rb\n🍖 Ati Ampela – 8rb\n🌿 Tempe Penyet – 6rb\n🍚 Nasgor Ori – 11rb\n🍛 Nasgor+Sosis – 14rb\n🍜 Nasgor+Dadar – 14rb\n\nTambahan & minuman juga ada! Langsung pilih di atas ya 😄']},
+    {pattern:/menu|makanan|ada opo|jual opo|tersedia|daftar/i,answers:['Menu Warung CT:\n\n🍗 Ayam Goreng – 11rb\n🐟 Pecel Lele – 10rb ⭐\n🍳 Dadar – 7rb\n🍖 Ati Ampela – 8rb\n🌿 Tempe Penyet – 6rb\n🍚 Nasgor Ori – 11rb\n🍛 Nasgor+Sosis – 14rb\n🍜 Nasgor+Dadar – 14rb\n\nTambahan & minuman juga ada! Langsung pilih di atas ya 😄']},
     {pattern:/best.?seller|favorit|rekomendasine|enak opo|populer/i,answers:['Best seller Warung CT:\n\n🥇 Pecel Lele – Juara!\n🥈 Ayam Goreng – Gurih kriuk\n🥉 Nasgor Ori – Nagih!\n\nCombo terbaik: Pecel Lele + Es Teh = 13rb aja 🔥']},
     {pattern:/murah|hemat|paling murah/i,answers:['Paling murah:\n🌿 Tempe Penyet – 6rb\n+ Nasi 3rb = kenyang 9rb! 💪\n+ Es Teh 3rb = 12rb komplit!']},
     {pattern:/jam buka|bukane kapan|jam berapa|buka jam|tutup jam/i,answers:['Jam buka Warung CT:\n🛵 Antar ke Rumah: 13:00–21:00\n🚶 Ambil Sendiri: 13:00–23:00\n🍽️ Makan di Sini: 13:00–23:00']},
@@ -1296,7 +1296,7 @@ body{
   function removeTyping(){const el=document.getElementById('aiTyping');if(el)el.remove();}
 
   let chatHistory=[];
-  const AI_SYSTEM_PROMPT=`Kamu adalah Asisten Warung CT yang ramah dan gaul. Jawab dengan bahasa Jawa campur Indonesia yang santai. Warung CT di Sidomukti, Kembang Bahu, Lamongan. Menu: Ayam Goreng 10rb, Pecel Lele 10rb (best seller), Dadar 7rb, Ati Ampela 8rb, Tempe Penyet 6rb, Nasgor Ori 10rb, Nasgor+Sosis 13rb, Nasgor+Dadar 13rb. Tambahan 3-5rb. Minuman 3-4rb. Antar 13-21, ambil/makan 13-23. Ongkir: 1km=2rb, +1rb/km, maks 4km. Jangan sebut nomor WA owner. Jangan terima order langsung, arahakan order lewat web ini`;
+  const AI_SYSTEM_PROMPT=`Kamu adalah Asisten Warung CT yang ramah dan gaul. Jawab dengan bahasa Jawa campur Indonesia yang santai. Warung CT di Sidomukti, Kembang Bahu, Lamongan. Menu: Ayam Goreng 11rb, Pecel Lele 10rb (best seller), Dadar 7rb, Ati Ampela 8rb, Tempe Penyet 6rb, Nasgor Ori 11rb, Nasgor+Sosis 13rb, Nasgor+Dadar 13rb. Tambahan 3-5rb. Minuman 3-4rb. Antar 13-21, ambil/makan 13-23. Ongkir: 1km=2rb, +1rb/km, maks 4km. Jangan sebut nomor WA owner. Jangan terima order langsung, arahakan order lewat web ini`;
 
   async function sendChat(){
     const inp=document.getElementById('aiInput');const text=inp.value.trim();if(!text)return;
